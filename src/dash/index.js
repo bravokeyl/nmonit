@@ -166,7 +166,7 @@ class Dashboard extends Component {
         data["dhr"] = data['dhr'].split('/').reverse()[0];
       }
       if(data['ddt']){
-        data['date'] = data['ddt'];
+        data['date'] = moment(data['ddt']).format("MMM Do");
         data["ddt"] = data['ddt'].split('/').reverse()[0];
       }
       return d;
@@ -249,8 +249,8 @@ class Dashboard extends Component {
               </Typography>
               <ResponsiveContainer height={350}>
                 <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
-                      margin={{top: 20, right: 30, left: 20, bottom: 5}} barSize={30}>
-                   <XAxis dataKey="ddt"/>
+                      margin={{top: 20, right: 30, left: 20, bottom: 40}} barSize={30}>
+                   <XAxis dataKey="date" angle={-45} textAnchor="end"/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
@@ -281,7 +281,7 @@ class Dashboard extends Component {
                 <ResponsiveContainer height={350} className={ this.state.progress?classes.opacity:"bk-default"}>
                   <BarChart data={_.sortBy(this.state.energyDay,['dhr'])}
                     margin={{top: 20, right: 30, left: 20, bottom: 5}} barSize={30}>
-                 <XAxis dataKey="dhr"/>
+                 <XAxis dataKey="dhr" angle={-45} textAnchor="end"/>
                  <YAxis/>
                  <CartesianGrid strokeDasharray="2 3"/>
                  <Tooltip />
