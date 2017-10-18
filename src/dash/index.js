@@ -6,16 +6,16 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import Table, {TableBody,TableCell,TableFooter,TableHead,TablePagination,TableRow,TableSortLabel} from 'material-ui/Table';
+import Table, {TableBody,TableCell,TableHead,TableRow} from 'material-ui/Table';
 import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
-import { CircularProgress, LinearProgress } from 'material-ui/Progress';
+import { LinearProgress } from 'material-ui/Progress';
 
 import 'react-dates/initialize';
-import { DateRangePicker, SingleDatePicker, DayPickerRangeController, isInclusivelyBeforeDay } from 'react-dates';
+import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 import moment from 'moment';
 import _ from 'lodash';
 
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,ResponsiveContainer} from  'recharts';
+import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
 
 import EnhancedTable from '../common/table';
 
@@ -36,108 +36,109 @@ const styles = theme => ({
   },
   chart: {
     height: 300
+  },
+  opacity: {
+    opacity: 0.5
   }
 });
 
 
-const energyDay = [
-    {
-      "c2": 5086.37,
-      "c3": 1425.29,
-      "c4": 1041.84,
-      "ddt": "2017/10/09",
-      "c5": 176582.29,
-      "c6": 753.66,
-      "device": "esp8266_1ACD99",
-      "c1": 701246.74
-    },
-    {
-      "c2": 3766.9,
-      "c3": 1253.58,
-      "c4": 705.02,
-      "ddt": "2017/10/08",
-      "c5": 373816.58,
-      "c6": 634.33,
-      "device": "esp8266_1ACD99",
-      "c1": 704013.75
-    },
-    {
-      "c2": 6119.57,
-      "c3": 1998.41,
-      "c4": 1315.45,
-      "ddt": "2017/10/07",
-      "c5": 420243.18,
-      "c6": 455.82,
-      "device": "esp8266_1ACD99",
-      "c1": 868658.31
-    },
-    {
-      "c2": 3999.28,
-      "c3": 1987.42,
-      "c4": 1381.08,
-      "ddt": "2017/10/06",
-      "c5": 195597.87,
-      "c6": 4851.68,
-      "device": "esp8266_1ACD99",
-      "c1": 595179.36
-    },
-    {
-      "c2": 5188.28,
-      "c3": 2526.95,
-      "c4": 1539,
-      "ddt": "2017/10/05",
-      "c5": 218477.49,
-      "c6": 4102.83,
-      "device": "esp8266_1ACD99",
-      "c1": 733123.21
-    },
-    {
-      "c2": 4786.72,
-      "c3": 1904.83,
-      "c4": 1239.4,
-      "ddt": "2017/10/04",
-      "c5": 180598.04,
-      "c6": 6988.22,
-      "device": "esp8266_1ACD99",
-      "c1": 784872.81
-    },
-    {
-      "c2": 5350.45,
-      "c3": 1908.98,
-      "c4": 1351.26,
-      "ddt": "2017/10/03",
-      "c5": 596.23,
-      "c6": 3215.91,
-      "device": "esp8266_1ACD99",
-      "c1": 669370.31
-    },
-    {
-      "c2": 3914.65,
-      "c3": 1803.1,
-      "c4": 1132.52,
-      "ddt": "2017/10/02",
-      "c5": 213063.47,
-      "c6": 4554.87,
-      "device": "esp8266_1ACD99",
-      "c1": 732596.01
-    },
-    {
-      "c2": 3787.18,
-      "c3": 1647,
-      "c4": 862.3,
-      "ddt": "2017/10/01",
-      "c5": 389041.36,
-      "c6": 13184.55,
-      "device": "esp8266_1ACD99",
-      "c1": 701246.73
-    }
-];
+// const energyDay = [
+//     {
+//       "c2": 5086.37,
+//       "c3": 1425.29,
+//       "c4": 1041.84,
+//       "ddt": "2017/10/09",
+//       "c5": 176582.29,
+//       "c6": 753.66,
+//       "device": "esp8266_1ACD99",
+//       "c1": 701246.74
+//     },
+//     {
+//       "c2": 3766.9,
+//       "c3": 1253.58,
+//       "c4": 705.02,
+//       "ddt": "2017/10/08",
+//       "c5": 373816.58,
+//       "c6": 634.33,
+//       "device": "esp8266_1ACD99",
+//       "c1": 704013.75
+//     },
+//     {
+//       "c2": 6119.57,
+//       "c3": 1998.41,
+//       "c4": 1315.45,
+//       "ddt": "2017/10/07",
+//       "c5": 420243.18,
+//       "c6": 455.82,
+//       "device": "esp8266_1ACD99",
+//       "c1": 868658.31
+//     },
+//     {
+//       "c2": 3999.28,
+//       "c3": 1987.42,
+//       "c4": 1381.08,
+//       "ddt": "2017/10/06",
+//       "c5": 195597.87,
+//       "c6": 4851.68,
+//       "device": "esp8266_1ACD99",
+//       "c1": 595179.36
+//     },
+//     {
+//       "c2": 5188.28,
+//       "c3": 2526.95,
+//       "c4": 1539,
+//       "ddt": "2017/10/05",
+//       "c5": 218477.49,
+//       "c6": 4102.83,
+//       "device": "esp8266_1ACD99",
+//       "c1": 733123.21
+//     },
+//     {
+//       "c2": 4786.72,
+//       "c3": 1904.83,
+//       "c4": 1239.4,
+//       "ddt": "2017/10/04",
+//       "c5": 180598.04,
+//       "c6": 6988.22,
+//       "device": "esp8266_1ACD99",
+//       "c1": 784872.81
+//     },
+//     {
+//       "c2": 5350.45,
+//       "c3": 1908.98,
+//       "c4": 1351.26,
+//       "ddt": "2017/10/03",
+//       "c5": 596.23,
+//       "c6": 3215.91,
+//       "device": "esp8266_1ACD99",
+//       "c1": 669370.31
+//     },
+//     {
+//       "c2": 3914.65,
+//       "c3": 1803.1,
+//       "c4": 1132.52,
+//       "ddt": "2017/10/02",
+//       "c5": 213063.47,
+//       "c6": 4554.87,
+//       "device": "esp8266_1ACD99",
+//       "c1": 732596.01
+//     },
+//     {
+//       "c2": 3787.18,
+//       "c3": 1647,
+//       "c4": 862.3,
+//       "ddt": "2017/10/01",
+//       "c5": 389041.36,
+//       "c6": 13184.55,
+//       "device": "esp8266_1ACD99",
+//       "c1": 701246.73
+//     }
+// ];
 
 class Dashboard extends Component {
   constructor(props){
     super(props);
-    let ds = [[],[],[]];
-    let dx = [];
     this.state = {
       energyDay: [],
       energyMonth: [],
@@ -160,12 +161,16 @@ class Dashboard extends Component {
       if(data["c2"] < 0) data["c2"] = 0;
       if(data["c3"] < 0) data["c3"] = 0;
       if(data["c4"] < 0) data["c4"] = 0;
-      if(data['dhr'])
-      data["dhr"] = data['dhr'].split('/').reverse()[0];
-      if(data['ddt'])
-      data["ddt"] = data['ddt'].split('/').reverse()[0];
+      if(data['dhr']){
+        data['date'] = data['dhr'];
+        data["dhr"] = data['dhr'].split('/').reverse()[0];
+      }
+      if(data['ddt']){
+        data['date'] = data['ddt'];
+        data["ddt"] = data['ddt'].split('/').reverse()[0];
+      }
+      return d;
     });
-    console.log("ENNE",d);
     return d
   }
   changeEnergy = (date) => {
@@ -208,7 +213,7 @@ class Dashboard extends Component {
     let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/h?dhr="+date;
     let dayURL = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/d?ddm="+month;
     let self = this;
-    let res = fetch(url)
+    fetch(url)
     .then(response => response.json())
     .then(function(response) {
       console.log("Response:",response);
@@ -219,7 +224,7 @@ class Dashboard extends Component {
       console.log(self.state.energyDay,"STATTE")
       return response;
     });
-    res = fetch(dayURL)
+    fetch(dayURL)
     .then(response => response.json())
     .then(function(response) {
       console.log("dayURL Response:",response,typeof response);
@@ -273,7 +278,7 @@ class Dashboard extends Component {
                   />
                 </div>
                 { this.state.progress ? <LinearProgress />: ""}
-                <ResponsiveContainer height={350}>
+                <ResponsiveContainer height={350} className={ this.state.progress?classes.opacity:"bk-default"}>
                   <BarChart data={_.sortBy(this.state.energyDay,['dhr'])}
                     margin={{top: 20, right: 30, left: 20, bottom: 5}} barSize={30}>
                  <XAxis dataKey="dhr"/>
@@ -332,7 +337,7 @@ class Dashboard extends Component {
               title="Day Wise Energy"
               tdata={this.state.energyMonth}
               thead={[
-                {label:"Date",numeric:true,disablePadding:false,id:"ddt"},
+                {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
                 {label:"C1",numeric:true,disablePadding:false,id:"c1"},
                 {label:"C2",numeric:true,disablePadding:false,id:"c2"},
                 {label:"C3",numeric:true,disablePadding:false,id:"c3"},
@@ -348,20 +353,20 @@ class Dashboard extends Component {
 
 }
 
-function CustomTooltip(props) {
-    const { active } = props;
-    if (active) {
-      const { payload, label } = props;
-      console.log(props);
-      return(<div className="custom-tooltip">
-        <p className="label">{`${label} : ${payload[0].value}`}</p>
-        <p className="label">{`${label} : ${payload[1].value}`}</p>
-        <p className="label">{`${label} : ${payload[2].value}`}</p>
-      </div>);
-    } else {
-      return (<div>Inactive</div>)
-    }
-}
+// function CustomTooltip(props) {
+//     const { active } = props;
+//     if (active) {
+//       const { payload, label } = props;
+//       console.log(props);
+//       return(<div className="custom-tooltip">
+//         <p className="label">{`${label} : ${payload[0].value}`}</p>
+//         <p className="label">{`${label} : ${payload[1].value}`}</p>
+//         <p className="label">{`${label} : ${payload[2].value}`}</p>
+//       </div>);
+//     } else {
+//       return (<div>Inactive</div>)
+//     }
+// }
 
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,

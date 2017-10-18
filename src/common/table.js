@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+
 import { withStyles } from 'material-ui/styles';
 import keycode from 'keycode';
 import Table, {
@@ -21,12 +23,6 @@ import Tooltip from 'material-ui/Tooltip';
 import DeleteIcon from 'material-ui-icons/Delete';
 import FilterListIcon from 'material-ui-icons/FilterList';
 
-let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
-  counter += 1;
-  return { id: counter, name, calories, fat, carbs, protein };
-}
-
 class EnhancedTableHead extends React.Component {
   static propTypes = {
     numSelected: PropTypes.number.isRequired,
@@ -44,7 +40,6 @@ class EnhancedTableHead extends React.Component {
 
   render() {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount,thead } = this.props;
-    console.log("THEAD",thead)
     return (
       <TableHead>
         <TableRow>
@@ -91,18 +86,18 @@ const toolbarStyles = theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.A700,
-          backgroundColor: theme.palette.secondary.A100,
+          color: "#fff",//theme.palette.secondary.A700,
+          backgroundColor: "#3f51b5", //theme.palette.secondary.A100,
         }
       : {
-          color: theme.palette.secondary.A100,
-          backgroundColor: theme.palette.secondary.A700,
+          color: "#fff",//theme.palette.secondary.A100,
+          backgroundColor: "#3f51b5",//theme.palette.secondary.A700,
         },
   spacer: {
     flex: '1 1 100%',
   },
   actions: {
-    color: theme.palette.text.secondary,
+    color: "#fff",//theme.palette.text.secondary,
   },
   title: {
     flex: '0 0 auto',
@@ -170,27 +165,14 @@ class EnhancedTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      order: 'asc',
+      order: 'desc',
       orderBy: 'ddt',
       selected: [],
-      data: [
-        createData('Cupcake', 305, 3.7, 67, 4.3),
-        createData('Donut', 452, 25.0, 51, 4.9),
-        createData('Eclair', 262, 16.0, 24, 6.0),
-        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        createData('Gingerbread', 356, 16.0, 49, 3.9),
-        createData('Honeycomb', 408, 3.2, 87, 6.5),
-        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        createData('Jelly Bean', 375, 0.0, 94, 0.0),
-        createData('KitKat', 518, 26.0, 65, 7.0),
-        createData('Lollipop', 392, 0.2, 98, 0.0),
-        createData('Marshmallow', 318, 0, 81, 2.0),
-        createData('Nougat', 360, 19.0, 9, 37.0),
-        createData('Oreo', 437, 18.0, 63, 4.0),
-      ].sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: props.tdata,
       page: 0,
-      rowsPerPage: 30,
+      rowsPerPage: 10,
     };
+    console.log("CON",this.state.data)
   }
 
   handleRequestSort = (event, property) => {
@@ -203,15 +185,17 @@ class EnhancedTable extends React.Component {
 
     const data =
       order === 'desc'
-        ? this.props.tdata.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-        : this.props.tdata.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+        ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+        : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
     this.setState({ data, order, orderBy });
   };
 
   handleSelectAllClick = (event, checked) => {
+    console.log(this.state.data,"SELECT ALL")
     if (checked) {
-      this.setState({ selected: this.state.data.map(n => n.id) });
+      console.log(this.state.data)
+      this.setState({ selected: this.state.data.map(n => n.ddt) });
       return;
     }
     this.setState({ selected: [] });
@@ -254,10 +238,18 @@ class EnhancedTable extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  componentDidMount() {
+    console.log(this.props,"COM DID MOUNT")
+  }
+  componentWillReceiveProps(p){
+    console.log(this.props,"WII",p)
+    this.setState({
+      data: p.tdata
+    })
+  }
   render() {
     const { classes, title, tdata, thead } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-    console.log("DD Title", title,"TData",tdata)
     return (
       <Paper className={classes.root} elevation={4}>
         <EnhancedTableToolbar numSelected={selected.length} title={title} />
@@ -270,13 +262,13 @@ class EnhancedTable extends React.Component {
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
-              rowCount={tdata.length}
+              rowCount={data.length}
               thead={thead}
             />
             <TableBody>
-              {tdata.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
                 const isSelected = this.isSelected(n.ddt);
-                console.log(n.ddt);
+                // console.log(n.ddt);
                 return (
                   <TableRow
                     hover
@@ -291,7 +283,7 @@ class EnhancedTable extends React.Component {
                     <TableCell padding="checkbox">
                       <Checkbox checked={isSelected} />
                     </TableCell>
-                    <TableCell padding="none">{n.ddt}</TableCell>
+                    <TableCell padding="none">{moment(n.date).format("Do MMM YYYY")}</TableCell>
                     <TableCell numeric>{n.c1}</TableCell>
                     <TableCell numeric>{n.c2}</TableCell>
                     <TableCell numeric>{n.c3}</TableCell>
