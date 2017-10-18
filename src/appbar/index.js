@@ -44,9 +44,11 @@ function ButtonAppBar(props) {
                   Logs
                 </Button>
               </Link>
-              <Button href="/profile" color="contrast">
-                Profile
-              </Button>
+              <Link to="/profile">
+                <Button  color="contrast">
+                  Profile
+                </Button>
+              </Link>
             </ul>
         </Toolbar>
       </AppBar>

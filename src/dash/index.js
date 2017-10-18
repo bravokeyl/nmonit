@@ -9,6 +9,14 @@ import Grid from 'material-ui/Grid';
 import Table, {TableBody,TableCell,TableHead,TableRow} from 'material-ui/Table';
 import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
 import { LinearProgress } from 'material-ui/Progress';
+import { MenuItem } from 'material-ui/Menu';
+import { FormControl } from 'material-ui/Form';
+import Input, { InputLabel } from 'material-ui/Input';
+import Select from 'material-ui/Select';
+
+// import {
+//   Grid as BKGrid, TableView, TableHeaderRow
+// } from '@devexpress/dx-react-grid-material-ui';
 
 import 'react-dates/initialize';
 import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
@@ -42,7 +50,7 @@ const styles = theme => ({
   }
 });
 
-
+const months = moment.monthsShort();
 // const energyDay = [
 //     {
 //       "c2": 5086.37,
@@ -147,10 +155,14 @@ class Dashboard extends Component {
       startDate: moment(),
       focused: false,
       progess: true,
-      dialogOpen: false
+      monthprogress: true,
+      dialogOpen: false,
+      selectedMonth: moment().format('MMM'),
     }
     this.changeEnergy = this.changeEnergy.bind(this);
+    this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
+    this.handleSelectMonth = this.handleSelectMonth.bind(this);
   }
 
   transformData = (d) => {
@@ -162,11 +174,11 @@ class Dashboard extends Component {
       if(data["c3"] < 0) data["c3"] = 0;
       if(data["c4"] < 0) data["c4"] = 0;
       if(data['dhr']){
-        data['date'] = data['dhr'];
         data["dhr"] = data['dhr'].split('/').reverse()[0];
+        data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
       }
       if(data['ddt']){
-        data['date'] = moment(data['ddt']).format("MMM Do");
+        data['month'] = moment(data['ddt']).format("MMM Do");
         data["ddt"] = data['ddt'].split('/').reverse()[0];
       }
       return d;
@@ -203,9 +215,42 @@ class Dashboard extends Component {
     });
 
   }
+  changeMonthEnergy = (month) => {
+    let ddm = moment().month(month).format("YYYY/MM");
+    let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/d?ddm="+ddm;
+    let self = this;
+    let prevMonth = this.state.selectedMonth;
+    self.setState({
+      monthprogress: true,
+      ["selectedMonth"]: month,
+    })
+    fetch(url)
+    .then(response => response.json())
+    .then(function(response) {
+      console.log("Month Changed Energy:",response,typeof response);
+      if(response.energy) {
+        let de =  self.transformData(response.energy);
+        self.setState({
+          energyMonth: de,
+          monthprogress: false,
+        });
+      } else {
+        self.setState({
+          ["selectedMonth"]: prevMonth,
+          monthprogress: false,
+          dialogOpen: true
+        })
+      }
+      return response;
+    });
+
+  }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
   }
+  handleSelectMonth = name => event => {
+    this.changeMonthEnergy(event.target.value);
+  };
   componentDidMount(){
     console.log("Component did mount");
     let { date, month } = this.state;
@@ -216,23 +261,20 @@ class Dashboard extends Component {
     fetch(url)
     .then(response => response.json())
     .then(function(response) {
-      console.log("Response:",response);
       let de =  self.transformData(response.energy);
       self.setState({
         energyDay: de
       });
-      console.log(self.state.energyDay,"STATTE")
       return response;
     });
     fetch(dayURL)
     .then(response => response.json())
     .then(function(response) {
-      console.log("dayURL Response:",response,typeof response);
       let de =  self.transformData(response.energy);
       self.setState({
-        energyMonth: de
+        energyMonth: de,
+        monthprogress: false,
       });
-      console.log(self.state.energyDay,"STATTE")
       return response;
     });
 
@@ -244,13 +286,30 @@ class Dashboard extends Component {
         <Grid container spacing={0}>
           <Grid item xs={12} sm={12}>
             <Paper className={classes.paper} elevation={4}>
-              <div>
+              <div className={classes.flex}>
                 <Typography color="inherit" className={classes.flex}>
                  Month Energy ( Day wise ) - {this.state.month}
                 </Typography>
+                <form className={classes.container}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="en-month">Month</InputLabel>
+                    <Select
+                      value={this.state.selectedMonth}
+                      autoWidth
+                      onChange={this.handleSelectMonth('selectedMonth')}
+                      input={<Input id="en-month" />}
+                    >
+                      {
+                        months.map((e,i)=>{
+                          return (<MenuItem key={e} value={e}>{e}</MenuItem>)
+                        })
+                      }
+                    </Select>
+                  </FormControl>
+                </form>
               </div>
-              { this.state.progress ? <LinearProgress />: ""}
-              <ResponsiveContainer height={350}>
+              { this.state.monthprogress ? <LinearProgress />: ""}
+              <ResponsiveContainer height={350} className={ this.state.monthprogress?classes.opacity:"bk-default"}>
                 <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
                       margin={{top: 20, right: 30, left: 20, bottom: 40}} barSize={30}>
                    <XAxis dataKey="date" angle={-45} textAnchor="end"/>
@@ -277,6 +336,7 @@ class Dashboard extends Component {
                     focused={this.state.focused}
                     numberOfMonths={1}
                     horizontalMargin={64}
+                    hideKeyboardShortcutsPanel
                     isOutsideRange = {day =>!isInclusivelyBeforeDay(day, moment())}
                     onFocusChange={({ focused }) => this.setState({ focused })}
                   />
@@ -307,47 +367,29 @@ class Dashboard extends Component {
             </Dialog>
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Paper className={classes.paper} elevation={4}>
-              <Table className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Hour</TableCell>
-                    <TableCell>Channel 1</TableCell>
-                    <TableCell numeric>Channel 2</TableCell>
-                    <TableCell numeric>Channel 3</TableCell>
-                    <TableCell numeric>Channel 4</TableCell>
-                    <TableCell numeric>Channel 5</TableCell>
-                    <TableCell numeric>Channel 6</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {this.state.energyDay.map(n => {
-                    return (
-                      <TableRow key={n.dhr}>
-                        <TableCell>{n.dhr}</TableCell>
-                        <TableCell>{n.c1}</TableCell>
-                        <TableCell numeric>{n.c2}</TableCell>
-                        <TableCell numeric>{n.c3}</TableCell>
-                        <TableCell numeric>{n.c4}</TableCell>
-                        <TableCell numeric>{n.c5}</TableCell>
-                        <TableCell numeric>{n.c6}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </Paper>
+            <EnhancedTable
+              title="Hour Wise Energy"
+              tdata={this.state.energyDay}
+              thead={[
+                {label:"Hour",numeric:false,disablePadding:false,id:"ddt"},
+                {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
+                {label:"Channel 2",numeric:true,disablePadding:false,id:"c2"},
+                {label:"Channel 3",numeric:true,disablePadding:false,id:"c3"},
+                {label:"Channel 4",numeric:true,disablePadding:false,id:"c4"},
+                {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
+                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"}
+              ]}/>
             <EnhancedTable
               title="Day Wise Energy"
               tdata={this.state.energyMonth}
               thead={[
                 {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
-                {label:"C1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"C2",numeric:true,disablePadding:false,id:"c2"},
-                {label:"C3",numeric:true,disablePadding:false,id:"c3"},
-                {label:"C4",numeric:true,disablePadding:false,id:"c4"},
-                {label:"C5",numeric:true,disablePadding:false,id:"c5"},
-                {label:"C6",numeric:true,disablePadding:false,id:"c6"}
+                {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
+                {label:"Channel 2",numeric:true,disablePadding:false,id:"c2"},
+                {label:"Channel 3",numeric:true,disablePadding:false,id:"c3"},
+                {label:"Channel 4",numeric:true,disablePadding:false,id:"c4"},
+                {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
+                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"}
               ]}/>
           </Grid>
         </Grid>

@@ -1,7 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 import { withStyles } from 'material-ui/styles';
 import keycode from 'keycode';
@@ -106,7 +105,6 @@ const toolbarStyles = theme => ({
 
 let EnhancedTableToolbar = props => {
   const { numSelected, classes, title } = props;
-  console.log(props,title);
   return (
     <Toolbar
       className={classNames(classes.root, {
@@ -172,7 +170,6 @@ class EnhancedTable extends React.Component {
       page: 0,
       rowsPerPage: 10,
     };
-    console.log("CON",this.state.data)
   }
 
   handleRequestSort = (event, property) => {
@@ -238,11 +235,7 @@ class EnhancedTable extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  componentDidMount() {
-    console.log(this.props,"COM DID MOUNT")
-  }
   componentWillReceiveProps(p){
-    console.log(this.props,"WII",p)
     this.setState({
       data: p.tdata
     })
@@ -277,13 +270,13 @@ class EnhancedTable extends React.Component {
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.ddt}
+                    key={n.month || n.day}
                     selected={isSelected}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox checked={isSelected} />
                     </TableCell>
-                    <TableCell padding="none">{moment(n.date).format("Do MMM YYYY")}</TableCell>
+                    <TableCell padding="none">{n.day || n.month}</TableCell>
                     <TableCell numeric>{n.c1}</TableCell>
                     <TableCell numeric>{n.c2}</TableCell>
                     <TableCell numeric>{n.c3}</TableCell>

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "highcharts": "^6.0.1",
     "lodash": "^4.17.4",
     "material-ui": "next",
     "material-ui-icons": "^1.0.0-beta.15",
