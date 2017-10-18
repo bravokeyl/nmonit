@@ -50,7 +50,7 @@ const styles = theme => ({
   }
 });
 
-const months = moment.monthsShort();
+const months = moment.months();
 // const energyDay = [
 //     {
 //       "c2": 5086.37,
@@ -157,7 +157,7 @@ class Dashboard extends Component {
       progess: true,
       monthprogress: true,
       dialogOpen: false,
-      selectedMonth: moment().format('MMM'),
+      selectedMonth: moment().format('MMMM'),
     }
     this.changeEnergy = this.changeEnergy.bind(this);
     this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
@@ -288,7 +288,7 @@ class Dashboard extends Component {
             <Paper className={classes.paper} elevation={4}>
               <div className={classes.flex}>
                 <Typography color="inherit" className={classes.flex}>
-                 Month Energy ( Day wise ) - {this.state.month}
+                 Month Energy ( Day wise ) - {this.state.selectedMonth}
                 </Typography>
                 <form className={classes.container}>
                   <FormControl className={classes.formControl}>
@@ -312,7 +312,7 @@ class Dashboard extends Component {
               <ResponsiveContainer height={350} className={ this.state.monthprogress?classes.opacity:"bk-default"}>
                 <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
                       margin={{top: 20, right: 30, left: 20, bottom: 40}} barSize={30}>
-                   <XAxis dataKey="date" angle={-45} textAnchor="end"/>
+                   <XAxis dataKey="month" angle={-45} textAnchor="end"/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
