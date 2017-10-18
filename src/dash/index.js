@@ -244,9 +244,12 @@ class Dashboard extends Component {
         <Grid container spacing={0}>
           <Grid item xs={12} sm={12}>
             <Paper className={classes.paper} elevation={4}>
-              <Typography color="inherit" className={classes.flex}>
-               Month Energy ( Day wise ) - {this.state.month}
-              </Typography>
+              <div>
+                <Typography color="inherit" className={classes.flex}>
+                 Month Energy ( Day wise ) - {this.state.month}
+                </Typography>
+              </div>
+              { this.state.progress ? <LinearProgress />: ""}
               <ResponsiveContainer height={350}>
                 <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
                       margin={{top: 20, right: 30, left: 20, bottom: 40}} barSize={30}>
@@ -273,6 +276,7 @@ class Dashboard extends Component {
                     onDateChange={date => {console.log("Date Changed"); this.changeEnergy(date);}}
                     focused={this.state.focused}
                     numberOfMonths={1}
+                    horizontalMargin={64}
                     isOutsideRange = {day =>!isInclusivelyBeforeDay(day, moment())}
                     onFocusChange={({ focused }) => this.setState({ focused })}
                   />
