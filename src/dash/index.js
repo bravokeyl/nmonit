@@ -6,20 +6,18 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import Table, {TableBody,TableCell,TableHead,TableRow} from 'material-ui/Table';
+import Card, { CardContent } from 'material-ui/Card';
 import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
-import { LinearProgress } from 'material-ui/Progress';
+import { LinearProgress, CircularProgress } from 'material-ui/Progress';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import Select from 'material-ui/Select';
-
-// import {
-//   Grid as BKGrid, TableView, TableHeaderRow
-// } from '@devexpress/dx-react-grid-material-ui';
+import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 
 import 'react-dates/initialize';
 import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
+
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -42,6 +40,23 @@ const styles = theme => ({
     minHeight: 350,
     color: theme.palette.text.secondary,
   },
+  card: {
+    display: "flex",
+    margin: 16
+  },
+  details: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  content: {
+    flex: '1 0 auto',
+  },
+  icon: {
+    width: 48,
+    height: 48,
+    paddingLeft: 16,
+    fill: "#3f51b5",
+  },
   chart: {
     height: 300
   },
@@ -51,103 +66,35 @@ const styles = theme => ({
 });
 
 const months = moment.months();
-// const energyDay = [
-//     {
-//       "c2": 5086.37,
-//       "c3": 1425.29,
-//       "c4": 1041.84,
-//       "ddt": "2017/10/09",
-//       "c5": 176582.29,
-//       "c6": 753.66,
-//       "device": "esp8266_1ACD99",
-//       "c1": 701246.74
-//     },
-//     {
-//       "c2": 3766.9,
-//       "c3": 1253.58,
-//       "c4": 705.02,
-//       "ddt": "2017/10/08",
-//       "c5": 373816.58,
-//       "c6": 634.33,
-//       "device": "esp8266_1ACD99",
-//       "c1": 704013.75
-//     },
-//     {
-//       "c2": 6119.57,
-//       "c3": 1998.41,
-//       "c4": 1315.45,
-//       "ddt": "2017/10/07",
-//       "c5": 420243.18,
-//       "c6": 455.82,
-//       "device": "esp8266_1ACD99",
-//       "c1": 868658.31
-//     },
-//     {
-//       "c2": 3999.28,
-//       "c3": 1987.42,
-//       "c4": 1381.08,
-//       "ddt": "2017/10/06",
-//       "c5": 195597.87,
-//       "c6": 4851.68,
-//       "device": "esp8266_1ACD99",
-//       "c1": 595179.36
-//     },
-//     {
-//       "c2": 5188.28,
-//       "c3": 2526.95,
-//       "c4": 1539,
-//       "ddt": "2017/10/05",
-//       "c5": 218477.49,
-//       "c6": 4102.83,
-//       "device": "esp8266_1ACD99",
-//       "c1": 733123.21
-//     },
-//     {
-//       "c2": 4786.72,
-//       "c3": 1904.83,
-//       "c4": 1239.4,
-//       "ddt": "2017/10/04",
-//       "c5": 180598.04,
-//       "c6": 6988.22,
-//       "device": "esp8266_1ACD99",
-//       "c1": 784872.81
-//     },
-//     {
-//       "c2": 5350.45,
-//       "c3": 1908.98,
-//       "c4": 1351.26,
-//       "ddt": "2017/10/03",
-//       "c5": 596.23,
-//       "c6": 3215.91,
-//       "device": "esp8266_1ACD99",
-//       "c1": 669370.31
-//     },
-//     {
-//       "c2": 3914.65,
-//       "c3": 1803.1,
-//       "c4": 1132.52,
-//       "ddt": "2017/10/02",
-//       "c5": 213063.47,
-//       "c6": 4554.87,
-//       "device": "esp8266_1ACD99",
-//       "c1": 732596.01
-//     },
-//     {
-//       "c2": 3787.18,
-//       "c3": 1647,
-//       "c4": 862.3,
-//       "ddt": "2017/10/01",
-//       "c5": 389041.36,
-//       "c6": 13184.55,
-//       "device": "esp8266_1ACD99",
-//       "c1": 701246.73
-//     }
-// ];
-
+const getCurrentWeekArray = () => {
+  let days = [];
+  for(let i=0;i<7;i++){
+    days.push(moment().weekday(i).format("DD"))
+  }
+  return days;
+}
+const util = (d) => {
+  let o = 0;
+  if(Array.isArray(d)) {
+    o = d.reduce((sum, value) => Number(parseFloat(sum ))+ Number(parseFloat(value)), 0);
+    o = Number(parseFloat(o).toFixed(2))
+  } else{
+    o = Number(parseFloat(d/100).toFixed(2));
+  }
+  return o;
+}
 class Dashboard extends Component {
   constructor(props){
     super(props);
     this.state = {
+      progessL: true,
+      todayEnergyL: 0,
+      weekEnergyL: 0,
+      weekEnergyRL: 0,
+      weekEnergyYL: 0,
+      weekEnergyBL: 0,
+      monthEnergyL: 0,
+      totalEnergyL: 0,
       energyDay: [],
       energyMonth: [],
       date: moment().format('YYYY/MM/DD'),
@@ -167,9 +114,12 @@ class Dashboard extends Component {
 
   transformData = (d) => {
     d.map((data, i) => {
-      data["c2"] = Number(parseFloat(data["c2"]/100).toFixed(2));
-      data["c3"] = Number(parseFloat(data["c3"]/100).toFixed(2));
-      data["c4"] = Number(parseFloat(data["c4"]/100).toFixed(2));
+      data["c2"] = util(data["c2"]);
+      data["c3"] = util(data["c3"]);
+      data["c4"] = util(data["c4"]);
+      // data["c2"] = Number(parseFloat(data["c2"]/100).toFixed(2));
+      // data["c3"] = Number(parseFloat(data["c3"]/100).toFixed(2));
+      // data["c4"] = Number(parseFloat(data["c4"]/100).toFixed(2));
       if(data["c2"] < 0) data["c2"] = 0;
       if(data["c3"] < 0) data["c3"] = 0;
       if(data["c4"] < 0) data["c4"] = 0;
@@ -230,6 +180,7 @@ class Dashboard extends Component {
       console.log("Month Changed Energy:",response,typeof response);
       if(response.energy) {
         let de =  self.transformData(response.energy);
+        console.log("Month transformData:",de)
         self.setState({
           energyMonth: de,
           monthprogress: false,
@@ -251,8 +202,11 @@ class Dashboard extends Component {
   handleSelectMonth = name => event => {
     this.changeMonthEnergy(event.target.value);
   };
+  handleChange = () => {
+
+  }
   componentDidMount(){
-    console.log("Component did mount");
+    console.log("Component did mount",moment().weekday(0).format("Do MM"));
     let { date, month } = this.state;
     console.log(date,month)
     let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/h?dhr="+date;
@@ -267,6 +221,7 @@ class Dashboard extends Component {
       });
       return response;
     });
+
     fetch(dayURL)
     .then(response => response.json())
     .then(function(response) {
@@ -274,6 +229,43 @@ class Dashboard extends Component {
       self.setState({
         energyMonth: de,
         monthprogress: false,
+      });
+      let weekDays = getCurrentWeekArray();
+      let weekEnergy = de.filter((e)=>{
+        return weekDays.indexOf(e.ddt) !== -1
+      });
+      let group = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
+      let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
+
+      weekEnergy.map((e,i)=>{
+        group["c2"].push(e.c2);
+        group["c3"].push(e.c3);
+        group["c4"].push(e.c4);
+        return e;
+      });
+
+      let ge = _.map(group,(e,i)=>{
+        return _.sum(e);
+      });
+      de.map((e,i)=>{
+        monthgroup["c2"].push(e.c2);
+        monthgroup["c3"].push(e.c3);
+        monthgroup["c4"].push(e.c4);
+        return e;
+      });
+      let me = _.map(monthgroup,(e,i)=>{
+        return _.sum(e);
+      });
+      console.log("weekEnergy",ge[1],ge,me)
+      let getotal = _.sum(ge);
+      let metotal = _.sum(me);
+      self.setState({
+        weekEnergyRL: parseFloat(ge[1]).toFixed(2),
+        weekEnergyYL: parseFloat(ge[2]).toFixed(2),
+        weekEnergyBL: parseFloat(ge[3]).toFixed(2),
+        weekEnergyL:  parseFloat(getotal).toFixed(2),
+        monthEnergyL: parseFloat(metotal).toFixed(2),
+        progessL: false,
       });
       return response;
     });
@@ -284,6 +276,66 @@ class Dashboard extends Component {
     return (
       <div className={classes.root}>
         <Grid container spacing={0}>
+          <Grid item xs={6} sm={3}>
+            <Card className={classes.card}>
+              <div className={classes.details}>
+                <ChromeReaderModeIcon className={classes.icon}/>
+                <CardContent className={classes.content}>
+                  <Typography type="body1" className={classes.title}>
+                    Energy - Today
+                  </Typography>
+                  <Typography type="headline" component="h2">
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.todayEnergyL} kWh
+                  </Typography>
+                </CardContent>
+              </div>
+            </Card>
+          </Grid>
+          <Grid item xs={6} sm={3}>
+            <Card className={classes.card}>
+              <div className={classes.details}>
+                <ChromeReaderModeIcon className={classes.icon}/>
+                <CardContent className={classes.content}>
+                  <Typography type="body1" className={classes.title}>
+                    Energy - This Week
+                  </Typography>
+                  <Typography type="headline" component="h2">
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.weekEnergyL} kWh
+                  </Typography>
+                </CardContent>
+              </div>
+            </Card>
+          </Grid>
+          <Grid item xs={6} sm={3}>
+            <Card className={classes.card}>
+              <div className={classes.details}>
+                <ChromeReaderModeIcon className={classes.icon}/>
+                <CardContent className={classes.content}>
+                  <Typography type="body1" className={classes.title}>
+                    Energy - This Month
+                  </Typography>
+                  <Typography type="headline" component="h2">
+                    {this.state.progessL?<CircularProgress size={24} />:this.state.monthEnergyL} kWh
+                  </Typography>
+                </CardContent>
+              </div>
+            </Card>
+          </Grid>
+          <Grid item xs={6} sm={3}>
+            <Card className={classes.card}>
+              <div className={classes.details}>
+                <ChromeReaderModeIcon className={classes.icon}/>
+                <CardContent className={classes.content}>
+                  <Typography type="body1" className={classes.title}>
+                    Energy - Total
+                  </Typography>
+                  <Typography type="headline" component="h2">
+                    {this.state.progessL?<CircularProgress size={24} />:this.state.totalEnergyL} kWh
+                  </Typography>
+                </CardContent>
+              </div>
+            </Card>
+          </Grid>
           <Grid item xs={12} sm={12}>
             <Paper className={classes.paper} elevation={4}>
               <div className={classes.flex}>
@@ -311,8 +363,8 @@ class Dashboard extends Component {
               { this.state.monthprogress ? <LinearProgress />: ""}
               <ResponsiveContainer height={350} className={ this.state.monthprogress?classes.opacity:"bk-default"}>
                 <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
-                      margin={{top: 20, right: 30, left: 20, bottom: 40}} barSize={30}>
-                   <XAxis dataKey="month" angle={-45} textAnchor="end"/>
+                      margin={{top: 20, right: 30, left: 20, bottom: 40}}>
+                   <XAxis dataKey="month" angle={-45} textAnchor="end" interval={0}/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
@@ -330,6 +382,7 @@ class Dashboard extends Component {
                   <Typography color="inherit" className={classes.flex}>
                     Day Energy ( Hour wise ) - {moment(this.state.date).format('Do MMM YYYY')}
                   </Typography>
+
                   <SingleDatePicker
                     date={this.state.startDate}
                     onDateChange={date => {console.log("Date Changed"); this.changeEnergy(date);}}
