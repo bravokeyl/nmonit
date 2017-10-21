@@ -42,20 +42,28 @@ const styles = theme => ({
   },
   card: {
     display: "flex",
-    margin: 16
+    flexDirection: 'column',
+    margin: 16,
   },
   details: {
     display: 'flex',
+    flex: 1,
     alignItems: 'center'
   },
   content: {
-    flex: '1 0 auto',
+    flex: 1,
+    paddingBottom: '16px !important',
   },
   icon: {
     width: 48,
     height: 48,
     paddingLeft: 16,
     fill: "#3f51b5",
+  },
+  info: {
+    marginBottom: 12,
+    paddingLeft: 16,
+    color: theme.palette.text.secondary,
   },
   chart: {
     height: 300
@@ -88,6 +96,7 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       progessL: true,
+      lastupdated: moment().toNow(1508591850588),
       todayEnergyL: 0,
       weekEnergyL: 0,
       weekEnergyRL: 0,
@@ -289,6 +298,9 @@ class Dashboard extends Component {
                   </Typography>
                 </CardContent>
               </div>
+              <Typography type="body1" className={classes.info}>
+                Last updated: {this.state.lastupdated}
+              </Typography>
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
@@ -303,6 +315,9 @@ class Dashboard extends Component {
                     {this.state.progessL?<CircularProgress size={24} />: this.state.weekEnergyL} kWh
                   </Typography>
                 </CardContent>
+                <Typography type="body1" className={classes.info}>
+                  Last updated: {this.state.lastupdated}
+                </Typography>
               </div>
             </Card>
           </Grid>
@@ -318,6 +333,9 @@ class Dashboard extends Component {
                     {this.state.progessL?<CircularProgress size={24} />:this.state.monthEnergyL} kWh
                   </Typography>
                 </CardContent>
+                <Typography type="body1" className={classes.p}>
+                  Energy - Total
+                </Typography>
               </div>
             </Card>
           </Grid>
@@ -333,6 +351,9 @@ class Dashboard extends Component {
                     {this.state.progessL?<CircularProgress size={24} />:this.state.totalEnergyL} kWh
                   </Typography>
                 </CardContent>
+                <Typography type="body1" className={classes.p}>
+                  Energy - Total
+                </Typography>
               </div>
             </Card>
           </Grid>
