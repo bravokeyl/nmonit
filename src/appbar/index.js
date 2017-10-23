@@ -33,11 +33,11 @@ function ButtonAppBar(props) {
             <ul>
               <Link to="/">
                 <Button color="contrast">
-                  Dashboard
+                  Overview
                 </Button>
               </Link>
-              <Link to="/gen">
-                <Button color="contrast">Generation</Button>
+              <Link to="/dash">
+                <Button color="contrast">Dashboard</Button>
               </Link>
               <Link to="/logs">
                 <Button color="contrast">

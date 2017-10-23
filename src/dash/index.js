@@ -21,7 +21,7 @@ import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 import moment from 'moment';
 import _ from 'lodash';
 
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
+import {PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
 
 import EnhancedTable from '../common/table';
 
@@ -73,6 +73,12 @@ const styles = theme => ({
   }
 });
 
+const piedata = [
+  {name: 'Group A', value: 400},
+  {name: 'Group B', value: 300},
+  {name: 'Group C', value: 300}
+]
+
 const months = moment.months();
 const getCurrentWeekArray = () => {
   let days = [];
@@ -96,7 +102,7 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       progessL: true,
-      lastupdated: moment().toNow(1508591850588),
+      lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
       weekEnergyL: 0,
       weekEnergyRL: 0,
@@ -126,9 +132,6 @@ class Dashboard extends Component {
       data["c2"] = util(data["c2"]);
       data["c3"] = util(data["c3"]);
       data["c4"] = util(data["c4"]);
-      // data["c2"] = Number(parseFloat(data["c2"]/100).toFixed(2));
-      // data["c3"] = Number(parseFloat(data["c3"]/100).toFixed(2));
-      // data["c4"] = Number(parseFloat(data["c4"]/100).toFixed(2));
       if(data["c2"] < 0) data["c2"] = 0;
       if(data["c3"] < 0) data["c3"] = 0;
       if(data["c4"] < 0) data["c4"] = 0;
@@ -315,10 +318,10 @@ class Dashboard extends Component {
                     {this.state.progessL?<CircularProgress size={24} />: this.state.weekEnergyL} kWh
                   </Typography>
                 </CardContent>
-                <Typography type="body1" className={classes.info}>
-                  Last updated: {this.state.lastupdated}
-                </Typography>
               </div>
+              <Typography type="body1" className={classes.info}>
+                Last updated: {this.state.lastupdated}
+              </Typography>
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
@@ -333,10 +336,10 @@ class Dashboard extends Component {
                     {this.state.progessL?<CircularProgress size={24} />:this.state.monthEnergyL} kWh
                   </Typography>
                 </CardContent>
-                <Typography type="body1" className={classes.p}>
-                  Energy - Total
-                </Typography>
               </div>
+              <Typography type="body1" className={classes.info}>
+                Energy - Total
+              </Typography>
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
@@ -351,10 +354,10 @@ class Dashboard extends Component {
                     {this.state.progessL?<CircularProgress size={24} />:this.state.totalEnergyL} kWh
                   </Typography>
                 </CardContent>
-                <Typography type="body1" className={classes.p}>
-                  Energy - Total
-                </Typography>
               </div>
+              <Typography type="body1" className={classes.info}>
+                Energy - Total
+              </Typography>
             </Card>
           </Grid>
           <Grid item xs={12} sm={12}>

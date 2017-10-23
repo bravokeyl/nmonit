@@ -21,7 +21,7 @@ class App extends Component {
             <Grid container spacing={0}>
               <Grid item xs={12}>
                 <Route exact path="/" component={Dashboard} />
-                <Route exact path="/gen" component={Generation} />
+                <Route exact path="/dash" component={Generation} />
                 <Route exact path="/logs" component={Logs} />
               </Grid>
             </Grid>
