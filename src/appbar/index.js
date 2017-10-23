@@ -44,6 +44,11 @@ function ButtonAppBar(props) {
                   Logs
                 </Button>
               </Link>
+              <Link to="/events">
+                <Button color="contrast">
+                  Events
+                </Button>
+              </Link>
               <Link to="/profile">
                 <Button  color="contrast">
                   Profile

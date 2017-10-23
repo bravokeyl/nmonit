@@ -93,7 +93,7 @@ const util = (d) => {
     o = d.reduce((sum, value) => Number(parseFloat(sum ))+ Number(parseFloat(value)), 0);
     o = Number(parseFloat(o).toFixed(2))
   } else{
-    o = Number(parseFloat(d/100).toFixed(2));
+    o = Number(parseFloat(d).toFixed(2));
   }
   return o;
 }
@@ -238,6 +238,7 @@ class Dashboard extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);
+      console.log("DE",de,dayURL)
       self.setState({
         energyMonth: de,
         monthprogress: false,
