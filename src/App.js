@@ -6,7 +6,8 @@ import Grid from 'material-ui/Grid';
 // import List, { ListItem } from 'material-ui/List';
 
 import ButtonAppBar from './appbar';
-import Dashboard from './dash';
+import Overview from './overview';
+import Dashboard from './dashboard';
 import Generation from './gen';
 import Logs from './logs';
 import './App.css';
@@ -20,9 +21,9 @@ class App extends Component {
             <ButtonAppBar classes={{}} />
             <Grid container spacing={0}>
               <Grid item xs={12}>
-                <Route exact path="/" component={Dashboard} />
-                <Route exact path="/dash" component={Generation} />
-                <Route exact path="/logs" component={Logs} />
+                <Route exact path="/" component={Overview} />
+                <Route exact path="/d" component={Dashboard} />
+                <Route exact path="/l" component={Logs} />
               </Grid>
             </Grid>
           </div>

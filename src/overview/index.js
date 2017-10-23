@@ -59,6 +59,7 @@ const styles = theme => ({
     height: 48,
     paddingLeft: 16,
     fill: "#3f51b5",
+    fill: "#f96f40",
   },
   info: {
     marginBottom: 12,
@@ -97,7 +98,7 @@ const util = (d) => {
   }
   return o;
 }
-class Dashboard extends Component {
+class Overview extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -492,8 +493,8 @@ class Dashboard extends Component {
 //     }
 // }
 
-Dashboard.propTypes = {
+Overview.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(Overview);
