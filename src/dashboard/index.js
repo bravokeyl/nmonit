@@ -12,6 +12,7 @@ import { LinearProgress, CircularProgress } from 'material-ui/Progress';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
+import Switch from 'material-ui/Switch';
 import Select from 'material-ui/Select';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 
@@ -73,12 +74,6 @@ const styles = theme => ({
   }
 });
 
-const piedata = [
-  {name: 'Group A', value: 400},
-  {name: 'Group B', value: 300},
-  {name: 'Group C', value: 300}
-]
-
 const months = moment.months();
 const getCurrentWeekArray = () => {
   let days = [];
@@ -128,16 +123,19 @@ class Dashboard extends Component {
       c2Current: 0,
       c3Current: 0,
       c4Current: 0,
-      c3Power: 0,
+      c2Power: 0,
       c3Power: 0,
       c4Power: 0,
       liveTimestamp: false,
+
+      isLive: false,
     }
     this.changeEnergy = this.changeEnergy.bind(this);
     this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
     this.getLive = this.getLive.bind(this);
+    this.getLiveData = this.getLiveData.bind(this);
   }
 
   transformData = (d) => {
@@ -227,11 +225,13 @@ class Dashboard extends Component {
   handleSelectMonth = name => event => {
     this.changeMonthEnergy(event.target.value);
   };
-  handleChange = () => {
-
-  }
-  getLive = () => {
-    console.log("After 5 secs", new Date());
+  handleChange = name => (event, checked) => {
+   this.setState({ isLive: checked });
+   let self = this;
+   let intervalId = setInterval(self.getLive, 10*1000);
+   self.setState({intervalId: intervalId});
+  };
+  getLiveData = () => {
     for(let i=2;i<5;i++){
       let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/l?c="+i;
       let self = this;
@@ -254,13 +254,19 @@ class Dashboard extends Component {
         return response;
       });
     }
-  }
+  };
+  getLive = () => {
+    console.log("After 10 secs", new Date());
+    if(this.state.isLive){
+      this.getLiveData();
+    } else {
+      clearInterval(this.state.intervalId);
+    }
+  };
   componentDidMount(){
     console.log("Component did mount");
     let self = this;
-    this.getLive();
-    let intervalId = setInterval(self.getLive, 5000);
-    self.setState({intervalId: intervalId});
+    this.getLiveData();
   }
   componentWillUnmount() {
    clearInterval(this.state.intervalId);
@@ -489,8 +495,14 @@ class Dashboard extends Component {
               </Typography>
             </Card>
           </Grid>
-
         </Grid>
+        <div style={{position: 'fixed', bottom:50, right: 50, zIndex: 101}}>
+          <Switch
+            checked={this.state.isLive}
+            onChange={this.handleChange('checkedA')}
+            aria-label="checkedA"
+          />
+        </div>
       </div>
     );
   }
