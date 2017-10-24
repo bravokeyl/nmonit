@@ -162,7 +162,7 @@ class Dashboard extends Component {
   }
   changeEnergy = (date) => {
     let dhr = moment(date).format('YYYY/MM/DD');
-    let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/h?dhr="+dhr;
+    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+dhr;
     let self = this;
     self.setState({
       progress: true
@@ -192,7 +192,7 @@ class Dashboard extends Component {
   }
   changeMonthEnergy = (month) => {
     let ddm = moment().month(month).format("YYYY/MM");
-    let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/d?ddm="+ddm;
+    let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
     let self = this;
     let prevMonth = this.state.selectedMonth;
     self.setState({
@@ -235,7 +235,7 @@ class Dashboard extends Component {
   };
   getLiveData = () => {
     for(let i=2;i<5;i++){
-      let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/l?c="+i;
+      let url = "https://api.blufieldsenergy.com/v1/l?c="+i;
       let self = this;
       fetch(url)
       .then(response => response.json())
@@ -247,7 +247,7 @@ class Dashboard extends Component {
           ["c"+i+"Current"]: response.current,
           ["c"+i+"Power"]: response.power,
         });
-        if(i==4){
+        if(i===4){
           self.setState({
             progessL: false,
             liveTimestamp: response.timestamp,
@@ -259,13 +259,11 @@ class Dashboard extends Component {
     }
   };
   updateliveTimestamp = () => {
-    console.log("Updating timestamp",this.state.liveTimestamp);
     this.setState({
       relativeTimestamp: moment(this.state.liveTimestamp).fromNow(),
     });
   }
   getLive = () => {
-    console.log("After 10 secs", new Date());
     if(this.state.isLive){
       this.getLiveData();
     } else {
@@ -343,24 +341,7 @@ class Dashboard extends Component {
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
-            <Card className={classes.card}>
-              <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
-                <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
-                    Energy - Total
-                  </Typography>
-                  <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.c3Voltage} kWh
-                  </Typography>
-                </CardContent>
-              </div>
-              <Typography type="body1" className={classes.info}>
-                Energy - Total
-              </Typography>
-            </Card>
           </Grid>
-
 
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
@@ -417,22 +398,6 @@ class Dashboard extends Component {
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
-            <Card className={classes.card}>
-              <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
-                <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
-                    Energy - Total
-                  </Typography>
-                  <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.totalEnergyL} kWh
-                  </Typography>
-                </CardContent>
-              </div>
-              <Typography type="body1" className={classes.info}>
-                Energy - Total
-              </Typography>
-            </Card>
           </Grid>
 
           <Grid item xs={6} sm={3}>
@@ -490,22 +455,6 @@ class Dashboard extends Component {
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
-            <Card className={classes.card}>
-              <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
-                <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
-                    Energy - Total
-                  </Typography>
-                  <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.totalEnergyL} kWh
-                  </Typography>
-                </CardContent>
-              </div>
-              <Typography type="body1" className={classes.info}>
-                Energy - Total
-              </Typography>
-            </Card>
           </Grid>
         </Grid>
         <div style={{position: 'fixed', bottom:50, right: 50, zIndex: 101}}>

@@ -150,7 +150,7 @@ class Overview extends Component {
   }
   changeEnergy = (date) => {
     let dhr = moment(date).format('YYYY/MM/DD');
-    let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/h?dhr="+dhr;
+    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+dhr;
     let self = this;
     self.setState({
       progress: true
@@ -180,7 +180,7 @@ class Overview extends Component {
   }
   changeMonthEnergy = (month) => {
     let ddm = moment().month(month).format("YYYY/MM");
-    let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/d?ddm="+ddm;
+    let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
     let self = this;
     let prevMonth = this.state.selectedMonth;
     self.setState({
@@ -222,8 +222,8 @@ class Overview extends Component {
     console.log("Component did mount",moment().weekday(0).format("Do MM"));
     let { date, month } = this.state;
     console.log(date,month)
-    let url = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/h?dhr="+date;
-    let dayURL = "https://pyz1xbouqb.execute-api.us-east-1.amazonaws.com/a/d?ddm="+month;
+    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
+    let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let self = this;
     fetch(url)
     .then(response => response.json())
