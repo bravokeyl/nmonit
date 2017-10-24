@@ -117,6 +117,7 @@ class Dashboard extends Component {
       selectedMonth: moment().format('MMMM'),
 
       intervalId: 0,
+      liveTimestampId: 0,
       c2Voltage: 0,
       c3Voltage: 0,
       c4Voltage: 0,
@@ -127,7 +128,7 @@ class Dashboard extends Component {
       c3Power: 0,
       c4Power: 0,
       liveTimestamp: false,
-
+      relativeTimestamp: 0,
       isLive: false,
     }
     this.changeEnergy = this.changeEnergy.bind(this);
@@ -136,6 +137,7 @@ class Dashboard extends Component {
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
     this.getLive = this.getLive.bind(this);
     this.getLiveData = this.getLiveData.bind(this);
+    this.updateliveTimestamp = this.updateliveTimestamp.bind(this);
   }
 
   transformData = (d) => {
@@ -248,13 +250,20 @@ class Dashboard extends Component {
         if(i==4){
           self.setState({
             progessL: false,
-            liveTimestamp: moment(response.timestamp).fromNow(),
+            liveTimestamp: response.timestamp,
+            relativeTimestamp: moment(response.timestamp).fromNow()
           });
         }
         return response;
       });
     }
   };
+  updateliveTimestamp = () => {
+    console.log("Updating timestamp",this.state.liveTimestamp);
+    this.setState({
+      relativeTimestamp: moment(this.state.liveTimestamp).fromNow(),
+    });
+  }
   getLive = () => {
     console.log("After 10 secs", new Date());
     if(this.state.isLive){
@@ -266,10 +275,13 @@ class Dashboard extends Component {
   componentDidMount(){
     console.log("Component did mount");
     let self = this;
+    let intervalId = setInterval(self.updateliveTimestamp, 10*1000);
+    self.setState({liveTimestampId: intervalId});
     this.getLiveData();
   }
   componentWillUnmount() {
    clearInterval(this.state.intervalId);
+   clearInterval(this.state.liveTimestampId);
   }
   render(){
     const { classes } = this.props;
@@ -290,7 +302,7 @@ class Dashboard extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.liveTimestamp}
+                Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
           </Grid>
@@ -308,7 +320,7 @@ class Dashboard extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.lastupdated}
+                Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
           </Grid>
@@ -364,7 +376,7 @@ class Dashboard extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.liveTimestamp}
+                Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
           </Grid>
@@ -382,7 +394,7 @@ class Dashboard extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.liveTimestamp}
+                Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
           </Grid>
@@ -437,7 +449,7 @@ class Dashboard extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.liveTimestamp}
+                Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
           </Grid>
@@ -455,7 +467,7 @@ class Dashboard extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.liveTimestamp}
+                Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
           </Grid>
