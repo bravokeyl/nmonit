@@ -36,7 +36,7 @@ class App extends Component {
     this.logOut = this.logOut.bind(this);
   }
   logIn = r => {
-    console.log("Login authHandler",r);
+    console.log("Login authHandler");
     this.setState({
       isLoggedin: true
     });
@@ -57,10 +57,9 @@ class App extends Component {
         isLoggedin: true
       });
     });
-    console.log("APP component will mount: is loggedIn", isLoggedIn);
+    console.log("APP component will mount");
   }
   render() {
-    console.log("APP props",this.props);
     return (
       <div className="App">
         <Router>

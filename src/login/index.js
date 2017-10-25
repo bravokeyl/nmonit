@@ -14,8 +14,9 @@ const styles = theme => ({
   root: {
     width: '100vw',
     minHeight: '100vh',
-    // backgroundImage: 'linear-gradient(129deg,rgba(0, 137, 217, 0.8),rgba(80, 255, 245, 0.8))',
-    // background: "linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)"
+    background: "linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)"
+    // background: 'aliceblue',
+    // background: '#FF5722',
   },
   flex: {
     display: 'flex',
@@ -25,7 +26,9 @@ const styles = theme => ({
     minHeight: '100vh'
   },
   container: {
-
+    padding: '60px 50px',
+    background: '#fff',
+    borderRadius: 8,
   },
   menuButton: {
     marginLeft: -12,
@@ -75,7 +78,6 @@ class Login extends Component {
   }
   render() {
     const { classes } = this.props;
-    console.log("Login props",this.props);
     return (
     <div className={classes.root}>
       <div className={classes.flex}>
@@ -102,7 +104,7 @@ class Login extends Component {
               onChange={this.handleChange('password')}
             />
             <br/>
-            <Button raised className={classes.button} color="primary"
+            <Button raised className={classes.button} disabled={this.state.loading} color="primary"
               onClick={this.handleSubmit}
               >
               Login
