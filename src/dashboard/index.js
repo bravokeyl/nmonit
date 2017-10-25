@@ -230,6 +230,7 @@ class Dashboard extends Component {
   handleChange = name => (event, checked) => {
    this.setState({ isLive: checked });
    let self = this;
+   self.getLiveData();
    let intervalId = setInterval(self.getLive, 10*1000);
    self.setState({intervalId: intervalId});
   };
