@@ -33,7 +33,7 @@ function ButtonAppBar(props) {
           <Typography type="title" color="inherit" className={classes.flex}>
             Nuevo Monit
           </Typography>
-            <ul>
+          <ul className={classes.flex}>
               <Link to="/">
                 <Button color="contrast">
                   Overview

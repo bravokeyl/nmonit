@@ -14,6 +14,8 @@ import Overview from './overview';
 import Dashboard from './dashboard';
 import Login from './login';
 import Logs from './logs';
+import Profile from './profile';
+
 import './App.css';
 
 const theme = createMuiTheme({
@@ -32,8 +34,11 @@ class App extends Component {
     }
     this.authHandler = this.authHandler.bind(this);
   }
-  authHandler = (e,p) => {
-    console.log("authHandler",e,p);
+  authHandler = (e) => {
+    console.log("authHandler",e);
+    this.setState({
+      isLoggedin: e
+    });
   }
   componentWillMount(){
     let self = this;
@@ -50,7 +55,8 @@ class App extends Component {
       <div className="App">
         <Router>
             <MuiThemeProvider theme={theme}>
-            { !this.state.isLoggedin ? <Login authHandler={this.authHandler} />:
+            { !this.state.isLoggedin ?
+              <Login authHandler={this.authHandler} />:
               (<div>
                 <ButtonAppBar classes={{}} />
                 <Grid container spacing={0}>
@@ -58,6 +64,8 @@ class App extends Component {
                     <Route exact path="/" component={Overview} />
                     <Route exact path="/d" component={Dashboard} />
                     <Route exact path="/l" component={Logs} />
+                    <Route exact path="/p"
+                      render={(props) => (<Profile authHandler={this.authHandler} />)} />
                   </Grid>
                 </Grid>
               </div>)

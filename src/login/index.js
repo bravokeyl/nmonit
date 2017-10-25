@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
+import { CircularProgress } from 'material-ui/Progress';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { withStyles } from 'material-ui/styles';
 
-import { authenticateUser, signOut } from '../aws/cognito';
+import { authenticateUser, getCurrentUser, signOut } from '../aws/cognito';
 
 const styles = theme => ({
   root: {
@@ -68,48 +69,54 @@ class Login extends Component {
         this.setState({ loading: false })
         return
       }
-      console.log(result)
-      this.setState({ loading: false })
+      this.props.authHandler(true);
+      console.log("Result",result);
     });
   }
   handleClickShowPasssword = () => {
     this.setState({ showPassword: !this.state.showPassword });
   };
+  componentDidMount(){
+    console.log("Login component Did mount");
+  }
   render() {
     const { classes } = this.props;
     return (
     <div className={classes.root}>
       <div className={classes.flex}>
-        <form className={classes.container} noValidate autoComplete="off">
-          <TextField
-            required
-            id="email"
-            label="Email"
-            className={classes.textField}
-            value={this.state.email}
-            onChange={this.handleChange('email')}
-            margin="normal"
-          />
-          <br/>
-          <TextField
-            required
-            id="password"
-            label="Password"
-            className={classes.textField}
-            margin="normal"
-            type="password"
-            value={this.state.password}
-            onChange={this.handleChange('password')}
-          />
-          <br/>
-          <Button raised className={classes.button} color="primary"
-            onClick={this.handleSubmit}
-            >
-            Login
-          </Button>
-        </form>
+        {
+          !true ?
+          <CircularProgress size={80} />
+          :(<form className={classes.container} noValidate autoComplete="off">
+            <TextField
+              required
+              id="email"
+              label="Email"
+              className={classes.textField}
+              value={this.state.email}
+              onChange={this.handleChange('email')}
+              margin="normal"
+            />
+            <br/>
+            <TextField
+              required
+              id="password"
+              label="Password"
+              className={classes.textField}
+              margin="normal"
+              type="password"
+              value={this.state.password}
+              onChange={this.handleChange('password')}
+            />
+            <br/>
+            <Button raised className={classes.button} color="primary"
+              onClick={this.handleSubmit}
+              >
+              Login
+            </Button>
+          </form>)
+        }
       </div>
-
     </div>
   );
   }
