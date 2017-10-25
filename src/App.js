@@ -7,6 +7,8 @@ import { deepOrange, indigo } from 'material-ui/colors';
 import red from 'material-ui/colors/red';
 import Grid from 'material-ui/Grid';
 
+import { getCurrentUser } from './aws/cognito';
+
 import ButtonAppBar from './appbar';
 import Overview from './overview';
 import Dashboard from './dashboard';
@@ -30,11 +32,18 @@ class App extends Component {
     }
     this.authHandler = this.authHandler.bind(this);
   }
-  authHandler = () => {
-    console.log("authHandler");
-    this.setState({
-      isLoggedin: true
+  authHandler = (e,p) => {
+    console.log("authHandler",e,p);
+  }
+  componentWillMount(){
+    let self = this;
+    let isLoggedIn = getCurrentUser(function(e){
+      console.log(e,"Attr");
+      self.setState({
+        isLoggedin: true
+      });
     });
+    console.log("APP component will mount: is loggedIn", isLoggedIn);
   }
   render() {
     return (

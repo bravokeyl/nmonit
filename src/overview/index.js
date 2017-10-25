@@ -2,29 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
-import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Card, { CardContent } from 'material-ui/Card';
 import { CircularProgress } from 'material-ui/Progress';
-import { MenuItem } from 'material-ui/Menu';
-import { FormControl } from 'material-ui/Form';
-import Input, { InputLabel } from 'material-ui/Input';
-import Select from 'material-ui/Select';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
-
-import 'react-dates/initialize';
-import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 
 import moment from 'moment';
 import _ from 'lodash';
 
-import {PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
-
-import EnhancedTable from '../common/table';
-
-import 'react-dates/lib/css/_datepicker.css';
 const styles = theme => ({
   root: {
     padding: 16,
@@ -72,7 +58,6 @@ const styles = theme => ({
   }
 });
 
-const months = moment.months();
 const getCurrentWeekArray = () => {
   let days = [];
   for(let i=0;i<7;i++){
@@ -114,7 +99,6 @@ class Overview extends Component {
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
     }
-    this.changeEnergy = this.changeEnergy.bind(this);
     this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
@@ -140,36 +124,7 @@ class Overview extends Component {
     });
     return d
   }
-  changeEnergy = (date) => {
-    let dhr = moment(date).format('YYYY/MM/DD');
-    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+dhr;
-    let self = this;
-    self.setState({
-      progress: true
-    })
-    // fetch(url)
-    // .then(response => response.json())
-    // .then(function(response) {
-    //   console.log("Date Changed Energy:",response,typeof response);
-    //   if(response.energy) {
-    //     let de =  self.transformData(response.energy);
-    //     self.setState({
-    //       startDate: date,
-    //       date: moment(date).format("YYYY/MM/DD"),
-    //       energyDay: de,
-    //       progress: false
-    //     });
-    //   } else {
-    //     self.setState({
-    //       progress: false,
-    //       dialogOpen: true
-    //     })
-    //   }
-    //   console.log(self.state.energyDay,"SD")
-    //   return response;
-    // });
 
-  }
   changeMonthEnergy = (month) => {
     let ddm = moment().month(month).format("YYYY/MM");
     let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;

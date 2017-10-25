@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
+import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { withStyles } from 'material-ui/styles';
 
+import { authenticateUser, signOut } from '../aws/cognito';
 
 const styles = theme => ({
   root: {
@@ -32,25 +35,46 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     width: 400,
   },
+  formControl: {
+    margin: theme.spacing.unit,
+  },
 });
 
 class Login extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isLoggedin: false
+      isLoggedin: false,
+      email: '',
+      password: '',
+      showPassword: false,
+      loading: false,
     }
-    this.handleClick = this.handleClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
-  handleClick = (ev) => {
-    this.state = {
-      isLoggedin: true
-    }
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+  handleSubmit = (e) => {
+    console.log("Submit",e)
+    this.setState({ loading: true })
+    console.log('Entered:', this.state)
+    authenticateUser(this.state.email, this.state.password, (err, result) => {
+      if (err) {
+        console.log(err)
+        this.setState({ loading: false })
+        return
+      }
+      console.log(result)
+      this.setState({ loading: false })
+    });
   }
-  handleChange = (ev) => {
-    console.log(ev);
-  }
+  handleClickShowPasssword = () => {
+    this.setState({ showPassword: !this.state.showPassword });
+  };
   render() {
     const { classes } = this.props;
     return (
@@ -58,6 +82,7 @@ class Login extends Component {
       <div className={classes.flex}>
         <form className={classes.container} noValidate autoComplete="off">
           <TextField
+            required
             id="email"
             label="Email"
             className={classes.textField}
@@ -67,16 +92,21 @@ class Login extends Component {
           />
           <br/>
           <TextField
+            required
             id="password"
             label="Password"
-            defaultValue=""
             className={classes.textField}
             margin="normal"
             type="password"
+            value={this.state.password}
+            onChange={this.handleChange('password')}
           />
           <br/>
           <Button raised className={classes.button} color="primary"
-          onClick = {this.props.authHandler}>Login</Button>
+            onClick={this.handleSubmit}
+            >
+            Login
+          </Button>
         </form>
       </div>
 

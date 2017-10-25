@@ -58,7 +58,6 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#3f51b5",
     fill: "#f96f40",
   },
   info: {
