@@ -34,7 +34,7 @@ function ButtonAppBar(props) {
             Nuevo Monit
           </Typography>
           <ul className={classes.flex}>
-              <Link to="/">
+              <Link to="/o">
                 <Button color="contrast">
                   Overview
                 </Button>

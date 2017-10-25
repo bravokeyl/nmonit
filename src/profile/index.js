@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom'
-
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
@@ -76,15 +70,20 @@ class Profile extends Component {
   }
   handleSignOut = () => {
     signOut();
-    console.log(this.props);
-    this.props.authHandler(false);
+    this.props.authHandler(this.props.history);
   }
   render(){
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        {this.state.progressL}
-        <Button color="primary" onClick={this.handleSignOut}>signOut</Button>
+        <Grid container spacing={0}>
+          <Grid item xs={6} sm={3}>
+            <Card className={classes.card}>
+              <Button color="primary" onClick={this.handleSignOut}>signOut</Button>
+            </Card>
+          </Grid>
+        </Grid>
+
       </div>
     );
   }

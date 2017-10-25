@@ -32,13 +32,22 @@ class App extends Component {
     this.state = {
       isLoggedin: false
     }
-    this.authHandler = this.authHandler.bind(this);
+    this.logIn = this.logIn.bind(this);
+    this.logOut = this.logOut.bind(this);
   }
-  authHandler = (e) => {
-    console.log("authHandler",e);
+  logIn = r => {
+    console.log("Login authHandler",r);
     this.setState({
-      isLoggedin: e
+      isLoggedin: true
     });
+    r.push('/o');
+  }
+  logOut = r => {
+    console.log("Logout authHandler");
+    this.setState({
+      isLoggedin: false
+    });
+    r.push('/');
   }
   componentWillMount(){
     let self = this;
@@ -51,21 +60,24 @@ class App extends Component {
     console.log("APP component will mount: is loggedIn", isLoggedIn);
   }
   render() {
+    console.log("APP props",this.props);
     return (
       <div className="App">
         <Router>
             <MuiThemeProvider theme={theme}>
-            { !this.state.isLoggedin ?
-              <Login authHandler={this.authHandler} />:
+            {
+              !this.state.isLoggedin ?
+              <Route exact path="/"
+                render={(props) => (<Login {...props} authHandler={(e)=>this.logIn(e)} />)}/>:
               (<div>
                 <ButtonAppBar classes={{}} />
                 <Grid container spacing={0}>
                   <Grid item xs={12}>
-                    <Route exact path="/" component={Overview} />
+                    <Route exact path="/o" component={Overview} />
                     <Route exact path="/d" component={Dashboard} />
                     <Route exact path="/l" component={Logs} />
                     <Route exact path="/p"
-                      render={(props) => (<Profile authHandler={this.authHandler} />)} />
+                      render={(props) => (<Profile {...props} authHandler={(e)=>this.logOut(e)}/>)} />
                   </Grid>
                 </Grid>
               </div>)

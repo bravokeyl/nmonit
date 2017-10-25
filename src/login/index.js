@@ -60,34 +60,27 @@ class Login extends Component {
     });
   };
   handleSubmit = (e) => {
-    console.log("Submit",e)
     this.setState({ loading: true })
-    console.log('Entered:', this.state)
     authenticateUser(this.state.email, this.state.password, (err, result) => {
       if (err) {
         console.log(err)
         this.setState({ loading: false })
         return
       }
-      this.props.authHandler(true);
-      console.log("Result",result);
+      this.props.authHandler(this.props.history);
     });
   }
-  handleClickShowPasssword = () => {
-    this.setState({ showPassword: !this.state.showPassword });
-  };
   componentDidMount(){
     console.log("Login component Did mount");
   }
   render() {
     const { classes } = this.props;
+    console.log("Login props",this.props);
     return (
     <div className={classes.root}>
       <div className={classes.flex}>
         {
-          !true ?
-          <CircularProgress size={80} />
-          :(<form className={classes.container} noValidate autoComplete="off">
+          (<form className={classes.container} noValidate autoComplete="off">
             <TextField
               required
               id="email"
