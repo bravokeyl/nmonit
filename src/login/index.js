@@ -79,41 +79,41 @@ class Login extends Component {
   render() {
     const { classes } = this.props;
     return (
-    <div className={classes.root}>
-      <div className={classes.flex}>
-        {
-          (<form className={classes.container} noValidate autoComplete="off">
-            <TextField
-              required
-              id="email"
-              label="Email"
-              className={classes.textField}
-              value={this.state.email}
-              onChange={this.handleChange('email')}
-              margin="normal"
-            />
-            <br/>
-            <TextField
-              required
-              id="password"
-              label="Password"
-              className={classes.textField}
-              margin="normal"
-              type="password"
-              value={this.state.password}
-              onChange={this.handleChange('password')}
-            />
-            <br/>
-            <Button raised className={classes.button} disabled={this.state.loading} color="primary"
-              onClick={this.handleSubmit}
-              >
-              Login
-            </Button>
-          </form>)
-        }
+      <div className={classes.root}>
+        <div className={classes.flex}>
+          {
+            (<form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                required
+                id="email"
+                label="Email"
+                className={classes.textField}
+                value={this.state.email}
+                onChange={this.handleChange('email')}
+                margin="normal"
+              />
+              <br/>
+              <TextField
+                required
+                id="password"
+                label="Password"
+                className={classes.textField}
+                margin="normal"
+                type="password"
+                value={this.state.password}
+                onChange={this.handleChange('password')}
+              />
+              <br/>
+              <Button raised className={classes.button} disabled={this.state.loading} color="primary"
+                onClick={this.handleSubmit}
+                >
+                Login
+              </Button>
+            </form>)
+          }
+        </div>
       </div>
-    </div>
-  );
+    );
   }
 }
 
