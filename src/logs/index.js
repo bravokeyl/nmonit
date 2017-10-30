@@ -85,9 +85,9 @@ const util = (d) => {
   let o = 0;
   if(Array.isArray(d)) {
     o = d.reduce((sum, value) => Number(parseFloat(sum ))+ Number(parseFloat(value)), 0);
-    o = Number(parseFloat(o).toFixed(2))
+    o = Number(parseFloat(o).toFixed(3))
   } else{
-    o = Number(parseFloat(d).toFixed(2));
+    o = Number(parseFloat(d).toFixed(3));
   }
   return o;
 }
@@ -267,11 +267,11 @@ class Logs extends Component {
       let getotal = _.sum(ge);
       let metotal = _.sum(me);
       self.setState({
-        weekEnergyRL: parseFloat(ge[1]).toFixed(2),
-        weekEnergyYL: parseFloat(ge[2]).toFixed(2),
-        weekEnergyBL: parseFloat(ge[3]).toFixed(2),
-        weekEnergyL:  parseFloat(getotal).toFixed(2),
-        monthEnergyL: parseFloat(metotal).toFixed(2),
+        weekEnergyRL: parseFloat(ge[1]).toFixed(3),
+        weekEnergyYL: parseFloat(ge[2]).toFixed(3),
+        weekEnergyBL: parseFloat(ge[3]).toFixed(3),
+        weekEnergyL:  parseFloat(getotal).toFixed(3),
+        monthEnergyL: parseFloat(metotal).toFixed(3),
         progessL: false,
       });
       return response;

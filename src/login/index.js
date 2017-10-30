@@ -10,12 +10,14 @@ import { withStyles } from 'material-ui/styles';
 
 import { authenticateUser, getCurrentUser, signOut } from '../aws/cognito';
 
+import bg from './bg.jpg';
 const styles = theme => ({
   root: {
     width: '100vw',
     minHeight: '100vh',
-    background: "linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)"
+    background: "linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)",
     // background: 'aliceblue',
+    background: 'url('+bg+')',
     // background: '#FF5722',
   },
   flex: {
