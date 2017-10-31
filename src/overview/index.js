@@ -11,6 +11,14 @@ import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 import moment from 'moment';
 import _ from 'lodash';
 
+import config from '../aws';
+const API_KEY = config.LocalAPIKey;
+const APIHEADERS = {
+  headers: {
+    "X-Api-Key": API_KEY,
+  },
+};
+// APIHEADERS.append("X-Api-Key", API_KEY);
 const styles = theme => ({
   root: {
     padding: 16,
@@ -99,7 +107,6 @@ class Overview extends Component {
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
     }
-    this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
   }
@@ -124,38 +131,6 @@ class Overview extends Component {
     });
     return d
   }
-
-  changeMonthEnergy = (month) => {
-    let ddm = moment().month(month).format("YYYY/MM");
-    let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
-    let self = this;
-    let prevMonth = this.state.selectedMonth;
-    self.setState({
-      monthprogress: true,
-      ["selectedMonth"]: month,
-    })
-    fetch(url)
-    .then(response => response.json())
-    .then(function(response) {
-      console.log("Month Changed Energy:",response,typeof response);
-      if(response.energy) {
-        let de =  self.transformData(response.energy);
-        console.log("Month transformData:",de)
-        self.setState({
-          energyMonth: de,
-          monthprogress: false,
-        });
-      } else {
-        self.setState({
-          ["selectedMonth"]: prevMonth,
-          monthprogress: false,
-          dialogOpen: true
-        })
-      }
-      return response;
-    });
-
-  }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
   }
@@ -172,7 +147,7 @@ class Overview extends Component {
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let self = this;
-    fetch(url)
+    fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);
@@ -194,7 +169,7 @@ class Overview extends Component {
       return response;
     });
 
-    fetch(dayURL)
+    fetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);
@@ -240,7 +215,9 @@ class Overview extends Component {
         progessL: false,
       });
       return response;
-    });
+    }, function(error) {
+  console.error("ERR",error);
+});
 
   }
   render(){

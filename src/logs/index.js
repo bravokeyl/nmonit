@@ -24,8 +24,15 @@ import _ from 'lodash';
 import {PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
 
 import EnhancedTable from '../common/table';
-
 import 'react-dates/lib/css/_datepicker.css';
+
+import config from '../aws';
+const API_KEY = config.LocalAPIKey;
+const APIHEADERS = {
+  headers: {
+    "X-Api-Key": API_KEY,
+  },
+};
 const styles = theme => ({
   root: {
     padding: 16,
@@ -148,7 +155,7 @@ class Logs extends Component {
     self.setState({
       progress: true
     })
-    fetch(url)
+    fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       console.log("Date Changed Energy:",response,typeof response);
@@ -180,7 +187,7 @@ class Logs extends Component {
       monthprogress: true,
       ["selectedMonth"]: month,
     })
-    fetch(url)
+    fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       console.log("Month Changed Energy:",response,typeof response);
@@ -218,7 +225,7 @@ class Logs extends Component {
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let self = this;
-    fetch(url)
+    fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);
@@ -228,7 +235,7 @@ class Logs extends Component {
       return response;
     });
 
-    fetch(dayURL)
+    fetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);

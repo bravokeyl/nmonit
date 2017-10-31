@@ -40,7 +40,7 @@ class App extends Component {
     this.setState({
       isLoggedin: true
     });
-    r.push('/');
+    // r.push('/');
   }
   logOut = r => {
     console.log("Logout authHandler");

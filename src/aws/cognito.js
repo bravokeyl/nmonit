@@ -46,7 +46,7 @@ export const authenticateUser = (email, password, callback) => {
   const cognitoUser = new CognitoUser(userData)
   cognitoUser.authenticateUser(authDetails, {
     onSuccess: result => {
-      console.log('access token + ' + result.getAccessToken().getJwtToken())
+      // console.log('access token + ' + result.getAccessToken().getJwtToken())
       callback(null, result)
     },
     onFailure: err => {
@@ -59,11 +59,36 @@ export const signOut = () => {
   const cognitoUser = userPool.getCurrentUser()
   if (!cognitoUser){
     return;
-  }
-  else {
+  } else {
     userPool.getCurrentUser().signOut()
   }
 }
+
+export const getIdToken = (callback) => {
+  const cognitoUser = userPool.getCurrentUser();
+  if (!cognitoUser) return false;
+  if (cognitoUser !== null) {
+    return cognitoUser.getSession((err, session) => {
+      if (err) {
+        console.log("Cognito Session Err",err);
+        return false;
+      }
+      if(session){
+        // console.log("Session", session);
+        console.log('Session valid?', session.isValid());
+        if(session.isValid()){
+          return session.getIdToken();
+        }
+      }
+      return false;
+      // cognitoUser.getUserAttributes((err, attributes) => {
+      //   if (err) return console.log(err);
+      //   callback(attributes)
+      // });
+    })
+  }
+}
+
 
 export const getCurrentUser = (callback) => {
   const cognitoUser = userPool.getCurrentUser();
@@ -75,7 +100,7 @@ export const getCurrentUser = (callback) => {
         return false;
       }
       if(session){
-        console.log("Session", session);
+        // console.log("Session", session);
         console.log('Session valid?', session.isValid());
         if(session.isValid()){
           return true;

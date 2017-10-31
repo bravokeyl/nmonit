@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
+
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import Card, { CardContent } from 'material-ui/Card';
+import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
-import moment from 'moment';
-import _ from 'lodash';
 
 import { signOut } from '../aws/cognito';
 

@@ -27,6 +27,17 @@ import {PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Resp
 import EnhancedTable from '../common/table';
 
 import 'react-dates/lib/css/_datepicker.css';
+
+import config from '../aws';
+import { getIdToken } from '../aws/cognito';
+
+const API_KEY = config.LocalAPIKey;
+const APIHEADERS = {
+  headers: {
+    "X-Api-Key": API_KEY,
+  },
+};
+
 const styles = theme => ({
   root: {
     padding: 16,
@@ -97,6 +108,8 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       progessL: true,
+      idToken: getIdToken().jwtToken,
+
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
       weekEnergyL: 0,
@@ -167,7 +180,7 @@ class Dashboard extends Component {
     self.setState({
       progress: true
     })
-    fetch(url)
+    fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       console.log("Date Changed Energy:",response,typeof response);
@@ -199,7 +212,7 @@ class Dashboard extends Component {
       monthprogress: true,
       ["selectedMonth"]: month,
     })
-    fetch(url)
+    fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       console.log("Month Changed Energy:",response,typeof response);
@@ -235,10 +248,11 @@ class Dashboard extends Component {
    self.setState({intervalId: intervalId});
   };
   getLiveData = () => {
+    APIHEADERS.headers.Authorization = this.state.idToken;
     for(let i=2;i<5;i++){
       let url = "https://api.blufieldsenergy.com/v1/l?c="+i;
       let self = this;
-      fetch(url)
+      fetch(url,APIHEADERS)
       .then(response => response.json())
       .then(function(response) {
         console.log("Channel:",i," Data:", response);
@@ -273,6 +287,7 @@ class Dashboard extends Component {
   };
   componentDidMount(){
     console.log("Component did mount");
+
     let self = this;
     let intervalId = setInterval(self.updateliveTimestamp, 10*1000);
     self.setState({liveTimestampId: intervalId});
