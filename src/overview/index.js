@@ -176,8 +176,20 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);
+
+      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+      de.map((e,i)=>{
+        dayEnergy["c2"].push(e.c2);
+        dayEnergy["c3"].push(e.c3);
+        dayEnergy["c4"].push(e.c4);
+        return e;
+      });
+      let me = _.map(dayEnergy,(e,i)=>{
+        return _.sum(e);
+      });
+      let daytotal = _.sum(me);
       self.setState({
-        energyDay: de
+        todayEnergyL: parseFloat(daytotal).toFixed(3)
       });
       return response;
     });
@@ -186,7 +198,6 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);
-      console.log("DE",de,dayURL)
       self.setState({
         energyMonth: de,
         monthprogress: false,
@@ -221,9 +232,9 @@ class Overview extends Component {
       let getotal = _.sum(ge);
       let metotal = _.sum(me);
       self.setState({
-        weekEnergyRL: parseFloat(ge[1]).toFixed(2),
-        weekEnergyYL: parseFloat(ge[2]).toFixed(2),
-        weekEnergyBL: parseFloat(ge[3]).toFixed(2),
+        weekEnergyRL: parseFloat(ge[1]).toFixed(3),
+        weekEnergyYL: parseFloat(ge[2]).toFixed(3),
+        weekEnergyBL: parseFloat(ge[3]).toFixed(3),
         weekEnergyL:  parseFloat(getotal).toFixed(2),
         monthEnergyL: parseFloat(metotal).toFixed(2),
         progessL: false,
