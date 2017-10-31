@@ -1,21 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import IconButton from 'material-ui/IconButton';
-import { CircularProgress } from 'material-ui/Progress';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { withStyles } from 'material-ui/styles';
 
-import { authenticateUser, getCurrentUser, signOut } from '../aws/cognito';
+import { authenticateUser } from '../aws/cognito';
 
 import bg from './bg.jpg';
 const styles = theme => ({
   root: {
     width: '100vw',
     minHeight: '100vh',
-    background: "linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)",
+    // background: "linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)",
     // background: 'aliceblue',
     background: 'url('+bg+')',
     // background: '#FF5722',

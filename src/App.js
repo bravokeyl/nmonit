@@ -51,13 +51,13 @@ class App extends Component {
   }
   componentWillMount(){
     let self = this;
-    let isLoggedIn = getCurrentUser(function(e){
-      console.log(e,"Attr");
+    let isLoggedIn = getCurrentUser();
+    if(isLoggedIn){
       self.setState({
         isLoggedin: true
       });
-    });
-    console.log("APP component will mount");
+    }
+    console.log("APP component will mount",isLoggedIn);
   }
   render() {
     return (
@@ -72,7 +72,7 @@ class App extends Component {
                 <ButtonAppBar classes={{}} />
                 <Grid container spacing={0}>
                   <Grid item xs={12}>
-                    <Route exact path="/o" component={Overview} />
+                    <Route exact path="/" component={Overview} />
                     <Route exact path="/d" component={Dashboard} />
                     <Route exact path="/l" component={Logs} />
                     <Route exact path="/p"

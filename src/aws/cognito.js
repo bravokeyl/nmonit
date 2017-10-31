@@ -66,22 +66,26 @@ export const signOut = () => {
 }
 
 export const getCurrentUser = (callback) => {
-  const cognitoUser = userPool.getCurrentUser()
+  const cognitoUser = userPool.getCurrentUser();
   if (!cognitoUser) return false;
-
-
-  cognitoUser.getSession((err, session) => {
-    if (err) {
-      console.log(err);
-      return
-    }
-
-    console.log('Session valid?', session.isValid());
-    console.log("Session", session);
-
-    cognitoUser.getUserAttributes((err, attributes) => {
-      if (err) return console.log(err);
-      callback(attributes)
+  if (cognitoUser !== null) {
+    return cognitoUser.getSession((err, session) => {
+      if (err) {
+        console.log("Cognito Session Err",err);
+        return false;
+      }
+      if(session){
+        console.log("Session", session);
+        console.log('Session valid?', session.isValid());
+        if(session.isValid()){
+          return true;
+        }
+      }
+      return false;
+      // cognitoUser.getUserAttributes((err, attributes) => {
+      //   if (err) return console.log(err);
+      //   callback(attributes)
+      // });
     })
-  })
+  }
 }
