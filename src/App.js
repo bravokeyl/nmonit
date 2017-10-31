@@ -40,7 +40,7 @@ class App extends Component {
     this.setState({
       isLoggedin: true
     });
-    r.push('/o');
+    r.push('/');
   }
   logOut = r => {
     console.log("Logout authHandler");
@@ -66,7 +66,7 @@ class App extends Component {
             <MuiThemeProvider theme={theme}>
             {
               !this.state.isLoggedin ?
-              <Route exact path="/"
+              <Route path="/"
                 render={(props) => (<Login {...props} authHandler={(e)=>this.logIn(e)} />)}/>:
               (<div>
                 <ButtonAppBar classes={{}} />
