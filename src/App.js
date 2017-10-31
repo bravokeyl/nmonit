@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import { deepOrange, indigo } from 'material-ui/colors';
@@ -15,6 +15,7 @@ import Dashboard from './dashboard';
 import Login from './login';
 import Logs from './logs';
 import Profile from './profile';
+import Bad404 from './404';
 
 import './App.css';
 
@@ -64,23 +65,27 @@ class App extends Component {
       <div className="App">
         <Router>
             <MuiThemeProvider theme={theme}>
-            {
-              !this.state.isLoggedin ?
-              <Route path="/"
-                render={(props) => (<Login {...props} authHandler={(e)=>this.logIn(e)} />)}/>:
-              (<div>
-                <ButtonAppBar classes={{}} />
-                <Grid container spacing={0}>
-                  <Grid item xs={12}>
-                    <Route exact path="/" component={Overview} />
-                    <Route exact path="/d" component={Dashboard} />
-                    <Route exact path="/l" component={Logs} />
-                    <Route exact path="/p"
-                      render={(props) => (<Profile {...props} authHandler={(e)=>this.logOut(e)}/>)} />
+              {
+                !this.state.isLoggedin ?
+                <Route path="/"
+                  render={(props) => (<Login {...props} authHandler={(e)=>this.logIn(e)} />)}/>:
+                (
+                  <div>
+                  <ButtonAppBar classes={{}} />
+                  <Grid container spacing={0}>
+                    <Grid item xs={12}>
+                      <Switch>
+                        <Route exact path="/" component={Overview} />
+                        <Route exact path="/d" component={Dashboard} />
+                        <Route exact path="/l" component={Logs} />
+                        <Route exact path="/p"
+                            render={(props) => (<Profile {...props} authHandler={(e)=>this.logOut(e)}/>)} />
+                        <Route path="*" component={Bad404} />
+                      </Switch>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </div>)
-            }
+                </div>)
+              }
             </MuiThemeProvider>
         </Router>
       </div>
