@@ -237,7 +237,10 @@ class Overview extends Component {
       let weektotal = _.sum(me);
       console.log("WKHRTotal",weektotal)
       self.setState({
-        weekEnergyL: parseFloat(weektotal).toFixed(2)
+        weekEnergyL: parseFloat(weektotal).toFixed(2),
+        weekEnergyRL: parseFloat(me[1]).toFixed(2),
+        weekEnergyYL: parseFloat(me[2]).toFixed(2),
+        weekEnergyBL: parseFloat(me[3]).toFixed(2),
       });
       return response;
     })
@@ -282,7 +285,7 @@ class Overview extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                {getCurrentWeekString()}
+                {getCurrentWeekString()} - ({this.state.weekEnergyRL +"+"+this.state.weekEnergyYL+"+"+this.state.weekEnergyBL})
               </Typography>
             </Card>
           </Grid>
