@@ -68,12 +68,10 @@ const styles = theme => ({
   }
 });
 
-const getCurrentWeekArray = () => {
-  let days = [];
-  for(let i=0;i<7;i++){
-    days.push(moment().weekday(i).format("DD"))
-  }
-  return days;
+const getCurrentWeekString = () => {
+  let weekStart = moment().weekday(0).format("Do MMM");
+  let weekEnd = moment().format("Do MMM");
+  return weekStart+" - "+weekEnd;
 }
 const util = (d) => {
   let o = 0;
@@ -195,24 +193,11 @@ class Overview extends Component {
       self.setState({
         energyMonth: de,
       });
-      let weekDays = getCurrentWeekArray();
-      console.log(weekDays,de,response)
-      let weekEnergy = de.filter((e)=>{
-        return weekDays.indexOf(e.ddt) !== -1
-      });
+      console.log(de,response)
+
       let group = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
       let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
 
-      weekEnergy.map((e,i)=>{
-        group["c2"].push(e.c2);
-        group["c3"].push(e.c3);
-        group["c4"].push(e.c4);
-        return e;
-      });
-
-      let ge = _.map(group,(e,i)=>{
-        return _.sum(e);
-      });
       de.map((e,i)=>{
         monthgroup["c2"].push(e.c2);
         monthgroup["c3"].push(e.c3);
@@ -222,14 +207,9 @@ class Overview extends Component {
       let me = _.map(monthgroup,(e,i)=>{
         return _.sum(e);
       });
-      console.log("weekEnergy",ge[1],ge,me)
-      let getotal = _.sum(ge);
+
       let metotal = _.sum(me);
       self.setState({
-        weekEnergyRL: parseFloat(ge[1]).toFixed(3),
-        weekEnergyYL: parseFloat(ge[2]).toFixed(3),
-        weekEnergyBL: parseFloat(ge[3]).toFixed(3),
-        weekEnergyL:  parseFloat(getotal).toFixed(2),
         monthEnergyL: parseFloat(metotal).toFixed(2),
         progessL: false,
       });
@@ -302,7 +282,7 @@ class Overview extends Component {
                 </CardContent>
               </div>
               <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.lastupdated}
+                {getCurrentWeekString()}
               </Typography>
             </Card>
           </Grid>
