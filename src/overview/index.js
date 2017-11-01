@@ -155,6 +155,7 @@ class Overview extends Component {
     console.log(date,month)
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
+    let weekURL = "https://api.blufieldsenergy.com/v1/w";
     let self = this;
 
     fetch(url,APIHEADERS)
@@ -234,10 +235,32 @@ class Overview extends Component {
       });
       return response;
     }, function(error) {
-
-    console.error("ERR",error);
-});
-
+      console.error("ERR",error);
+    });
+    fetch(weekURL,APIHEADERS)
+    .then(response => response.json())
+    .then(function(response) {
+      let de =  response.energy;
+      console.log("Week HR",de);
+      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+      de.map((e,i)=>{
+        dayEnergy["c2"].push(e.c2);
+        dayEnergy["c3"].push(e.c3);
+        dayEnergy["c4"].push(e.c4);
+        return e;
+      });
+      console.log("WKHRDE",dayEnergy)
+      let me = _.map(dayEnergy,(e,i)=>{
+        return _.sum(e);
+      });
+      console.log("WKHRSUM",me)
+      let daytotal = _.sum(me);
+      console.log("WKHRTotal",daytotal)
+      // self.setState({
+      //   todayEnergyL: parseFloat(daytotal).toFixed(3)
+      // });
+      return response;
+    });
   }
   render(){
     const { classes } = this.props;
