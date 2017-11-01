@@ -254,12 +254,15 @@ class Overview extends Component {
         return _.sum(e);
       });
       console.log("WKHRSUM",me)
-      let daytotal = _.sum(me);
-      console.log("WKHRTotal",daytotal)
-      // self.setState({
-      //   todayEnergyL: parseFloat(daytotal).toFixed(3)
-      // });
+      let weektotal = _.sum(me);
+      console.log("WKHRTotal",weektotal)
+      self.setState({
+        weekEnergyL: parseFloat(weektotal).toFixed(2)
+      });
       return response;
+    })
+    .catch((err)=>{
+      console.log("Week Fetch Error:",err);
     });
   }
   render(){
