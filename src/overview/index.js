@@ -12,13 +12,15 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import config from '../aws';
+import { getIdToken } from '../aws/cognito';
+
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
   headers: {
     "X-Api-Key": API_KEY,
   },
 };
-// APIHEADERS.append("X-Api-Key", API_KEY);
+
 const styles = theme => ({
   root: {
     padding: 16,
@@ -88,6 +90,8 @@ class Overview extends Component {
     super(props);
     this.state = {
       progessL: true,
+      idToken: getIdToken().jwtToken || '',
+      
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
       weekEnergyL: 0,
@@ -112,24 +116,28 @@ class Overview extends Component {
   }
 
   transformData = (d) => {
-    d.map((data, i) => {
-      data["c2"] = util(data["c2"]);
-      data["c3"] = util(data["c3"]);
-      data["c4"] = util(data["c4"]);
-      if(data["c2"] < 0) data["c2"] = 0;
-      if(data["c3"] < 0) data["c3"] = 0;
-      if(data["c4"] < 0) data["c4"] = 0;
-      if(data['dhr']){
-        data["dhr"] = data['dhr'].split('/').reverse()[0];
-        data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
-      }
-      if(data['ddt']){
-        data['month'] = moment(data['ddt']).format("MMM Do");
-        data["ddt"] = data['ddt'].split('/').reverse()[0];
-      }
-      return d;
-    });
-    return d
+    if(d){
+      d.map((data, i) => {
+        data["c2"] = util(data["c2"]);
+        data["c3"] = util(data["c3"]);
+        data["c4"] = util(data["c4"]);
+        if(data["c2"] < 0) data["c2"] = 0;
+        if(data["c3"] < 0) data["c3"] = 0;
+        if(data["c4"] < 0) data["c4"] = 0;
+        if(data['dhr']){
+          data["dhr"] = data['dhr'].split('/').reverse()[0];
+          data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+        }
+        if(data['ddt']){
+          data['month'] = moment(data['ddt']).format("MMM Do");
+          data["ddt"] = data['ddt'].split('/').reverse()[0];
+        }
+        return d;
+      });
+    } else {
+      d = [];
+    }
+    return d;
   }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
@@ -143,6 +151,7 @@ class Overview extends Component {
   componentDidMount(){
     console.log("Component did mount",moment().weekday(0).format("Do MM"));
     let { date, month } = this.state;
+    APIHEADERS.headers.Authorization = this.state.idToken;
     console.log(date,month)
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
@@ -150,7 +159,7 @@ class Overview extends Component {
     fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
-      let de =  self.transformData(response.energy);
+      let de =  response.energy;
 
       let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
       de.map((e,i)=>{

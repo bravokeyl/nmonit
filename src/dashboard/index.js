@@ -2,31 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
-import Paper from 'material-ui/Paper';
+
 import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Card, { CardContent } from 'material-ui/Card';
-import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
-import { LinearProgress, CircularProgress } from 'material-ui/Progress';
-import { MenuItem } from 'material-ui/Menu';
-import { FormControl } from 'material-ui/Form';
-import Input, { InputLabel } from 'material-ui/Input';
+import { CircularProgress } from 'material-ui/Progress';
 import Switch from 'material-ui/Switch';
-import Select from 'material-ui/Select';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 
-import 'react-dates/initialize';
-import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 
 import moment from 'moment';
-import _ from 'lodash';
-
-import {PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
-
-import EnhancedTable from '../common/table';
-
-import 'react-dates/lib/css/_datepicker.css';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
@@ -84,15 +69,6 @@ const styles = theme => ({
     opacity: 0.5
   }
 });
-
-const months = moment.months();
-const getCurrentWeekArray = () => {
-  let days = [];
-  for(let i=0;i<7;i++){
-    days.push(moment().weekday(i).format("DD"))
-  }
-  return days;
-}
 const util = (d) => {
   let o = 0;
   if(Array.isArray(d)) {
@@ -108,7 +84,7 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       progessL: true,
-      idToken: getIdToken().jwtToken,
+      idToken: getIdToken().jwtToken || '',
 
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
@@ -207,10 +183,8 @@ class Dashboard extends Component {
     let ddm = moment().month(month).format("YYYY/MM");
     let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
     let self = this;
-    let prevMonth = this.state.selectedMonth;
     self.setState({
       monthprogress: true,
-      ["selectedMonth"]: month,
     })
     fetch(url,APIHEADERS)
     .then(response => response.json())
@@ -225,7 +199,6 @@ class Dashboard extends Component {
         });
       } else {
         self.setState({
-          ["selectedMonth"]: prevMonth,
           monthprogress: false,
           dialogOpen: true
         })

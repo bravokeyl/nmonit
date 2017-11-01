@@ -6,14 +6,12 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import Card, { CardContent } from 'material-ui/Card';
 import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
-import { LinearProgress, CircularProgress } from 'material-ui/Progress';
+import { LinearProgress } from 'material-ui/Progress';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import Select from 'material-ui/Select';
-import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 
 import 'react-dates/initialize';
 import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
@@ -21,12 +19,14 @@ import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 import moment from 'moment';
 import _ from 'lodash';
 
-import {PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
 
 import EnhancedTable from '../common/table';
 import 'react-dates/lib/css/_datepicker.css';
 
 import config from '../aws';
+import { getIdToken } from '../aws/cognito';
+
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
   headers: {
@@ -103,6 +103,8 @@ class Logs extends Component {
     super(props);
     this.state = {
       progessL: true,
+      idToken: getIdToken().jwtToken || '',
+
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
       weekEnergyL: 0,
@@ -129,24 +131,28 @@ class Logs extends Component {
   }
 
   transformData = (d) => {
-    d.map((data, i) => {
-      data["c2"] = util(data["c2"]);
-      data["c3"] = util(data["c3"]);
-      data["c4"] = util(data["c4"]);
-      if(data["c2"] < 0) data["c2"] = 0;
-      if(data["c3"] < 0) data["c3"] = 0;
-      if(data["c4"] < 0) data["c4"] = 0;
-      if(data['dhr']){
-        data["dhr"] = data['dhr'].split('/').reverse()[0];
-        data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
-      }
-      if(data['ddt']){
-        data['month'] = moment(data['ddt']).format("MMM Do");
-        data["ddt"] = data['ddt'].split('/').reverse()[0];
-      }
-      return d;
-    });
-    return d
+    if(d){
+      d.map((data, i) => {
+        data["c2"] = util(data["c2"]);
+        data["c3"] = util(data["c3"]);
+        data["c4"] = util(data["c4"]);
+        if(data["c2"] < 0) data["c2"] = 0;
+        if(data["c3"] < 0) data["c3"] = 0;
+        if(data["c4"] < 0) data["c4"] = 0;
+        if(data['dhr']){
+          data["dhr"] = data['dhr'].split('/').reverse()[0];
+          data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+        }
+        if(data['ddt']){
+          data['month'] = moment(data['ddt']).format("MMM Do");
+          data["ddt"] = data['ddt'].split('/').reverse()[0];
+        }
+        return d;
+      });
+    } else {
+      d = [];
+    }
+    return d;
   }
   changeEnergy = (date) => {
     let dhr = moment(date).format('YYYY/MM/DD');
@@ -200,7 +206,6 @@ class Logs extends Component {
         });
       } else {
         self.setState({
-          ["selectedMonth"]: prevMonth,
           monthprogress: false,
           dialogOpen: true
         })
@@ -222,24 +227,19 @@ class Logs extends Component {
     console.log("Component did mount",moment().weekday(0).format("Do MM"));
     let { date, month } = this.state;
     console.log(date,month)
+    APIHEADERS.headers.Authorization = this.state.idToken;
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let self = this;
-    fetch(url,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      let de =  self.transformData(response.energy);
-      self.setState({
-        energyDay: de
-      });
-      return response;
-    });
 
     fetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  self.transformData(response.energy);
       console.log("DE",de,dayURL)
+      if(response.length===0){
+        de = self.energyMonth
+      }
       self.setState({
         energyMonth: de,
         monthprogress: false,
@@ -281,6 +281,42 @@ class Logs extends Component {
         monthEnergyL: parseFloat(metotal).toFixed(3),
         progessL: false,
       });
+      return response;
+    });
+
+    fetch(url,APIHEADERS)
+    .then(response => response.json())
+    .then(function(response) {
+
+      let de =  self.transformData(response.energy);
+      console.log("Today hourwise",de);
+      self.setState({
+        energyDay: de
+      });
+      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+      de.map((e,i)=>{
+        dayEnergy["c2"].push(e.c2);
+        dayEnergy["c3"].push(e.c3);
+        dayEnergy["c4"].push(e.c4);
+        return e;
+      });
+      let me = _.map(dayEnergy,(e,i)=>{
+        return _.sum(e);
+      });
+      console.log("DayTotal",de,me)
+      let today = [{
+        "c1":0,
+        "c2": util(me[1]),
+        "c3": util(me[2]),
+        "c4": util(me[3]),
+        "c5": 0,
+        "c6": 0,
+        "ddt": "Nov 1st",
+        "month": "Nov 1st",
+      }];
+      self.setState({
+        energyMonth: today
+      })
       return response;
     });
 
