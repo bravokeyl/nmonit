@@ -235,11 +235,16 @@ class Logs extends Component {
     fetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
-      let de =  self.transformData(response.energy);
-      console.log("DE",de,dayURL)
-      if(response.length===0){
-        de = self.energyMonth
+      console.log("Res",response);
+      let de;
+      if(response.energy){
+        de =  self.transformData(response.energy);
+      } else {
+        de =  self.transformData([response]);
       }
+
+      console.log("DE",de,dayURL,response)
+
       self.setState({
         energyMonth: de,
         monthprogress: false,
@@ -289,34 +294,10 @@ class Logs extends Component {
     .then(function(response) {
 
       let de =  self.transformData(response.energy);
-      console.log("Today hourwise",de);
       self.setState({
         energyDay: de
       });
-      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
-      de.map((e,i)=>{
-        dayEnergy["c2"].push(e.c2);
-        dayEnergy["c3"].push(e.c3);
-        dayEnergy["c4"].push(e.c4);
-        return e;
-      });
-      let me = _.map(dayEnergy,(e,i)=>{
-        return _.sum(e);
-      });
-      console.log("DayTotal",de,me)
-      let today = [{
-        "c1":0,
-        "c2": util(me[1]),
-        "c3": util(me[2]),
-        "c4": util(me[3]),
-        "c5": 0,
-        "c6": 0,
-        "ddt": "Nov 1st",
-        "month": "Nov 1st",
-      }];
-      self.setState({
-        energyMonth: today
-      })
+
       return response;
     });
 

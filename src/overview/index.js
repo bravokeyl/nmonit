@@ -91,7 +91,7 @@ class Overview extends Component {
     this.state = {
       progessL: true,
       idToken: getIdToken().jwtToken || '',
-      
+
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
       weekEnergyL: 0,
@@ -156,22 +156,26 @@ class Overview extends Component {
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let self = this;
+
     fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
-
+      console.log("Today HR",de);
       let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
       de.map((e,i)=>{
-        dayEnergy["c2"].push(e.c2);
-        dayEnergy["c3"].push(e.c3);
-        dayEnergy["c4"].push(e.c4);
+        dayEnergy["c2"].push(_.sum(e.c2));
+        dayEnergy["c3"].push(_.sum(e.c3));
+        dayEnergy["c4"].push(_.sum(e.c4));
         return e;
       });
+      console.log("TDHRDE",dayEnergy)
       let me = _.map(dayEnergy,(e,i)=>{
         return _.sum(e);
       });
+      console.log("TDHRSUM",me)
       let daytotal = _.sum(me);
+      console.log("TDHRTotal",daytotal)
       self.setState({
         todayEnergyL: parseFloat(daytotal).toFixed(3)
       });
@@ -181,12 +185,17 @@ class Overview extends Component {
     fetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
-      let de =  self.transformData(response.energy);
+      let de;
+      if(response.energy){
+        de =  self.transformData(response.energy);
+      } else {
+        de =  self.transformData([response]);
+      }
       self.setState({
         energyMonth: de,
-        monthprogress: false,
       });
       let weekDays = getCurrentWeekArray();
+      console.log(weekDays,de,response)
       let weekEnergy = de.filter((e)=>{
         return weekDays.indexOf(e.ddt) !== -1
       });
@@ -225,7 +234,8 @@ class Overview extends Component {
       });
       return response;
     }, function(error) {
-  console.error("ERR",error);
+
+    console.error("ERR",error);
 });
 
   }
