@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
+import Paper from 'material-ui/Paper';
+import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
+import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
+import { LinearProgress } from 'material-ui/Progress';
+
 import moment from 'moment';
-
-
-import DayGen from './day';
-import MonthGen from './month';
-
 
 const styles = theme => ({
   root: {
-    padding: 16,
+    padding: 0,
   },
   flex: {
     display: 'flex',
@@ -56,51 +58,53 @@ const styles = theme => ({
   }
 });
 
-class Logs extends Component {
+class DialogWrapper extends Component {
   constructor(props){
     super(props);
     this.state = {
-      progessL: true,
-
-      lastupdated: moment(Date.now()).fromNow(),
-      todayEnergyL: 0,
-      weekEnergyL: 0,
-      weekEnergyRL: 0,
-      weekEnergyYL: 0,
-      weekEnergyBL: 0,
-      monthEnergyL: 0,
-      totalEnergyL: 0,
-      energyDay: [],
-      energyMonth: [],
       date: moment().format('YYYY/MM/DD'),
       month: moment().format('YYYY/MM'),
       startDate: moment(),
       focused: false,
       progess: true,
-      monthprogress: true,
       dialogOpen: false,
-      selectedMonth: moment().format('MMMM'),
     }
+
   }
+  handleRequestClose = () => {
+    this.setState({ dialogOpen: false });
+  }
+  handleChange = () => {
 
-
+  }
   componentDidMount(){
-    console.info("Log component did mount");
+
   }
   render(){
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <MonthGen />
-        <DayGen />
+        <Grid container spacing={0}>
+          <Grid item xs={12} sm={12}>
+            <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
+              <DialogTitle>No data available</DialogTitle>
+              <DialogContent>If you think this is an issue, please contact NuevoMonit support engineer.</DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleRequestClose} color="primary">
+                  Okay
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Grid>
+        </Grid>
       </div>
     );
   }
 
 }
 
-Logs.propTypes = {
+DialogWrapper.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Logs);
+export default withStyles(styles)(DialogWrapper);

@@ -224,10 +224,8 @@ class Overview extends Component {
       self.setState({
         energyMonth: de,
       });
-      console.log(de,response)
 
-      let group = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
-      let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
+      let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
 
       de.map((e,i)=>{
         monthgroup["c2"].push(e.c2);

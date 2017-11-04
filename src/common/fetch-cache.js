@@ -76,13 +76,13 @@ function offlineFetch(url, options) {
       }
       // if the request is cached and we're offline, return cached content
       if (cachedResponse && isOffline) {
-          if (debug) log('offlineFetch[cache] (offline): ' + url);
+          if (debug) log('From Fetch Cache (offline): ' + url);
           return Promise.resolve(cachedResponse);
       }
 
       // if the request is cached, expires is set but not expired, and this is not a renew request, return cached content
       if (cachedResponse && !cacheExpired && !renew) {
-          if (debug) log('offlineFetch[cache]: ' + url);
+          if (debug) log('From Fetch Cache: ' + url);
           return Promise.resolve(cachedResponse);
       }
 
@@ -116,7 +116,7 @@ function offlineFetch(url, options) {
               }
           }
 
-          if (debug) log('offlineFetch[live]: ' + url);
+          if (debug) log('From Fetch Live: ' + url);
 
           return res;
       })
