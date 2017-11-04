@@ -72,7 +72,7 @@ function offlineFetch(url, options) {
       // determine if the cached content has expired
       var cacheExpired = (cachedItem && expires > 0) ? ((Date.now() - cachedItem.storedAt) > expires) : false;
       if(cachedItem){
-        console.warn("Cache expired:",cacheExpired,cachedItem.storedAt,Date.now() - cachedItem.storedAt)
+        console.warn("Cache expired:",cacheExpired,"Expires in:",((cachedItem.storedAt+expires)-Date.now())/1000," secs");
       }
       // if the request is cached and we're offline, return cached content
       if (cachedResponse && isOffline) {
@@ -102,6 +102,7 @@ function offlineFetch(url, options) {
                   res.clone().text().then(function (content) {
 
                       var contentToStore = JSON.stringify({
+                          bkurl: url,
                           status: res.status,         // store the response status
                           statusText: res.statusText, // the response status text
                           contentType: contentType,   // the response content type

@@ -84,7 +84,7 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       progessL: true,
-      idToken: getIdToken().jwtToken || '',
+      idToken: (getIdToken() ? getIdToken().jwtToken: '') || '',
 
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,

@@ -22,6 +22,8 @@ import _ from 'lodash';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
 
 import EnhancedTable from '../common/table';
+import offlineFetch from '../common/fetch-cache';
+
 import 'react-dates/lib/css/_datepicker.css';
 
 import config from '../aws';
@@ -32,7 +34,20 @@ const APIHEADERS = {
   headers: {
     "X-Api-Key": API_KEY,
   },
+  method: 'GET',
+  offline: {
+        storage: 'localStorage',    // use localStorage (defaults to sessionStorage)
+        timeout: 5000,               // request timeout in milliseconds, defaults 730ms
+        expires: 300000,              // expires in milliseconds, defaults 1000ms (set to -1 to check for updates with every request)
+        debug: true,                // console log request info to help with debugging
+        renew: false,               // if true, request is fetched regardless of expire state. Response is and added to cache
+
+        // timeouts are not retried as they risk cause the browser to hang
+        retries: 3,                 // number of times to retry the request before considering it failed, default 3 (timeouts are not retried)
+        retryDelay: 1000,           // number of milliseconds to wait between each retry
+  }
 };
+
 const styles = theme => ({
   root: {
     padding: 16,
@@ -155,13 +170,23 @@ class Logs extends Component {
     return d;
   }
   changeEnergy = (date) => {
+    let datediff = moment().diff(date,'days');
+    console.warn("Changed Date:",datediff);
+    let dateApiHeaders = APIHEADERS;
+    if(datediff >= 1) {
+      dateApiHeaders.offline.expires = 1000*60*60*24;
+    } else {
+      dateApiHeaders.offline.expires = 1000*60*5;
+    }
+    console.warn("HeadersDate:",dateApiHeaders);
     let dhr = moment(date).format('YYYY/MM/DD');
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+dhr;
     let self = this;
     self.setState({
       progress: true
-    })
-    fetch(url,APIHEADERS)
+    });
+
+    offlineFetch(url,dateApiHeaders)
     .then(response => response.json())
     .then(function(response) {
       console.log("Date Changed Energy:",response,typeof response);
@@ -185,6 +210,15 @@ class Logs extends Component {
 
   }
   changeMonthEnergy = (month) => {
+    let monthdiff = moment().diff(moment().month(month),'days');
+    console.warn("Changed Month:",monthdiff);
+    let monthApiHeaders = APIHEADERS;
+    if(monthdiff >= 1) {
+      monthApiHeaders.offline.expires = 1000*60*60*24*28;
+    } else {
+      monthApiHeaders.offline.expires = 1000*60*5;
+    }
+    console.warn("HeadersMonth:",monthApiHeaders);
     let ddm = moment().month(month).format("YYYY/MM");
     let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
     let self = this;
@@ -193,7 +227,7 @@ class Logs extends Component {
       monthprogress: true,
       ["selectedMonth"]: month,
     })
-    fetch(url,APIHEADERS)
+    offlineFetch(url,monthApiHeaders)
     .then(response => response.json())
     .then(function(response) {
       console.log("Month Changed Energy:",response,typeof response);
@@ -232,7 +266,7 @@ class Logs extends Component {
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let self = this;
 
-    fetch(dayURL,APIHEADERS)
+    offlineFetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       console.log("Res",response);
@@ -289,7 +323,7 @@ class Logs extends Component {
       return response;
     });
 
-    fetch(url,APIHEADERS)
+    offlineFetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
 
