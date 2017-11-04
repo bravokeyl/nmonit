@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
+import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 
 import { authenticateUser } from '../aws/cognito';
@@ -35,7 +36,9 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 400,
+    [theme.breakpoints.up('sm')]: {
+      width: 400,
+    }
   },
   formControl: {
     margin: theme.spacing.unit,
@@ -78,38 +81,42 @@ class Login extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <div className={classes.flex}>
-          {
-            (<form className={classes.container} noValidate autoComplete="off">
-              <TextField
-                required
-                id="email"
-                label="Email"
-                className={classes.textField}
-                value={this.state.email}
-                onChange={this.handleChange('email')}
-                margin="normal"
-              />
-              <br/>
-              <TextField
-                required
-                id="password"
-                label="Password"
-                className={classes.textField}
-                margin="normal"
-                type="password"
-                value={this.state.password}
-                onChange={this.handleChange('password')}
-              />
-              <br/>
-              <Button raised className={classes.button} disabled={this.state.loading} color="primary"
-                onClick={this.handleSubmit}
-                >
-                Login
-              </Button>
-            </form>)
-          }
-        </div>
+        <Grid container spacing={0}>
+          <Grid item xs={12} sm={12}>
+            <div className={classes.flex}>
+              {
+                (<form className={classes.container} noValidate autoComplete="off">
+                  <TextField
+                    required
+                    id="email"
+                    label="Email"
+                    className={classes.textField}
+                    value={this.state.email}
+                    onChange={this.handleChange('email')}
+                    margin="normal"
+                  />
+                  <br/>
+                  <TextField
+                    required
+                    id="password"
+                    label="Password"
+                    className={classes.textField}
+                    margin="normal"
+                    type="password"
+                    value={this.state.password}
+                    onChange={this.handleChange('password')}
+                  />
+                  <br/>
+                  <Button raised className={classes.button} disabled={this.state.loading} color="primary"
+                    onClick={this.handleSubmit}
+                    >
+                    Login
+                  </Button>
+                </form>)
+              }
+            </div>
+          </Grid>
+        </Grid>
       </div>
     );
   }
