@@ -7,16 +7,17 @@ import Grid from 'material-ui/Grid';
 import Card, { CardContent } from 'material-ui/Card';
 import { CircularProgress } from 'material-ui/Progress';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
-import SwipeableViews from 'react-swipeable-views';
-import Tabs, { Tab } from 'material-ui/Tabs';
+
 
 import offlineFetch from '../common/fetch-cache';
 
 import moment from 'moment';
 import _ from 'lodash';
 
+
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
+
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -100,13 +101,6 @@ const util = (d) => {
   return o;
 }
 
-function TabContainer({ children, dir }) {
-  return (
-    <div dir={dir} style={{ padding: 8 * 3 }}>
-      {children}
-    </div>
-  );
-}
 class Overview extends Component {
   constructor(props){
     super(props);
@@ -132,13 +126,9 @@ class Overview extends Component {
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
-
-      value: 0,
     }
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
-    this.handleChangeIndex = this.handleChangeIndex.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
 
   transformData = (d) => {
@@ -172,13 +162,6 @@ class Overview extends Component {
     this.changeMonthEnergy(event.target.value);
   };
 
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-
-  handleChangeIndex = index => {
-    this.setState({ value: index });
-  };
   componentDidMount(){
     let { date, month } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
@@ -357,27 +340,6 @@ class Overview extends Component {
                 Units consumed
               </Typography>
             </Card>
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            <Tabs
-              value={this.state.value}
-              onChange={this.handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              fullWidth
-            >
-              <Tab label="Day" />
-              <Tab label="Month" />
-              <Tab label="Year" />
-            </Tabs>
-            <SwipeableViews
-              axis='x'
-              index={this.state.value}
-              onChangeIndex={this.handleChangeIndex}>
-              <TabContainer>Item One</TabContainer>
-              <TabContainer>Item Two</TabContainer>
-              <TabContainer>Item Three</TabContainer>
-            </SwipeableViews>
           </Grid>
         </Grid>
       </div>

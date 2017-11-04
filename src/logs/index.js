@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
-import moment from 'moment';
+import SwipeableViews from 'react-swipeable-views';
+import Grid from 'material-ui/Grid';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
+import moment from 'moment';
 
 import DayGen from './day';
 import MonthGen from './month';
@@ -53,8 +56,21 @@ const styles = theme => ({
   },
   opacity: {
     opacity: 0.5
+  },
+  tabsheader: {
+    marginLeft: 40,
+    marginRight: 40,
+    border: '1px solid #eee',
   }
 });
+
+function TabContainer({ children, dir }) {
+  return (
+    <div dir={dir} style={{ padding: 8 * 3 }}>
+      {children}
+    </div>
+  );
+}
 
 class Logs extends Component {
   constructor(props){
@@ -80,9 +96,20 @@ class Logs extends Component {
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
+
+      value: 0,
     }
+    this.handleChangeIndex = this.handleChangeIndex.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
+  handleChangeIndex = index => {
+    this.setState({ value: index });
+  };
 
   componentDidMount(){
     console.info("Log component did mount");
@@ -91,8 +118,28 @@ class Logs extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <MonthGen />
-        <DayGen />
+        <Grid item xs={12} sm={12}>
+          <Tabs
+            value={this.state.value}
+            onChange={this.handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            
+            className={classes.tabsheader}
+          >
+            <Tab label="Day" />
+            <Tab label="Month" />
+            <Tab label="Year" />
+          </Tabs>
+          <SwipeableViews
+            axis='x'
+            index={this.state.value}
+            onChangeIndex={this.handleChangeIndex}>
+            <TabContainer><DayGen /></TabContainer>
+            <TabContainer><MonthGen /></TabContainer>
+            <TabContainer>Item Three</TabContainer>
+          </SwipeableViews>
+        </Grid>
       </div>
     );
   }
