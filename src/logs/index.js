@@ -99,7 +99,7 @@ class Logs extends Component {
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
 
-      value: 0,
+      value: 1,
     }
     this.handleChangeIndex = this.handleChangeIndex.bind(this);
     this.handleChange = this.handleChange.bind(this);

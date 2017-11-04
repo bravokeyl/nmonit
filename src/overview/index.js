@@ -88,7 +88,7 @@ const styles = theme => ({
 const getCurrentWeekString = () => {
   let weekStart = moment().weekday(0).format("Do MMM");
   let weekEnd = moment().format("Do MMM");
-  return weekStart+" - "+weekEnd;
+  return weekStart+"-"+weekEnd;
 }
 const util = (d) => {
   let o = 0;
