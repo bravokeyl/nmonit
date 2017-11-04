@@ -10,6 +10,7 @@ import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 import SwipeableViews from 'react-swipeable-views';
 import Tabs, { Tab } from 'material-ui/Tabs';
 
+import offlineFetch from '../common/fetch-cache';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -22,6 +23,18 @@ const APIHEADERS = {
   headers: {
     "X-Api-Key": API_KEY,
   },
+  method: 'GET',
+  offline: {
+        storage: 'localStorage',    // use localStorage (defaults to sessionStorage)
+        timeout: 5000,               // request timeout in milliseconds, defaults 730ms
+        expires: 300000,              // expires in milliseconds, defaults 1000ms (set to -1 to check for updates with every request)
+        debug: true,                // console log request info to help with debugging
+        renew: false,               // if true, request is fetched regardless of expire state. Response is and added to cache
+
+        // timeouts are not retried as they risk cause the browser to hang
+        retries: 3,                 // number of times to retry the request before considering it failed, default 3 (timeouts are not retried)
+        retryDelay: 1000,           // number of milliseconds to wait between each retry
+  }
 };
 
 const styles = theme => ({
@@ -167,16 +180,14 @@ class Overview extends Component {
     this.setState({ value: index });
   };
   componentDidMount(){
-    console.log("Component did mount",moment().weekday(0).format("Do MM"));
     let { date, month } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
-    console.log(date,month)
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let weekURL = "https://api.blufieldsenergy.com/v1/w";
     let self = this;
 
-    fetch(url,APIHEADERS)
+    offlineFetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
@@ -201,7 +212,7 @@ class Overview extends Component {
       return response;
     });
 
-    fetch(dayURL,APIHEADERS)
+    offlineFetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de;
@@ -237,7 +248,8 @@ class Overview extends Component {
     }, function(error) {
       console.error("ERR",error);
     });
-    fetch(weekURL,APIHEADERS)
+
+    offlineFetch(weekURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
@@ -265,7 +277,7 @@ class Overview extends Component {
       return response;
     })
     .catch((err)=>{
-      console.log("Week Fetch Error:",err);
+      console.error("Week Fetch Error:",err);
     });
   }
   render(){
