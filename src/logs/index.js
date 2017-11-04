@@ -58,15 +58,17 @@ const styles = theme => ({
     opacity: 0.5
   },
   tabsheader: {
-    marginLeft: 40,
-    marginRight: 40,
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: 16,
+      marginRight: 16,
+    },
     border: '1px solid #eee',
   }
 });
 
 function TabContainer({ children, dir }) {
   return (
-    <div dir={dir} style={{ padding: 8 * 3 }}>
+    <div dir={dir}>
       {children}
     </div>
   );
@@ -124,7 +126,7 @@ class Logs extends Component {
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            
+            fullWidth
             className={classes.tabsheader}
           >
             <Tab label="Day" />
@@ -135,8 +137,8 @@ class Logs extends Component {
             axis='x'
             index={this.state.value}
             onChangeIndex={this.handleChangeIndex}>
-            <TabContainer><DayGen /></TabContainer>
-            <TabContainer><MonthGen /></TabContainer>
+            <DayGen />
+            <MonthGen />
             <TabContainer>Item Three</TabContainer>
           </SwipeableViews>
         </Grid>

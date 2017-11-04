@@ -50,9 +50,14 @@ const styles = theme => ({
     flex: 1,
   },
   paper: {
-    padding: 16,
-    margin: 16,
-    minHeight: 350,
+    margin: 1,
+    padding: 8,
+    minHeight: 200,
+    [theme.breakpoints.up('sm')]: {
+      margin: 16,
+      padding: 16,
+      minHeight: 350,
+    },
     color: theme.palette.text.secondary,
   },
   card: {

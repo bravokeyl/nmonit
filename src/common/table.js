@@ -42,13 +42,15 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
+          {
+          // <TableCell padding="checkbox">
+          //   <Checkbox
+          //     indeterminate={numSelected > 0 && numSelected < rowCount}
+          //     checked={numSelected === rowCount}
+          //     onChange={onSelectAllClick}
+          //   />
+          // </TableCell>
+          }
           {thead.map(column => {
             return (
               <TableCell
@@ -149,8 +151,15 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
 const styles = theme => ({
   root: {
-    padding: 16,
-    margin: 16,
+    marginLeft: 1,
+    marginRight: 1,
+    marginTop: 8,
+    marginBottom: 8,
+    padding: 8,
+    [theme.breakpoints.up('sm')]: {
+      padding: 16,
+      margin: 16,
+    }
   },
   table: {
   },
@@ -222,7 +231,7 @@ class EnhancedTable extends React.Component {
       );
     }
 
-    this.setState({ selected: newSelected });
+    // this.setState({ selected: newSelected });
   };
 
   handleChangePage = (event, page) => {
@@ -273,9 +282,11 @@ class EnhancedTable extends React.Component {
                     key={n.month || n.day}
                     selected={isSelected}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox checked={isSelected} />
-                    </TableCell>
+                    {
+                    // <TableCell padding="checkbox">
+                    //   <Checkbox checked={isSelected} />
+                    // </TableCell>
+                    }
                     <TableCell padding="none">{n.day || n.month}</TableCell>
                     <TableCell numeric>{n.c1}</TableCell>
                     <TableCell numeric>{n.c2}</TableCell>
