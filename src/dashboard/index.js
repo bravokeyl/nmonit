@@ -13,6 +13,7 @@ import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 
 import moment from 'moment';
 
+import offlineFetch from '../common/fetch-cache';
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
 
@@ -21,6 +22,16 @@ const APIHEADERS = {
   headers: {
     "X-Api-Key": API_KEY,
   },
+  method: 'GET',
+  offline: {
+        storage: 'localStorage',
+        timeout: 5000,
+        expires: 10000,
+        debug: true,
+        renew: false,
+        retries: 3,
+        retryDelay: 1000,
+  }
 };
 
 const styles = theme => ({
@@ -120,10 +131,7 @@ class Dashboard extends Component {
       relativeTimestamp: 0,
       isLive: false,
     }
-    this.changeEnergy = this.changeEnergy.bind(this);
-    this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
-    this.handleSelectMonth = this.handleSelectMonth.bind(this);
     this.getLive = this.getLive.bind(this);
     this.getLiveData = this.getLiveData.bind(this);
     this.updateliveTimestamp = this.updateliveTimestamp.bind(this);
@@ -149,70 +157,9 @@ class Dashboard extends Component {
     });
     return d
   }
-  changeEnergy = (date) => {
-    let dhr = moment(date).format('YYYY/MM/DD');
-    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+dhr;
-    let self = this;
-    self.setState({
-      progress: true
-    })
-    fetch(url,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      console.log("Date Changed Energy:",response,typeof response);
-      if(response.energy) {
-        let de =  self.transformData(response.energy);
-        self.setState({
-          startDate: date,
-          date: moment(date).format("YYYY/MM/DD"),
-          energyDay: de,
-          progress: false
-        });
-      } else {
-        self.setState({
-          progress: false,
-          dialogOpen: true
-        })
-      }
-      console.log(self.state.energyDay,"SD")
-      return response;
-    });
-
-  }
-  changeMonthEnergy = (month) => {
-    let ddm = moment().month(month).format("YYYY/MM");
-    let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
-    let self = this;
-    self.setState({
-      monthprogress: true,
-    })
-    fetch(url,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      console.log("Month Changed Energy:",response,typeof response);
-      if(response.energy) {
-        let de =  self.transformData(response.energy);
-        console.log("Month transformData:",de)
-        self.setState({
-          energyMonth: de,
-          monthprogress: false,
-        });
-      } else {
-        self.setState({
-          monthprogress: false,
-          dialogOpen: true
-        })
-      }
-      return response;
-    });
-
-  }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
   }
-  handleSelectMonth = name => event => {
-    this.changeMonthEnergy(event.target.value);
-  };
   handleChange = name => (event, checked) => {
    this.setState({ isLive: checked });
    let self = this;
@@ -225,7 +172,7 @@ class Dashboard extends Component {
     for(let i=2;i<5;i++){
       let url = "https://api.blufieldsenergy.com/v1/l?c="+i;
       let self = this;
-      fetch(url,APIHEADERS)
+      offlineFetch(url,APIHEADERS)
       .then(response => response.json())
       .then(function(response) {
         console.log("Channel:",i," Data:", response);
@@ -259,7 +206,7 @@ class Dashboard extends Component {
     }
   };
   componentDidMount(){
-    console.log("Component did mount");
+    console.log("Dashboard component did mount");
 
     let self = this;
     let intervalId = setInterval(self.updateliveTimestamp, 10*1000);

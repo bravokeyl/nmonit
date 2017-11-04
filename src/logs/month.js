@@ -31,15 +31,13 @@ const APIHEADERS = {
   },
   method: 'GET',
   offline: {
-        storage: 'localStorage',    // use localStorage (defaults to sessionStorage)
-        timeout: 5000,               // request timeout in milliseconds, defaults 730ms
-        expires: 300000,              // expires in milliseconds, defaults 1000ms (set to -1 to check for updates with every request)
-        debug: true,                // console log request info to help with debugging
-        renew: false,               // if true, request is fetched regardless of expire state. Response is and added to cache
-
-        // timeouts are not retried as they risk cause the browser to hang
-        retries: 3,                 // number of times to retry the request before considering it failed, default 3 (timeouts are not retried)
-        retryDelay: 1000,           // number of milliseconds to wait between each retry
+        storage: 'localStorage',
+        timeout: 5000,
+        expires: 300000,
+        debug: true,
+        renew: false,
+        retries: 3,
+        retryDelay: 1000,
   }
 };
 

@@ -16,10 +16,6 @@ export const createUser = (username, email, password, callback) => {
     }),
   ]
 
-  // Username must be unique in a pool, and cant be a valid email format
-  // To log in with email, make sure it is set as an alias attribute in Cognito
-  // More info: http://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#user-pool-settings-usernames
-
   userPool.signUp(username, password, attributeList, null, callback)
 }
 
@@ -74,17 +70,11 @@ export const getIdToken = (callback) => {
         return false;
       }
       if(session){
-        // console.log("Session", session);
-        console.log('Session valid?', session.isValid());
         if(session.isValid()){
           return session.getIdToken();
         }
       }
       return false;
-      // cognitoUser.getUserAttributes((err, attributes) => {
-      //   if (err) return console.log(err);
-      //   callback(attributes)
-      // });
     })
   }
 }
@@ -100,8 +90,6 @@ export const getCurrentUser = (callback) => {
         return false;
       }
       if(session){
-        // console.log("Session", session);
-        console.log('Session valid?', session.isValid());
         if(session.isValid()){
           return true;
         }
