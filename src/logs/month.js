@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {withRouter} from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import compose from 'recompose/compose';
 import withWidth from 'material-ui/utils/withWidth';
@@ -14,12 +15,12 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import Select from 'material-ui/Select';
-import Hidden from 'material-ui/Hidden';
+// import Hidden from 'material-ui/Hidden';
 
 import moment from 'moment';
 import _ from 'lodash';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from  'recharts';
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
@@ -142,6 +143,7 @@ class MonthGen extends Component {
     this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   transformData = (d) => {
@@ -217,6 +219,14 @@ class MonthGen extends Component {
   handleChange = () => {
 
   }
+  handleClick(data,e) {
+    if(data){
+      this.props.indexV(e,0);
+      this.props.history.push('/l/'+moment(data.activeLabel,'MMM Do').format('DDMMYYYY'));
+    } else {
+      console.log("Clicked outside of the bars");
+    }
+  };
   componentDidMount(){
     console.info("MonthGen component did mount");
     let { month } = this.state;
@@ -284,6 +294,7 @@ class MonthGen extends Component {
   }
   render(){
     const { classes, width } = this.props;
+    const { activeIndex } = this.state;
     return (
       <div className={classes.root}>
         <Grid container spacing={0}>
@@ -314,15 +325,16 @@ class MonthGen extends Component {
               { this.state.monthprogress ? <LinearProgress />: ""}
               <ResponsiveContainer height={350} className={ this.state.monthprogress?classes.opacity:"bk-default"}>
                 <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
-                      maxBarSize={30}
-                      margin={{top: 20, right: 30, left: 20, bottom: 40}}>
+                      maxBarSize={30} unit="kWh"
+                      margin={{top: 20, right: 30, left: 20, bottom: 40}}
+                      onClick={this.handleClick}>
                    <XAxis dataKey="month" angle={-45} textAnchor="end" interval={0}/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
-                   <Bar dataKey="c2" stackId="a" fill="#f44336" />
-                   <Bar dataKey="c3" stackId="a" fill="#ffc658" />
-                   <Bar dataKey="c4" stackId="a" fill="#3f51b5" />
+                   <Bar cursor="pointer" dataKey="c2" stackId="a" fill="#f44336"/>
+                   <Bar cursor="pointer" dataKey="c3" stackId="a" fill="#ffc658"/>
+                   <Bar cursor="pointer" dataKey="c4" stackId="a" fill="#3f51b5"/>
                 </BarChart>
               </ResponsiveContainer>
             </Paper>
@@ -362,4 +374,4 @@ MonthGen.propTypes = {
   width: PropTypes.string.isRequired,
 };
 
-export default compose(withStyles(styles), withWidth())(MonthGen);
+export default compose(withStyles(styles), withWidth())(withRouter(MonthGen));

@@ -8,7 +8,7 @@ import Email from 'material-ui-icons/Email';
 import Link from 'material-ui-icons/Link';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
+import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
 import { signOut } from '../aws/cognito';
@@ -104,7 +104,7 @@ class Profile extends Component {
           <Grid item xs={12} sm={3}>
             <Card className={classes.card}>
               <div className={classes.avatarWrap}>
-                <img src={avatar} className={classes.avatar} />
+                <img src={avatar} className={classes.avatar} alt="bravokeyl's avatar" />
               </div>
               <Typography type="title" gutterBottom align="center">
                 bravokeyl <small className={classes.uid}>#007</small>

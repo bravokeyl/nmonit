@@ -13,7 +13,7 @@ import ButtonAppBar from './appbar';
 import Overview from './overview';
 import Dashboard from './dashboard';
 import Login from './login';
-import Logs from './logs';
+import NL from './logs';
 import Profile from './profile';
 import Bad404 from './404';
 
@@ -77,10 +77,10 @@ class App extends Component {
                       <Switch>
                         <Route exact path="/" component={Overview} />
                         <Route exact path="/d" component={Dashboard} />
-                        <Route exact path="/l" component={Logs} />
+                        <Route path="/l" component={NL} />
                         <Route exact path="/p"
                             render={(props) => (<Profile {...props} authHandler={(e)=>this.logOut(e)}/>)} />
-                        <Route path="*" component={Bad404} />
+                        <Route component={Bad404} />
                       </Switch>
                     </Grid>
                   </Grid>
