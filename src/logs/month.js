@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
+import compose from 'recompose/compose';
+import withWidth from 'material-ui/utils/withWidth';
 
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
@@ -12,6 +14,7 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import Select from 'material-ui/Select';
+import Hidden from 'material-ui/Hidden';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -280,7 +283,7 @@ class MonthGen extends Component {
 
   }
   render(){
-    const { classes } = this.props;
+    const { classes, width } = this.props;
     return (
       <div className={classes.root}>
         <Grid container spacing={0}>
@@ -288,7 +291,7 @@ class MonthGen extends Component {
             <Paper className={classes.paper} elevation={4}>
               <div className={classes.flex}>
                 <Typography color="inherit" className={classes.flex}>
-                 Month Energy ( Day wise ) - {this.state.selectedMonth}
+                 Month Energy ( Day wise ){width} - {this.state.selectedMonth}
                 </Typography>
                 <form className={classes.container}>
                   <FormControl className={classes.formControl}>
@@ -356,6 +359,7 @@ class MonthGen extends Component {
 
 MonthGen.propTypes = {
   classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired,
 };
 
-export default withStyles(styles)(MonthGen);
+export default compose(withStyles(styles), withWidth())(MonthGen);

@@ -70,7 +70,9 @@ class Bad404 extends Component {
       <div className={classes.root}>
         <Grid container spacing={0}>
           <Card className={classes.card}>
-            <Button color="primary" >Nothing Found</Button>
+            <a href="/">
+              <Button color="primary" >Nothing Found</Button>
+            </a>
           </Card>
         </Grid>
 
