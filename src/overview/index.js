@@ -8,16 +8,12 @@ import Card, { CardContent } from 'material-ui/Card';
 import { CircularProgress } from 'material-ui/Progress';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 
-
-import offlineFetch from '../common/fetch-cache';
-
 import moment from 'moment';
 import _ from 'lodash';
 
-
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
-
+import offlineFetch from '../common/fetch-cache';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -26,18 +22,15 @@ const APIHEADERS = {
   },
   method: 'GET',
   offline: {
-        storage: 'localStorage',    // use localStorage (defaults to sessionStorage)
-        timeout: 5000,               // request timeout in milliseconds, defaults 730ms
-        expires: 300000,              // expires in milliseconds, defaults 1000ms (set to -1 to check for updates with every request)
-        debug: true,                // console log request info to help with debugging
-        renew: false,               // if true, request is fetched regardless of expire state. Response is and added to cache
-
-        // timeouts are not retried as they risk cause the browser to hang
-        retries: 3,                 // number of times to retry the request before considering it failed, default 3 (timeouts are not retried)
-        retryDelay: 1000,           // number of milliseconds to wait between each retry
+    storage: 'localStorage',
+    timeout: 5000,
+    expires: 300000,
+    debug: true,
+    renew: false,
+    retries: 3,
+    retryDelay: 1000,
   }
 };
-
 const styles = theme => ({
   root: {
     padding: 16,
@@ -106,8 +99,8 @@ class Overview extends Component {
     super(props);
     this.state = {
       progessL: true,
-      idToken: getIdToken().jwtToken || '',
-
+      idToken: getIdToken() ? getIdToken().jwtToken : '',
+      
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
       weekEnergyL: 0,
@@ -168,6 +161,7 @@ class Overview extends Component {
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
     let weekURL = "https://api.blufieldsenergy.com/v1/w";
+    let monthURL = "https://api.blufieldsenergy.com/v1/m";
     let self = this;
 
     offlineFetch(url,APIHEADERS)
@@ -246,6 +240,30 @@ class Overview extends Component {
         weekEnergyRL: parseFloat(me[1]).toFixed(2),
         weekEnergyYL: parseFloat(me[2]).toFixed(2),
         weekEnergyBL: parseFloat(me[3]).toFixed(2),
+      });
+      return response;
+    })
+    .catch((err)=>{
+      console.error("Week Fetch Error:",err);
+    });
+    APIHEADERS.offline.expires = 60*60*1000;
+    offlineFetch(monthURL,APIHEADERS)
+    .then(response => response.json())
+    .then(function(response) {
+      let de =  response.energy;
+      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+      de.map((e,i)=>{
+        dayEnergy["c2"].push(e.c2);
+        dayEnergy["c3"].push(e.c3);
+        dayEnergy["c4"].push(e.c4);
+        return e;
+      });
+      let me = _.map(dayEnergy,(e,i)=>{
+        return _.sum(e);
+      });
+      let yeartotal = _.sum(me);
+      self.setState({
+        totalEnergyL: parseFloat(yeartotal).toFixed(2),
       });
       return response;
     })
