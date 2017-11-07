@@ -279,12 +279,13 @@ class YearGen extends Component {
               tdata={this.state.energyYear}
               thead={[
                 {label:"Month",numeric:false,disablePadding:false,id:"month"},
+                {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
+                {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
+                {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
+                {label:"Load Total",numeric:true,disablePadding:false,id:"ytotal"},
                 {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Channel 2",numeric:true,disablePadding:false,id:"c2"},
-                {label:"Channel 3",numeric:true,disablePadding:false,id:"c3"},
-                {label:"Channel 4",numeric:true,disablePadding:false,id:"c4"},
                 {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"}
+                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"},
               ]}/>
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>

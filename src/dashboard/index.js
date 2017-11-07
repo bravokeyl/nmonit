@@ -175,7 +175,6 @@ class Dashboard extends Component {
       offlineFetch(url,APIHEADERS)
       .then(response => response.json())
       .then(function(response) {
-        console.log("Channel:",i," Data:", response);
         let voltage = "c"+i+"Voltage";
         self.setState({
           [voltage]: response.voltage,

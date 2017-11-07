@@ -177,7 +177,7 @@ class EnhancedTable extends React.Component {
       selected: [],
       data: props.tdata,
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 25,
     };
   }
 
@@ -230,7 +230,6 @@ class EnhancedTable extends React.Component {
         selected.slice(selectedIndex + 1),
       );
     }
-
     // this.setState({ selected: newSelected });
   };
 
@@ -288,12 +287,16 @@ class EnhancedTable extends React.Component {
                     // </TableCell>
                     }
                     <TableCell padding="none">{n.day || n.month}</TableCell>
-                    <TableCell numeric>{n.c1}</TableCell>
                     <TableCell numeric>{n.c2}</TableCell>
                     <TableCell numeric>{n.c3}</TableCell>
                     <TableCell numeric>{n.c4}</TableCell>
+                    <TableCell numeric style={{fontWeight:'500'}}>
+                      {Number(parseFloat(n.c2+n.c3+n.c4).toFixed(2))}
+                    </TableCell>
+                    <TableCell numeric>{n.c1}</TableCell>
                     <TableCell numeric>{n.c5}</TableCell>
                     <TableCell numeric>{n.c6}</TableCell>
+
                   </TableRow>
                 );
               })}

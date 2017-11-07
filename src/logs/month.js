@@ -163,6 +163,7 @@ class MonthGen extends Component {
           data['month'] = moment(data['ddt']).format("MMM Do");
           data["ddt"] = data['ddt'].split('/').reverse()[0];
         }
+        data['loadtotal'] = Number(parseFloat(data["c4"]+data["c3"]+data["c2"]).toFixed(2));
         return d;
       });
     } else {
@@ -249,6 +250,7 @@ class MonthGen extends Component {
         energyMonth: de,
         monthprogress: false,
       });
+      console.log("TME:",self.state.energyMonth);
       let weekDays = getCurrentWeekArray();
       let weekEnergy = de.filter((e)=>{
         return weekDays.indexOf(e.ddt) !== -1
@@ -341,12 +343,13 @@ class MonthGen extends Component {
               tdata={this.state.energyMonth}
               thead={[
                 {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
+                {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
+                {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
+                {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
+                {label:"Load Total",numeric:true,disablePadding:false,id:"mtotal"},
                 {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Channel 2",numeric:true,disablePadding:false,id:"c2"},
-                {label:"Channel 3",numeric:true,disablePadding:false,id:"c3"},
-                {label:"Channel 4",numeric:true,disablePadding:false,id:"c4"},
                 {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"}
+                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"},
               ]}/>
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>
