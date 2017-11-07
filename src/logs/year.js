@@ -39,7 +39,7 @@ const APIHEADERS = {
         expires: 300000,
         debug: true,
         renew: false,
-        retries: 3,
+        retries: 1,
         retryDelay: 1000,
   }
 };
@@ -97,13 +97,6 @@ const styles = theme => ({
 });
 
 const years = ["2015","2016","2017"];
-const getCurrentWeekArray = () => {
-  let days = [];
-  for(let i=0;i<7;i++){
-    days.push(moment().weekday(i).format("DD"))
-  }
-  return days;
-}
 const util = (d) => {
   let o = 0;
   if(Array.isArray(d)) {
@@ -154,8 +147,8 @@ class YearGen extends Component {
         if(data["c2"] < 0) data["c2"] = 0;
         if(data["c3"] < 0) data["c3"] = 0;
         if(data["c4"] < 0) data["c4"] = 0;
-        data['year'] = moment(data['ddm']).format("YYYY");
-        data["ddm"] = data['ddm'];
+        data['month'] = moment(data['ddm']).format("MMMM");
+        data["ddm"] = moment(data['ddm']).format("MMM");
         return d;
       });
     } else {
@@ -166,14 +159,13 @@ class YearGen extends Component {
   changeYearEnergy = (year) => {
     let yearApiHeaders = APIHEADERS;
     yearApiHeaders.offline.expires = 1000*60*60;
-    console.log("HeadersMonth:",yearApiHeaders);
     let url = "https://api.blufieldsenergy.com/v1/m?ddm="+year;
     let self = this;
     let prevYear = this.state.selectedYear;
     self.setState({
       yearprogress: true,
       "selectedYear": year,
-    })
+    });
     offlineFetch(url,yearApiHeaders)
     .then(response => response.json())
     .then(function(response) {
@@ -236,46 +228,9 @@ class YearGen extends Component {
       } else {
         de =  self.transformData([response]);
       }
-      console.log("YEAR Energy:",de);
       self.setState({
         energyYear: de,
         yearprogress: false,
-      });
-      let weekDays = getCurrentWeekArray();
-      let weekEnergy = de.filter((e)=>{
-        return weekDays.indexOf(e.ddt) !== -1
-      });
-      let group = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
-      let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
-
-      weekEnergy.map((e,i)=>{
-        group["c2"].push(e.c2);
-        group["c3"].push(e.c3);
-        group["c4"].push(e.c4);
-        return e;
-      });
-
-      let ge = _.map(group,(e,i)=>{
-        return _.sum(e);
-      });
-      de.map((e,i)=>{
-        monthgroup["c2"].push(e.c2);
-        monthgroup["c3"].push(e.c3);
-        monthgroup["c4"].push(e.c4);
-        return e;
-      });
-      let me = _.map(monthgroup,(e,i)=>{
-        return _.sum(e);
-      });
-      let getotal = _.sum(ge);
-      let metotal = _.sum(me);
-      self.setState({
-        weekEnergyRL: parseFloat(ge[1]).toFixed(3),
-        weekEnergyYL: parseFloat(ge[2]).toFixed(3),
-        weekEnergyBL: parseFloat(ge[3]).toFixed(3),
-        weekEnergyL:  parseFloat(getotal).toFixed(3),
-        monthEnergyL: parseFloat(metotal).toFixed(3),
-        progessL: false,
       });
       return response;
     });
@@ -312,11 +267,11 @@ class YearGen extends Component {
               </div>
               { this.state.yearprogress ? <LinearProgress />: ""}
               <ResponsiveContainer height={350} className={ this.state.yearprogress?classes.opacity:"bk-default"}>
-                <BarChart data={_.sortBy(this.state.energyYear,['ddt'])}
+                <BarChart data={_.sortBy(this.state.energyYear,['ddm'])}
                       maxBarSize={30} unit="kWh"
                       margin={{top: 20, right: 30, left: 20, bottom: 40}}
                       onClick={this.handleClick}>
-                   <XAxis dataKey="year" angle={-45} textAnchor="end" interval={0}/>
+                   <XAxis dataKey="ddm" angle={-45} textAnchor="end" interval={0}/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
@@ -332,7 +287,7 @@ class YearGen extends Component {
               title="Month Wise Energy"
               tdata={this.state.energyYear}
               thead={[
-                {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
+                {label:"Month",numeric:false,disablePadding:false,id:"month"},
                 {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
                 {label:"Channel 2",numeric:true,disablePadding:false,id:"c2"},
                 {label:"Channel 3",numeric:true,disablePadding:false,id:"c3"},

@@ -290,7 +290,6 @@ class MonthGen extends Component {
   }
   render(){
     const { classes, width } = this.props;
-    const { activeIndex } = this.state;
     return (
       <div className={classes.root}>
         <Grid container spacing={0}>
