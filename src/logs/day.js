@@ -121,7 +121,7 @@ class DayGen extends Component {
       totalEnergyL: 0,
       energyDay: [],
       energyMonth: [],
-      date: this.props.date,
+      date: moment().format('YYYY/MM/DD'),
       startDate: moment(),
       focused: false,
       progess: true,
@@ -159,14 +159,13 @@ class DayGen extends Component {
   }
   changeEnergy = (date) => {
     let datediff = moment().diff(date,'days');
-    console.log("Changed Date:",datediff);
+    console.log("Changed Date:",datediff,date);
     let dateApiHeaders = APIHEADERS;
     if(datediff >= 1) {
       dateApiHeaders.offline.expires = 1000*60*60*24;
     } else {
       dateApiHeaders.offline.expires = 1000*60*5;
     }
-    console.log("HeadersDate:",dateApiHeaders);
     let dhr = moment(date).format('YYYY/MM/DD');
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+dhr;
     let self = this;
@@ -177,7 +176,6 @@ class DayGen extends Component {
     offlineFetch(url,dateApiHeaders)
     .then(response => response.json())
     .then(function(response) {
-      console.log("Date Changed Energy:",response,typeof response);
       if(response.energy) {
         let de =  self.transformData(response.energy);
         self.setState({
@@ -192,7 +190,6 @@ class DayGen extends Component {
           dialogOpen: true
         })
       }
-      console.log(self.state.energyDay,"SD")
       return response;
     });
 
@@ -203,7 +200,13 @@ class DayGen extends Component {
 
   handleChange = () => {
   }
-
+  componentWillReceiveProps(n,o) {
+    if(n.date){
+      let nd = moment(n.date,'YYYY/MM/DD');
+      console.log("Will rec props:",o,n,nd);
+      this.changeEnergy(nd);
+    }
+  }
   componentDidMount(){
     console.log("DayGen component did mount");
     let { date } = this.state;

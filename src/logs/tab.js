@@ -90,7 +90,7 @@ class Logs extends Component {
       totalEnergyL: 0,
       energyDay: [],
       energyMonth: [],
-      date: moment().format('DD/MM/YYYY'),
+      date: moment().format('YYYY/MM/DD'),
       month: moment().format('YYYY/MM'),
       startDate: moment(),
       focused: false,
@@ -106,11 +106,16 @@ class Logs extends Component {
     this.handleDate = this.handleDate.bind(this);
   }
 
-  handleChange = (event, value) => {
-    console.log("Tab Change",this.props);
-    this.setState({ value,
-    date: moment(this.props.match.params.dhr,'DDMMYYYY').format('DD/MM/YYYY') });
-  };
+  handleChange = (event, value, date) => {
+    console.log("Tab Change", date);
+    if(!date){
+      date = moment();
+    };
+    this.setState({
+      value: value,
+      date: date
+    });
+  }
   handleDate = (date) => {
     console.warn("TAB DATE CHANGED",date)
     this.setState({ date });
