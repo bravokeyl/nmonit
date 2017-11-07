@@ -222,7 +222,7 @@ class MonthGen extends Component {
   handleClick(data,e) {
     if(data){
       this.props.indexV(e,0);
-      this.props.history.push('/l/'+moment(data.activeLabel,'MMM Do').format('DDMMYYYY'));
+      // this.props.history.push('/l/'+moment(data.activeLabel,'MMM Do').format('DDMMYYYY'));
     } else {
       console.log("Clicked outside of the bars");
     }

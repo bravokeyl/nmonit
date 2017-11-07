@@ -108,7 +108,8 @@ class Logs extends Component {
 
   handleChange = (event, value) => {
     console.log("Tab Change",this.props);
-    this.setState({ value });
+    this.setState({ value,
+    date: moment(this.props.match.params.dhr,'DDMMYYYY').format('DD/MM/YYYY') });
   };
   handleDate = (date) => {
     console.warn("TAB DATE CHANGED",date)
@@ -123,7 +124,7 @@ class Logs extends Component {
   }
   render(){
     const { classes } = this.props;
-    console.warn("RENDER TABBED")
+    console.warn("RENDER TABBED",this.state.date)
     return (
       <div className={classes.root}>
         <Grid item xs={12} sm={12}>

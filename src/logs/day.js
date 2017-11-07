@@ -121,7 +121,7 @@ class DayGen extends Component {
       totalEnergyL: 0,
       energyDay: [],
       energyMonth: [],
-      date: moment().format('YYYY/MM/DD'),
+      date: this.props.date,
       startDate: moment(),
       focused: false,
       progess: true,
@@ -239,6 +239,7 @@ class DayGen extends Component {
 
                   <SingleDatePicker
                     date={this.state.startDate}
+                    displayFormat="DD/MM/YYYY"
                     onDateChange={date => {console.log("Date Changed"); this.changeEnergy(date);}}
                     focused={this.state.focused}
                     numberOfMonths={1}
