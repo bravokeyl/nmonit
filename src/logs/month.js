@@ -172,7 +172,6 @@ class MonthGen extends Component {
   }
   changeMonthEnergy = (month) => {
     let monthdiff = moment().diff(moment().month(month),'days');
-    console.log("Changed Month:",monthdiff,month);
     let monthApiHeaders = APIHEADERS;
     if(monthdiff >= 1) {
       monthApiHeaders.offline.expires = 1000*60*60*24*28;
@@ -224,8 +223,6 @@ class MonthGen extends Component {
     }
   };
   componentWillReceiveProps(n,o) {
-    console.log("Month Will rec props");
-    console.log("Month NEW:",n,"OLD",o);
     if(n.month){
       let nd = moment(n.month,'YYYY/MM').format("MMM");
       this.changeMonthEnergy(nd);
