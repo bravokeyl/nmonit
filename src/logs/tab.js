@@ -95,10 +95,18 @@ class Logs extends Component {
     }
     this.handleChangeIndex = this.handleChangeIndex.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleDayChange = this.handleDayChange.bind(this);
     this.handleDate = this.handleDate.bind(this);
+    this.handleMonthChange = this.handleMonthChange.bind(this);
   }
 
-  handleChange = (event, value, date) => {
+  handleChange = (event, value) => {
+    this.setState({
+      value: value
+    });
+  };
+  handleDayChange = (event, value, date) => {
+    console.log("HANDLEDAYCHANGE",value,date);
     if(!date){
       date = moment();
     };
@@ -106,7 +114,18 @@ class Logs extends Component {
       value: value,
       date: date
     });
-  }
+  };
+  handleMonthChange = (event, value, month) => {
+    console.log("HANDLEDMONTHCHANGE",value,month);
+    if(!month){
+      month = moment().format('YYYY/MM');
+    };
+    this.setState({
+      value: value,
+      selectedMonth: month.format('MMMM'),
+      month: month
+    });
+  };
   handleDate = (date) => {
     this.setState({ date });
   };
@@ -139,8 +158,8 @@ class Logs extends Component {
             index={this.state.value}
             onChangeIndex={this.handleChangeIndex}>
             <DayGen date={this.state.date}/>
-            <MonthGen indexV={this.handleChange} />
-            <YearGen />
+            <MonthGen month={this.state.month} indexV={this.handleDayChange} />
+            <YearGen indexV={this.handleMonthChange} />
           </SwipeableViews>
         </Grid>
       </div>

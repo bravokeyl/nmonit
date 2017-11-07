@@ -148,6 +148,7 @@ class YearGen extends Component {
         if(data["c3"] < 0) data["c3"] = 0;
         if(data["c4"] < 0) data["c4"] = 0;
         data['month'] = moment(data['ddm']).format("MMMM");
+        data["md"]= data['ddm'];
         data["ddm"] = moment(data['ddm']).format("MMM");
         return d;
       });
@@ -169,7 +170,6 @@ class YearGen extends Component {
     offlineFetch(url,yearApiHeaders)
     .then(response => response.json())
     .then(function(response) {
-      console.log("Year Changed Energy:",response,typeof response);
       if(response.energy) {
         let de =  self.transformData(response.energy);
         console.log("Year transformData:",de)
@@ -185,15 +185,7 @@ class YearGen extends Component {
         });
       }
       return response;
-    })
-    // .catch((err)=>{
-    //   console.error("FETCH Failed:",err);
-    //   self.setState({
-    //     yearprogress: false,
-    //     selectedYear: prevYear
-    //   });
-    // });
-
+    });
   }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
@@ -206,12 +198,12 @@ class YearGen extends Component {
   }
   handleClick(data,e) {
     if(data){
-      this.props.indexV(e,0,moment(data.activeLabel,'MMM Do'));
-      // this.props.history.push('/l/'+moment(data.activeLabel,'MMM Do').format('DDMMYYYY'));
+      this.props.indexV(e,1,moment(data.activeLabel,'MMM'));
     } else {
       console.log("Clicked outside of the bars");
     }
   };
+
   componentDidMount(){
     console.info("YearGen component did mount");
     let { year } = this.state;
@@ -267,7 +259,7 @@ class YearGen extends Component {
               </div>
               { this.state.yearprogress ? <LinearProgress />: ""}
               <ResponsiveContainer height={350} className={ this.state.yearprogress?classes.opacity:"bk-default"}>
-                <BarChart data={_.sortBy(this.state.energyYear,['ddm'])}
+                <BarChart data={_.sortBy(this.state.energyYear,['md'])}
                       maxBarSize={30} unit="kWh"
                       margin={{top: 20, right: 30, left: 20, bottom: 40}}
                       onClick={this.handleClick}>

@@ -200,9 +200,10 @@ class DayGen extends Component {
   handleChange = () => {
   }
   componentWillReceiveProps(n,o) {
+    console.log("Day Will rec props");
+    console.log("Day NEW:",n,"OLD:",o);
     if(n.date){
       let nd = moment(n.date,'YYYY/MM/DD');
-      console.log("Will rec props");
       this.changeEnergy(nd);
     }
   }

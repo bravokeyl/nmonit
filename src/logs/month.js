@@ -172,29 +172,26 @@ class MonthGen extends Component {
   }
   changeMonthEnergy = (month) => {
     let monthdiff = moment().diff(moment().month(month),'days');
-    console.log("Changed Month:",monthdiff);
+    console.log("Changed Month:",monthdiff,month);
     let monthApiHeaders = APIHEADERS;
     if(monthdiff >= 1) {
       monthApiHeaders.offline.expires = 1000*60*60*24*28;
     } else {
       monthApiHeaders.offline.expires = 1000*60*5;
     }
-    console.log("HeadersMonth:",monthApiHeaders);
     let ddm = moment().month(month).format("YYYY/MM");
     let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
     let self = this;
     let prevMonth = this.state.selectedMonth;
     self.setState({
       monthprogress: true,
-      "selectedMonth": month,
+      "selectedMonth": moment(month,'MMM').format('MMMM')
     })
     offlineFetch(url,monthApiHeaders)
     .then(response => response.json())
     .then(function(response) {
-      console.log("Month Changed Energy:",response,typeof response);
       if(response.energy) {
         let de =  self.transformData(response.energy);
-        console.log("Month transformData:",de)
         self.setState({
           energyMonth: de,
           monthprogress: false,
@@ -222,11 +219,18 @@ class MonthGen extends Component {
   handleClick(data,e) {
     if(data){
       this.props.indexV(e,0,moment(data.activeLabel,'MMM Do'));
-      // this.props.history.push('/l/'+moment(data.activeLabel,'MMM Do').format('DDMMYYYY'));
     } else {
       console.log("Clicked outside of the bars");
     }
   };
+  componentWillReceiveProps(n,o) {
+    console.log("Month Will rec props");
+    console.log("Month NEW:",n,"OLD",o);
+    if(n.month){
+      let nd = moment(n.month,'YYYY/MM').format("MMM");
+      this.changeMonthEnergy(nd);
+    }
+  }
   componentDidMount(){
     console.info("MonthGen component did mount");
     let { month } = this.state;
@@ -289,7 +293,7 @@ class MonthGen extends Component {
 
   }
   render(){
-    const { classes, width } = this.props;
+    const { classes } = this.props;
     return (
       <div className={classes.root}>
         <Grid container spacing={0}>
@@ -297,7 +301,7 @@ class MonthGen extends Component {
             <Paper className={classes.paper} elevation={4}>
               <div className={classes.flex}>
                 <Typography color="inherit" className={classes.flex}>
-                 Month Energy ( Day wise ){width} - {this.state.selectedMonth}
+                 Month Energy ( Day wise )
                 </Typography>
                 <form className={classes.container}>
                   <FormControl className={classes.formControl}>
