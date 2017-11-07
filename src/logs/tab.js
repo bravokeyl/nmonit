@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import DayGen from './day';
 import MonthGen from './month';
-
+import YearGen from './year';
 
 const styles = theme => ({
   root: {
@@ -66,14 +66,6 @@ const styles = theme => ({
   }
 });
 
-function TabContainer({ children, dir }) {
-  return (
-    <div dir={dir}>
-      {children}
-    </div>
-  );
-}
-
 class Logs extends Component {
   constructor(props){
     super(props);
@@ -107,7 +99,6 @@ class Logs extends Component {
   }
 
   handleChange = (event, value, date) => {
-    console.log("Tab Change", date);
     if(!date){
       date = moment();
     };
@@ -117,7 +108,6 @@ class Logs extends Component {
     });
   }
   handleDate = (date) => {
-    console.warn("TAB DATE CHANGED",date)
     this.setState({ date });
   };
   handleChangeIndex = index => {
@@ -129,7 +119,6 @@ class Logs extends Component {
   }
   render(){
     const { classes } = this.props;
-    console.warn("RENDER TABBED",this.state.date)
     return (
       <div className={classes.root}>
         <Grid item xs={12} sm={12}>
@@ -151,7 +140,7 @@ class Logs extends Component {
             onChangeIndex={this.handleChangeIndex}>
             <DayGen date={this.state.date}/>
             <MonthGen indexV={this.handleChange} />
-            <TabContainer>Item Three</TabContainer>
+            <YearGen />
           </SwipeableViews>
         </Grid>
       </div>

@@ -159,7 +159,6 @@ class DayGen extends Component {
   }
   changeEnergy = (date) => {
     let datediff = moment().diff(date,'days');
-    console.log("Changed Date:",datediff,date);
     let dateApiHeaders = APIHEADERS;
     if(datediff >= 1) {
       dateApiHeaders.offline.expires = 1000*60*60*24;
@@ -203,7 +202,7 @@ class DayGen extends Component {
   componentWillReceiveProps(n,o) {
     if(n.date){
       let nd = moment(n.date,'YYYY/MM/DD');
-      console.log("Will rec props:",o,n,nd);
+      console.log("Will rec props");
       this.changeEnergy(nd);
     }
   }
