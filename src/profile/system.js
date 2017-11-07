@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
 import List, { ListItem } from 'material-ui/List';
 import { withStyles } from 'material-ui/styles';
+
+import clearAPICache from '../common/utils';
 
 const styles = theme => ({
   root: {
@@ -29,7 +32,9 @@ class System extends Component {
       value: 0,
     }
   }
-
+  clearCacheHandler(){
+    clearAPICache();
+  }
   render(){
     const { classes } = this.props;
     return (
@@ -51,6 +56,11 @@ class System extends Component {
               </ListItem>
             </List>
             <Typography type="subheading">Address:</Typography>
+          </Grid>
+          <Grid item sm={12}>
+            <Button onClick={this.clearCacheHandler}>
+              Clear Cache
+            </Button>
           </Grid>
         </Grid>
       </div>

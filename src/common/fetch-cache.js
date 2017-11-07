@@ -102,7 +102,6 @@ function offlineFetch(url, options) {
                   res.clone().text().then(function (content) {
 
                       var contentToStore = JSON.stringify({
-                          bkurl: url,
                           status: res.status,         // store the response status
                           statusText: res.statusText, // the response status text
                           contentType: contentType,   // the response content type

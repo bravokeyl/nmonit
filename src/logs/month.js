@@ -237,15 +237,12 @@ class MonthGen extends Component {
     offlineFetch(dayURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
-      console.log("Res",response);
       let de;
       if(response.energy){
         de =  self.transformData(response.energy);
       } else {
         de =  self.transformData([response]);
       }
-
-      console.log("DE",de,dayURL,response)
 
       self.setState({
         energyMonth: de,
@@ -277,7 +274,6 @@ class MonthGen extends Component {
       let me = _.map(monthgroup,(e,i)=>{
         return _.sum(e);
       });
-      console.log("weekEnergy",ge[1],ge,me)
       let getotal = _.sum(ge);
       let metotal = _.sum(me);
       self.setState({
