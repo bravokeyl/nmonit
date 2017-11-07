@@ -39,6 +39,11 @@ const styles = theme => ({
     margin: 24,
     padding: 16,
   },
+  tabcard: {
+    display: "flex",
+    flexDirection: 'column',
+    margin: 24,
+  },
   details: {
     display: 'flex',
     flex: 1,
@@ -122,13 +127,14 @@ class Profile extends Component {
             </Card>
           </Grid>
           <Grid item xs={12} sm={9}>
-            <Card className={classes.card}>
+            <Card className={classes.tabcard}>
               <Tabs
                 value={value}
                 onChange={this.handleChange}
                 indicatorColor="primary"
                 textColor="primary"
                 fullWidth
+                style={{borderBottom: "1px solid #eee"}}
               >
                 <Tab label="System" />
                 <Tab label="Image"/>
