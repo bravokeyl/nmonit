@@ -174,7 +174,6 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
-      console.log("Today HR",de);
       let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
       de.map((e,i)=>{
         dayEnergy["c2"].push(_.sum(e.c2));
@@ -182,13 +181,10 @@ class Overview extends Component {
         dayEnergy["c4"].push(_.sum(e.c4));
         return e;
       });
-      console.log("TDHRDE",dayEnergy)
       let me = _.map(dayEnergy,(e,i)=>{
         return _.sum(e);
       });
-      console.log("TDHRSUM",me)
       let daytotal = _.sum(me);
-      console.log("TDHRTotal",daytotal)
       self.setState({
         todayEnergyL: parseFloat(daytotal).toFixed(3)
       });
@@ -234,7 +230,6 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
-      console.log("Week HR",de);
       let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
       de.map((e,i)=>{
         dayEnergy["c2"].push(e.c2);
@@ -242,13 +237,10 @@ class Overview extends Component {
         dayEnergy["c4"].push(e.c4);
         return e;
       });
-      console.log("WKHRDE",dayEnergy)
       let me = _.map(dayEnergy,(e,i)=>{
         return _.sum(e);
       });
-      console.log("WKHRSUM",me)
       let weektotal = _.sum(me);
-      console.log("WKHRTotal",weektotal)
       self.setState({
         weekEnergyL: parseFloat(weektotal).toFixed(2),
         weekEnergyRL: parseFloat(me[1]).toFixed(2),

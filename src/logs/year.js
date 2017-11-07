@@ -172,7 +172,6 @@ class YearGen extends Component {
     .then(function(response) {
       if(response.energy) {
         let de =  self.transformData(response.energy);
-        console.log("Year transformData:",de)
         self.setState({
           energyYear: de,
           yearprogress: false,

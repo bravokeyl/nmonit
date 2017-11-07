@@ -298,7 +298,7 @@ class MonthGen extends Component {
             <Paper className={classes.paper} elevation={4}>
               <div className={classes.flex}>
                 <Typography color="inherit" className={classes.flex}>
-                 Month Energy ( Day wise )
+                 Month Energy ( Day wise ) - {this.state.selectedMonth}
                 </Typography>
                 <form className={classes.container}>
                   <FormControl className={classes.formControl}>
