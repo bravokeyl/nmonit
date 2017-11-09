@@ -293,9 +293,9 @@ class EnhancedTable extends React.Component {
                     <TableCell numeric style={{fontWeight:'500'}}>
                       {Number(parseFloat(n.c2+n.c3+n.c4).toFixed(2))}
                     </TableCell>
-                    <TableCell numeric>{n.c1}</TableCell>
-                    <TableCell numeric>{n.c5}</TableCell>
-                    <TableCell numeric>{n.c6}</TableCell>
+                    <TableCell numeric>0</TableCell>
+                    <TableCell numeric>0</TableCell>
+                    <TableCell numeric>0</TableCell>
 
                   </TableRow>
                 );
