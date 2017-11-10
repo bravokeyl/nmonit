@@ -58,7 +58,7 @@ class App extends Component {
         isLoggedin: true
       });
     }
-    console.log("APP component will mount",isLoggedIn);
+    console.log("APP component will mount, isUserLoggedIn:",isLoggedIn);
   }
   render() {
     return (

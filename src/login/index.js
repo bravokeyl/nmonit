@@ -67,9 +67,9 @@ class Login extends Component {
     this.setState({ loading: true })
     authenticateUser(this.state.email, this.state.password, (err, result) => {
       if (err) {
-        console.log(err)
+        console.error("Authenictation error:",err)
         this.setState({ loading: false })
-        return
+        return;
       }
       this.props.authHandler(this.props.history);
     });
