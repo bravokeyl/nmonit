@@ -1,12 +1,18 @@
+import {Config, CognitoIdentityCredentials} from "aws-sdk";
 import {
   CognitoUserPool,
   CognitoUserAttribute,
   CognitoUser,
-  AuthenticationDetails
+  AuthenticationDetails,
 } from 'amazon-cognito-identity-js'
 import poolData from './'
 
-const userPool = new CognitoUserPool(poolData)
+Config.region = poolData.region;
+Config.credentials = new CognitoIdentityCredentials({
+  IdentityPoolId: poolData.IdentityPoolId
+});
+
+const userPool = new CognitoUserPool(poolData);
 
 export const createUser = (username, email, password, callback) => {
   const attributeList = [
@@ -43,6 +49,13 @@ export const authenticateUser = (email, password, callback) => {
   cognitoUser.authenticateUser(authDetails, {
     onSuccess: (result) => {
       console.log("access token",result);
+      // Config.credentials = new CognitoIdentityCredentials({
+      //     IdentityPoolId : poolData.IdentityPoolId, // your identity pool id here
+      //     Logins : {
+      //         // Change the key below according to the specific region your user pool is in.
+      //         'cognito-idp.us-east-1.amazonaws.com/us-east-1_i0cqc5l3m' : result.getIdToken().getJwtToken()
+      //     }
+      // });
       callback(null, result);
     },
     onFailure: err => {
@@ -80,7 +93,6 @@ export const getIdToken = (callback) => {
   }
 }
 
-
 export const getCurrentUser = (callback) => {
   const cognitoUser = userPool.getCurrentUser();
   if (!cognitoUser) return false;
@@ -102,4 +114,20 @@ export const getCurrentUser = (callback) => {
       // });
     })
   }
+}
+
+export const signinCallback = (googleUser) => {
+  // if (authResult['status']['signed_in']) {
+    console.log("SignIn Call back");
+     Config.credentials = new CognitoIdentityCredentials({
+        IdentityPoolId: poolData.IdentityPoolId,
+        Logins: {
+           'accounts.google.com': googleUser.getAuthResponse().id_token
+        }
+     });
+
+     Config.credentials.get(function(){
+
+     });
+  // }
 }

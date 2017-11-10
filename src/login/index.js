@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 
-import { authenticateUser } from '../aws/cognito';
+import { authenticateUser, signinCallback } from '../aws/cognito';
 
 import bg from './bg.jpg';
 const styles = theme => ({
@@ -44,7 +44,12 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
 });
-
+const signOut = () => {
+  var auth2 = window.gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
+};
 class Login extends Component {
   constructor(props){
     super(props);
@@ -77,6 +82,7 @@ class Login extends Component {
   componentDidMount(){
     console.log("Login component Did mount");
   }
+
   render() {
     const { classes } = this.props;
     return (
@@ -111,6 +117,13 @@ class Login extends Component {
                     onClick={this.handleSubmit}
                     >
                     Login
+                  </Button>
+                  <br/>
+                  <div className="g-signin2" data-onsuccess="signinCallback"></div>
+                  <Button raised className={classes.button} color="primary"
+                    onClick={signOut}
+                    >
+                    Sign out
                   </Button>
                 </form>)
               }
