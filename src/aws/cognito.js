@@ -41,9 +41,26 @@ export const authenticateUser = (email, password, callback) => {
   }
   const cognitoUser = new CognitoUser(userData)
   cognitoUser.authenticateUser(authDetails, {
-    onSuccess: result => {
-      // console.log('access token + ' + result.getAccessToken().getJwtToken())
-      callback(null, result)
+    onSuccess: (result,userConfirmationNecessary) => {
+      console.log('access token + ' + userConfirmationNecessary)
+      cognitoUser.setDeviceStatusRemembered({
+        onSuccess: function (result) {
+            console.log('call result: ' , result);
+            return callback(null, result);
+        },
+        onFailure: function(err) {
+            alert(err);
+        }
+      });
+      cognitoUser.listDevices(4, null, {
+        onSuccess: function (result) {
+            console.log('CAll listDevices: ' ,result);
+        },
+        onFailure: function(err) {
+            alert(err);
+        }
+      });
+      return callback(null, false);
     },
     onFailure: err => {
       callback(err)
