@@ -15,7 +15,7 @@ import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
+import { Line, ComposedChart, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
@@ -150,6 +150,7 @@ class DayGen extends Component {
           data['month'] = moment(data['ddt']).format("MMM Do");
           data["ddt"] = data['ddt'].split('/').reverse()[0];
         }
+        data['total'] = parseFloat(Number(data["c2"] + data["c3"] + data["c4"])).toFixed(2);
         return d;
       });
     } else {
@@ -252,7 +253,7 @@ class DayGen extends Component {
                 </div>
                 { this.state.progress ? <LinearProgress />: ""}
                 <ResponsiveContainer height={350} className={ this.state.progress?classes.opacity:"bk-default"}>
-                  <BarChart data={_.sortBy(this.state.energyDay,['dhr'])}
+                  <ComposedChart data={_.sortBy(this.state.energyDay,['dhr'])}
                     maxBarSize={30}
                     margin={{top: 20, right: 30, left: 20, bottom: 5}} barSize={30}>
                  <XAxis dataKey="dhr" angle={-45} textAnchor="end"/>
@@ -262,7 +263,9 @@ class DayGen extends Component {
                  <Bar dataKey="c2" stackId="a" fill="#f44336" />
                  <Bar dataKey="c3" stackId="a" fill="#ffc658" />
                  <Bar dataKey="c4" stackId="a" fill="#3f51b5" />
-              </BarChart>
+                 <Line type='monotone' dataKey='total' dots={true}
+                   strokeDasharray="5 5" stroke='#ff7300'/>
+              </ComposedChart>
                 </ResponsiveContainer>
               </div>
             </Paper>

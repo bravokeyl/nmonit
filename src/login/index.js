@@ -118,13 +118,15 @@ class Login extends Component {
                     >
                     Login
                   </Button>
-                  <br/>
-                  <div className="g-signin2" data-onsuccess="signinCallback"></div>
-                  <Button raised className={classes.button} color="primary"
-                    onClick={signOut}
-                    >
-                    Sign out
-                  </Button>
+                  {
+                  // <br/>
+                  // <div className="g-signin2" data-onsuccess="signinCallback"></div>
+                  // <Button raised className={classes.button} color="primary"
+                  //   onClick={signOut}
+                  //   >
+                  //   Sign out
+                  // </Button>
+                  }
                 </form>)
               }
             </div>
