@@ -91,7 +91,7 @@ class Login extends Component {
           <Grid item xs={12} sm={12}>
             <div className={classes.flex}>
               {
-                (<form className={classes.container} noValidate autoComplete="off">
+                (<form className={classes.container} noValidate >
                   <TextField
                     required
                     id="email"
@@ -100,12 +100,14 @@ class Login extends Component {
                     value={this.state.email}
                     onChange={this.handleChange('email')}
                     margin="normal"
+                    autoComplete="username email"
                   />
                   <br/>
                   <TextField
                     required
                     id="password"
                     label="Password"
+                    autoComplete="current-password"
                     className={classes.textField}
                     margin="normal"
                     type="password"
