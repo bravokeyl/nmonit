@@ -14,6 +14,7 @@ import _ from 'lodash';
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
+import BKPanel from '../common/panel';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -100,7 +101,7 @@ class Overview extends Component {
     this.state = {
       progessL: true,
       idToken: getIdToken() ? getIdToken().jwtToken : '',
-      
+
       lastupdated: moment(Date.now()).fromNow(),
       todayEnergyL: 0,
       weekEnergyL: 0,
@@ -109,6 +110,13 @@ class Overview extends Component {
       weekEnergyBL: 0,
       monthEnergyL: 0,
       totalEnergyL: 0,
+      todayEnergyGenL: 0,
+      gen: {
+        todayEnergyGenL: 0,
+        weekEnergyGenL: 0,
+        monthEnergyGenL: 0,
+        totalEnergyGenL: 0,
+      },
       energyDay: [],
       energyMonth: [],
       date: moment().format('YYYY/MM/DD'),
@@ -168,20 +176,35 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
-      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+
+      let dayEnergyConsumption = {"c2":[],"c3":[],"c4":[]};
+      let dayEnergyGeneration = {"c1":[],"c5":[],"c6":[]};
+      console.log("URL HourWise",de);
+      console.log("URL HourWise",dayEnergyGeneration);
       de.map((e,i)=>{
-        dayEnergy["c2"].push(_.sum(e.c2));
-        dayEnergy["c3"].push(_.sum(e.c3));
-        dayEnergy["c4"].push(_.sum(e.c4));
+        dayEnergyConsumption["c2"].push(_.sum(e.c2));
+        dayEnergyConsumption["c3"].push(_.sum(e.c3));
+        dayEnergyConsumption["c4"].push(_.sum(e.c4));
+        dayEnergyGeneration["c1"].push(_.sum(e.c1));
+        dayEnergyGeneration["c5"].push(_.sum(e.c5));
+        dayEnergyGeneration["c6"].push(_.sum(e.c6));
         return e;
       });
-      let me = _.map(dayEnergy,(e,i)=>{
+      let mec = _.map(dayEnergyConsumption,(e,i)=>{
         return _.sum(e);
       });
-      let daytotal = _.sum(me);
-      self.setState({
-        todayEnergyL: parseFloat(daytotal).toFixed(3)
+      let meg = _.map(dayEnergyGeneration,(e,i)=>{
+        return _.sum(e);
       });
+      let daytotalConsumption = _.sum(mec);
+      let daytotalGeneration = _.sum(meg);
+      self.setState(prevState => ({
+        todayEnergyL: parseFloat(daytotalConsumption).toFixed(3),
+        gen: {
+          ...prevState.gen,
+          todayEnergyGenL: parseFloat(daytotalGeneration).toFixed(3)
+        }
+      }));
       return response;
     });
 
@@ -198,23 +221,36 @@ class Overview extends Component {
         energyMonth: de,
       });
 
-      let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
-
+      let monthgroup = {"c2":[],"c3":[],"c4":[]};
+      let monthgroupGen = {"c1":[],"c5":[],"c6":[]};
+      console.log("dayURL dayWise",de);
+      console.log("dayURL dayWise",monthgroupGen);
       de.map((e,i)=>{
         monthgroup["c2"].push(e.c2);
         monthgroup["c3"].push(e.c3);
         monthgroup["c4"].push(e.c4);
+        monthgroupGen["c1"].push(e.c1);
+        monthgroupGen["c5"].push(e.c5);
+        monthgroupGen["c6"].push(e.c6);
         return e;
       });
       let me = _.map(monthgroup,(e,i)=>{
         return _.sum(e);
       });
+      let meg = _.map(monthgroupGen,(e,i)=>{
+        return _.sum(e);
+      });
 
       let metotal = _.sum(me);
-      self.setState({
+      let metotalGen = _.sum(meg);
+      self.setState(prevState => ({
         monthEnergyL: parseFloat(metotal).toFixed(2),
         progessL: false,
-      });
+        gen: {
+          ...prevState.gen,
+          monthEnergyGenL: parseFloat(metotalGen).toFixed(3)
+        }
+      }));
       return response;
     }, function(error) {
       console.error("ERR",error);
@@ -224,53 +260,96 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
-      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+      let dayEnergy = {"c2":[],"c3":[],"c4":[]};
+      let dayEnergyGen = {"c1":[],"c5":[],"c6":[]};
       de.map((e,i)=>{
         dayEnergy["c2"].push(e.c2);
         dayEnergy["c3"].push(e.c3);
         dayEnergy["c4"].push(e.c4);
+        dayEnergyGen["c1"].push(e.c1);
+        dayEnergyGen["c5"].push(e.c5);
+        dayEnergyGen["c6"].push(e.c6);
         return e;
       });
+      console.log("weekURL dayWise",de);
+      console.log("weekURL dayWise",dayEnergyGen);
       let me = _.map(dayEnergy,(e,i)=>{
         return _.sum(e);
       });
       let weektotal = _.sum(me);
-      self.setState({
+      let meg = _.map(dayEnergyGen,(e,i)=>{
+        return _.sum(e);
+      });
+      let weektotalGen = _.sum(meg);
+      self.setState( prevState => ({
+        ...prevState.gen,
+        weekEnergyL: parseFloat(weektotal).toFixed(2),
+        weekEnergyGenL: parseFloat(weektotalGen).toFixed(2),
+        weekEnergyRL: parseFloat(me[1]).toFixed(2),
+        weekEnergyYL: parseFloat(me[2]).toFixed(2),
+        weekEnergyBL: parseFloat(me[3]).toFixed(2),
+      }));
+      self.setState(prevState => ({
         weekEnergyL: parseFloat(weektotal).toFixed(2),
         weekEnergyRL: parseFloat(me[1]).toFixed(2),
         weekEnergyYL: parseFloat(me[2]).toFixed(2),
         weekEnergyBL: parseFloat(me[3]).toFixed(2),
-      });
+        gen: {
+          ...prevState.gen,
+          weekEnergyGenL: parseFloat(weektotalGen).toFixed(2)
+        }
+      }));
       return response;
     })
     .catch((err)=>{
       console.error("Week Fetch Error:",err);
     });
     APIHEADERS.offline.expires = 60*60*1000;
+
     offlineFetch(monthURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
-      let de =  response.energy;
-      let dayEnergy = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+      let de =  response;
+      console.log(response,"MONTHURL")
+      if(!Array.isArray(de)){
+        de = [de]
+        console.log("Not array",de)
+      }
+      let dayEnergy = {"c2":[],"c3":[],"c4":[]};
+      let dayEnergyGen = {"c1":[],"c5":[],"c6":[]};
       de.map((e,i)=>{
         dayEnergy["c2"].push(e.c2);
         dayEnergy["c3"].push(e.c3);
         dayEnergy["c4"].push(e.c4);
+        dayEnergyGen["c1"].push(e.c1);
+        dayEnergyGen["c5"].push(e.c5);
+        dayEnergyGen["c6"].push(e.c6);
         return e;
       });
       let me = _.map(dayEnergy,(e,i)=>{
         return _.sum(e);
       });
-      let yeartotal = _.sum(me);
-      self.setState({
-        totalEnergyL: parseFloat(yeartotal).toFixed(2),
+      let meg = _.map(dayEnergyGen,(e,i)=>{
+        return _.sum(e);
       });
+      let yeartotal = _.sum(me);
+      let yeartotalGen = _.sum(meg);
+      console.log(meg,"MEG Total")
+      self.setState(prevState => ({
+        totalEnergyL: parseFloat(yeartotal).toFixed(2),
+        gen: {
+          ...prevState.gen,
+          totalEnergyGenL: parseFloat(yeartotalGen).toFixed(3)
+        }
+      }));
       return response;
     })
     .catch((err)=>{
-      console.error("Week Fetch Error:",err);
+      console.error("Month Fetch Error:",err);
     });
+
   }
+
   render(){
     const { classes } = this.props;
     return (
@@ -351,6 +430,15 @@ class Overview extends Component {
               </Typography>
             </Card>
           </Grid>
+        </Grid>
+        <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
+          Generation
+        </Typography>
+        <Grid container spacing={0}>
+          <BKPanel data={{energy: this.state.gen.todayEnergyGenL}} title='Energy - Today'/>
+          <BKPanel data={{energy: this.state.gen.weekEnergyGenL}} title='Energy - This Week'/>
+          <BKPanel data={{energy: this.state.gen.monthEnergyGenL}} title='Energy - This Month'/>
+          <BKPanel data={{energy: this.state.gen.totalEnergyGenL}} title='Energy - Total'/>
         </Grid>
       </div>
     );
