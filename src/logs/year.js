@@ -96,7 +96,7 @@ const styles = theme => ({
   }
 });
 
-const years = ["2015","2016","2017"];
+const years = ["2015","2016","2017","2018"];
 const util = (d) => {
   let o = 0;
   if(Array.isArray(d)) {
@@ -147,9 +147,9 @@ class YearGen extends Component {
         if(data["c2"] < 0) data["c2"] = 0;
         if(data["c3"] < 0) data["c3"] = 0;
         if(data["c4"] < 0) data["c4"] = 0;
-        data['month'] = moment(data['ddm']).format("MMMM");
+        data['month'] = moment(data['ddm']).format("MMMM YYYY");
         data["md"]= data['ddm'];
-        data["ddm"] = moment(data['ddm']).format("MMM");
+        data["ddm"] = moment(data['ddm']).format("MMM YYYY");
         return d;
       });
     } else {
@@ -197,7 +197,8 @@ class YearGen extends Component {
   }
   handleClick(data,e) {
     if(data){
-      this.props.indexV(e,1,moment(data.activeLabel,'MMM'));
+      console.log(data,"activ")
+      this.props.indexV(e,1,moment(data.activeLabel,'MMM YYYY'));
     } else {
       console.log("Clicked outside of the bars");
     }

@@ -160,7 +160,7 @@ class MonthGen extends Component {
           data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
         }
         if(data['ddt']){
-          data['month'] = moment(data['ddt']).format("MMM Do");
+          data['month'] = moment(data['ddt']).format("MMM Do YYYY");
           data["ddt"] = data['ddt'].split('/').reverse()[0];
         }
         data['loadtotal'] = Number(parseFloat(data["c4"]+data["c3"]+data["c2"]).toFixed(2));
@@ -172,20 +172,22 @@ class MonthGen extends Component {
     return d;
   }
   changeMonthEnergy = (month) => {
-    let monthdiff = moment().diff(moment().month(month),'days');
+    console.log("Month",month);
+    let monthdiff = moment().diff(moment(month,'YYYY/MM'),'days');
+    console.log("Month Diff",monthdiff)
     let monthApiHeaders = APIHEADERS;
     if(monthdiff >= 1) {
       monthApiHeaders.offline.expires = 1000*60*60*24*28;
     } else {
       monthApiHeaders.offline.expires = 1000*60*5;
     }
-    let ddm = moment().month(month).format("YYYY/MM");
+    let ddm = moment(month).format("YYYY/MM");
     let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
     let self = this;
     let prevMonth = this.state.selectedMonth;
     self.setState({
       monthprogress: true,
-      "selectedMonth": moment(month,'MMM').format('MMMM')
+      "selectedMonth": moment(month,'YYYY/MM').format('MMMM')
     })
     offlineFetch(url,monthApiHeaders)
     .then(response => response.json())
@@ -218,14 +220,17 @@ class MonthGen extends Component {
   }
   handleClick(data,e) {
     if(data){
-      this.props.indexV(e,0,moment(data.activeLabel,'MMM Do'));
+      console.log("Month active label",data)
+      this.props.indexV(e,0,moment(data.activeLabel,'MMM Do YYYY'));
     } else {
       console.log("Clicked outside of the bars");
     }
   };
   componentWillReceiveProps(n,o) {
     if(n.month){
-      let nd = moment(n.month,'YYYY/MM').format("MMM");
+      let nd = moment(n.month,'YYYY/MM').format("YYYY/MM");
+      console.log("PROPS Month",n.month,nd);
+
       this.changeMonthEnergy(nd);
     }
   }

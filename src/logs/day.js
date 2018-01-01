@@ -202,7 +202,9 @@ class DayGen extends Component {
   }
   componentWillReceiveProps(n,o) {
     if(n.date){
+
       let nd = moment(n.date,'YYYY/MM/DD');
+      console.log("Day PROPS",n.date,nd.format('YYYY/MM/DD'))
       this.changeEnergy(nd);
     }
   }

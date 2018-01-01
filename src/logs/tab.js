@@ -106,7 +106,7 @@ class Logs extends Component {
     });
   };
   handleDayChange = (event, value, date) => {
-    // console.log("HANDLE DAY CHANGE",value,date);
+    console.log("HANDLE DAY CHANGE",value,date);
     if(!date){
       date = moment();
     };
@@ -116,14 +116,14 @@ class Logs extends Component {
     });
   };
   handleMonthChange = (event, value, month) => {
-    // console.log("HANDLE MONTH CHANGE",value,month);
+    console.log("HANDLE MONTH CHANGE",value,month);
     if(!month){
       month = moment().format('YYYY/MM');
     };
     this.setState({
       value: value,
       selectedMonth: month.format('MMMM'),
-      month: month
+      month: moment(month,'MMM YYYY').format('YYYY/MM')
     });
   };
   handleDate = (date) => {
