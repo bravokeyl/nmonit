@@ -15,7 +15,6 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import Select from 'material-ui/Select';
-// import Hidden from 'material-ui/Hidden';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -40,7 +39,7 @@ const APIHEADERS = {
         expires: 300000,
         debug: true,
         renew: false,
-        retries: 3,
+        retries: 1,
         retryDelay: 1000,
   }
 };
@@ -97,14 +96,7 @@ const styles = theme => ({
   }
 });
 
-const months = moment.months();
-const getCurrentWeekArray = () => {
-  let days = [];
-  for(let i=0;i<7;i++){
-    days.push(moment().weekday(i).format("DD"))
-  }
-  return days;
-}
+const years = ["2015","2016","2017","2018"];
 const util = (d) => {
   let o = 0;
   if(Array.isArray(d)) {
@@ -115,7 +107,7 @@ const util = (d) => {
   }
   return o;
 }
-class MonthGen extends Component {
+class YearGen extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -131,19 +123,18 @@ class MonthGen extends Component {
       monthEnergyL: 0,
       totalEnergyL: 0,
       energyDay: [],
-      energyMonth: [],
-      month: moment().format('YYYY/MM'),
+      energyYear: [],
+      year: moment().format('YYYY/'),
       startDate: moment(),
       focused: false,
       progess: true,
-      monthprogress: true,
+      yearprogress: true,
       dialogOpen: false,
-      selectedMonth: moment().format('MMMM'),
-      selectedYear: moment().format('YYYY')
+      selectedYear: moment().format('YYYY'),
     }
-    this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
+    this.changeYearEnergy = this.changeYearEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
-    this.handleSelectMonth = this.handleSelectMonth.bind(this);
+    this.handleSelectYear = this.handleSelectYear.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -156,16 +147,9 @@ class MonthGen extends Component {
         if(data["c2"] < 0) data["c2"] = 0;
         if(data["c3"] < 0) data["c3"] = 0;
         if(data["c4"] < 0) data["c4"] = 0;
-        if(data['dhr']){
-          data["dhr"] = data['dhr'].split('/').reverse()[0];
-          data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
-        }
-        if(data['ddt']){
-          data['month'] = moment(data['ddt']).format("MMM Do YYYY");
-          data["ddt"] = data['ddt'].split('/').reverse()[0];
-        }
-        data['ltotal'] = Number(parseFloat(data["c4"]+data["c3"]+data["c2"]).toFixed(2));
-        data['stotal'] = Number(parseFloat(data["c1"]+data["c5"]+data["c6"]).toFixed(2));
+        data['month'] = moment(data['ddm']).format("MMMM YYYY");
+        data["md"]= data['ddm'];
+        data["ddm"] = moment(data['ddm']).format("MMM YYYY");
         return d;
       });
     } else {
@@ -173,88 +157,61 @@ class MonthGen extends Component {
     }
     return d;
   }
-  changeMonthEnergy = (month,y) => {
-    console.log("Month",month);
-    if(moment(month,"MMMM").isValid()){
-      // month =
-    }
-    let monthdiff = moment().diff(moment(month,'YYYY/MM'),'days');
-    console.log("Month Diff",monthdiff)
-    let monthApiHeaders = APIHEADERS;
-    if(monthdiff >= 1) {
-      monthApiHeaders.offline.expires = 1000*60*60*24*28;
-    } else {
-      monthApiHeaders.offline.expires = 1000*60*5;
-    }
-    let ddm = moment(month).format("YYYY/MM");
-    if(y){
-      let monthYear = this.state.selectedYear+"/"+month;
-      month = this.state.selectedYear+"/"+month;
-      ddm = moment(monthYear,'YYYY/MMMM').format("YYYY/MM");
-    }
-    let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
+  changeYearEnergy = (year) => {
+    let yearApiHeaders = APIHEADERS;
+    yearApiHeaders.offline.expires = 1000*60*60;
+    let url = "https://api.blufieldsenergy.com/v1/m?ddm="+year;
     let self = this;
-    let prevMonth = this.state.selectedMonth;
+    let prevYear = this.state.selectedYear;
     self.setState({
-      monthprogress: true,
-      "selectedMonth": moment(ddm,'YYYY/MM').format('MMMM')
-    })
-    offlineFetch(url,monthApiHeaders)
+      yearprogress: true,
+      "selectedYear": year,
+    });
+    offlineFetch(url,yearApiHeaders)
     .then(response => response.json())
     .then(function(response) {
       if(response.energy) {
         let de =  self.transformData(response.energy);
         self.setState({
-          energyMonth: de,
-          monthprogress: false,
+          energyYear: de,
+          yearprogress: false,
         });
       } else {
         self.setState({
-          monthprogress: false,
+          yearprogress: false,
           dialogOpen: true,
-          selectedMonth: prevMonth,
-        })
+          selectedYear: prevYear,
+        });
       }
       return response;
     });
-
   }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
   }
-  handleSelectMonth = name => event => {
-    console.log(event.target.value,"EVENT")
-    this.changeMonthEnergy(event.target.value,true);
+  handleSelectYear = name => event => {
+    this.changeYearEnergy(event.target.value);
   };
   handleChange = () => {
 
   }
   handleClick(data,e) {
     if(data){
-      console.log("Month active label",data)
-      this.props.indexV(e,0,moment(data.activeLabel,'MMM Do YYYY'));
+      console.log(data,"activ")
+      this.props.indexV(e,1,moment(data.activeLabel,'MMM YYYY'));
     } else {
       console.log("Clicked outside of the bars");
     }
   };
-  componentWillReceiveProps(n,o) {
-    if(n.month){
-      let nd = moment(n.month,'YYYY/MM').format("YYYY/MM");
-      console.log("PROPS Month",n.month,nd);
-      this.setState({
-        selectedYear: moment(nd).format('YYYY')
-      })
-      this.changeMonthEnergy(nd,false);
-    }
-  }
+
   componentDidMount(){
-    console.info("MonthGen component did mount");
-    let { month } = this.state;
+    console.info("YearGen component did mount");
+    let { year } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
-    let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
+    let yearURL = "https://api.blufieldsenergy.com/v1/m?ddm="+year;
     let self = this;
 
-    offlineFetch(dayURL,APIHEADERS)
+    offlineFetch(yearURL,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de;
@@ -263,47 +220,9 @@ class MonthGen extends Component {
       } else {
         de =  self.transformData([response]);
       }
-
       self.setState({
-        energyMonth: de,
-        monthprogress: false,
-      });
-      console.log("TME:",self.state.energyMonth);
-      let weekDays = getCurrentWeekArray();
-      let weekEnergy = de.filter((e)=>{
-        return weekDays.indexOf(e.ddt) !== -1
-      });
-      let group = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
-      let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
-
-      weekEnergy.map((e,i)=>{
-        group["c2"].push(e.c2);
-        group["c3"].push(e.c3);
-        group["c4"].push(e.c4);
-        return e;
-      });
-
-      let ge = _.map(group,(e,i)=>{
-        return _.sum(e);
-      });
-      de.map((e,i)=>{
-        monthgroup["c2"].push(e.c2);
-        monthgroup["c3"].push(e.c3);
-        monthgroup["c4"].push(e.c4);
-        return e;
-      });
-      let me = _.map(monthgroup,(e,i)=>{
-        return _.sum(e);
-      });
-      let getotal = _.sum(ge);
-      let metotal = _.sum(me);
-      self.setState({
-        weekEnergyRL: parseFloat(ge[1]).toFixed(3),
-        weekEnergyYL: parseFloat(ge[2]).toFixed(3),
-        weekEnergyBL: parseFloat(ge[3]).toFixed(3),
-        weekEnergyL:  parseFloat(getotal).toFixed(3),
-        monthEnergyL: parseFloat(metotal).toFixed(3),
-        progessL: false,
+        energyYear: de,
+        yearprogress: false,
       });
       return response;
     });
@@ -318,19 +237,19 @@ class MonthGen extends Component {
             <Paper className={classes.paper} elevation={4}>
               <div className={classes.flex}>
                 <Typography color="inherit" className={classes.flex}>
-                 Month Energy ( Day wise ) - {this.state.selectedMonth}
+                 Year Energy ( Month wise ) - {this.state.selectedYear}
                 </Typography>
                 <form className={classes.container}>
                   <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="en-month">Month</InputLabel>
+                    <InputLabel htmlFor="en-year">Year</InputLabel>
                     <Select
-                      value={this.state.selectedMonth}
+                      value={this.state.selectedYear}
                       autoWidth
-                      onChange={this.handleSelectMonth('selectedMonth')}
-                      input={<Input id="en-month" />}
+                      onChange={this.handleSelectYear('selectedYear')}
+                      input={<Input id="en-year" />}
                     >
                       {
-                        months.map((e,i)=>{
+                        years.map((e,i)=>{
                           return (<MenuItem key={e} value={e}>{e}</MenuItem>)
                         })
                       }
@@ -338,41 +257,36 @@ class MonthGen extends Component {
                   </FormControl>
                 </form>
               </div>
-              { this.state.monthprogress ? <LinearProgress />: ""}
-              <ResponsiveContainer height={350} className={ this.state.monthprogress?classes.opacity:"bk-default"}>
-                <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
+              { this.state.yearprogress ? <LinearProgress />: ""}
+              <ResponsiveContainer height={350} className={ this.state.yearprogress?classes.opacity:"bk-default"}>
+                <BarChart data={_.sortBy(this.state.energyYear,['md'])}
                       maxBarSize={30} unit="kWh"
                       margin={{top: 20, right: 30, left: 20, bottom: 40}}
                       onClick={this.handleClick}>
-                   <XAxis dataKey="month" angle={-45} textAnchor="end" interval={0}/>
+                   <XAxis dataKey="ddm" angle={-45} textAnchor="end" interval={0}/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
                    <Bar cursor="pointer" dataKey="c2" stackId="a" fill="#f44336"/>
                    <Bar cursor="pointer" dataKey="c3" stackId="a" fill="#ffc658"/>
                    <Bar cursor="pointer" dataKey="c4" stackId="a" fill="#3f51b5"/>
-
-                   <Bar cursor="pointer" dataKey="c1" stackId="b" fill="#1b5e20"/>
-                   <Bar cursor="pointer" dataKey="c5" stackId="b" fill="#4c8c4a"/>
-                   <Bar cursor="pointer" dataKey="c6" stackId="b" fill="#387002"/>
                 </BarChart>
               </ResponsiveContainer>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={12}>
             <EnhancedTable
-              title="Day Wise Energy"
-              tdata={this.state.energyMonth}
+              title="Month Wise Energy"
+              tdata={this.state.energyYear}
               thead={[
-                {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
-                {label:"Load",numeric:true,disablePadding:false,id:"ltotal"},
-                {label:"Solar",numeric:true,disablePadding:false,id:"stotal"},
+                {label:"Month",numeric:false,disablePadding:false,id:"month"},
                 {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
                 {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
                 {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
-                {label:"Inv 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Inv 2",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Inv 3",numeric:true,disablePadding:false,id:"c6"},
+                {label:"Load Total",numeric:true,disablePadding:false,id:"ytotal"},
+                {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
+                {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
+                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"},
               ]}/>
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>
@@ -391,9 +305,9 @@ class MonthGen extends Component {
 
 }
 
-MonthGen.propTypes = {
+YearGen.propTypes = {
   classes: PropTypes.object.isRequired,
   width: PropTypes.string.isRequired,
 };
 
-export default compose(withStyles(styles), withWidth())(withRouter(MonthGen));
+export default compose(withStyles(styles), withWidth())(withRouter(YearGen));

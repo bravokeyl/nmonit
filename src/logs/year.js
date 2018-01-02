@@ -144,6 +144,10 @@ class YearGen extends Component {
         data["c2"] = util(data["c2"]);
         data["c3"] = util(data["c3"]);
         data["c4"] = util(data["c4"]);
+
+        data["c1"] = util(data["c1"]);
+        data["c5"] = util(data["c5"]);
+        data["c6"] = util(data["c6"]);
         if(data["c2"] < 0) data["c2"] = 0;
         if(data["c3"] < 0) data["c3"] = 0;
         if(data["c4"] < 0) data["c4"] = 0;
@@ -220,6 +224,7 @@ class YearGen extends Component {
       } else {
         de =  self.transformData([response]);
       }
+      console.log("YEAR ENERGY:",de)
       self.setState({
         energyYear: de,
         yearprogress: false,
@@ -270,6 +275,10 @@ class YearGen extends Component {
                    <Bar cursor="pointer" dataKey="c2" stackId="a" fill="#f44336"/>
                    <Bar cursor="pointer" dataKey="c3" stackId="a" fill="#ffc658"/>
                    <Bar cursor="pointer" dataKey="c4" stackId="a" fill="#3f51b5"/>
+
+                   <Bar cursor="pointer" dataKey="c1" stackId="b" fill="#1b5e20"/>
+                   <Bar cursor="pointer" dataKey="c5" stackId="b" fill="#4c8c4a"/>
+                   <Bar cursor="pointer" dataKey="c6" stackId="b" fill="#387002"/>
                 </BarChart>
               </ResponsiveContainer>
             </Paper>
@@ -280,13 +289,14 @@ class YearGen extends Component {
               tdata={this.state.energyYear}
               thead={[
                 {label:"Month",numeric:false,disablePadding:false,id:"month"},
+                {label:"Load",numeric:true,disablePadding:false,id:"ytotal"},
+                {label:"Solar",numeric:true,disablePadding:false,id:"stotal"},
                 {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
                 {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
                 {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
-                {label:"Load Total",numeric:true,disablePadding:false,id:"ytotal"},
-                {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"},
+                {label:"Inv 1",numeric:true,disablePadding:false,id:"c1"},
+                {label:"Inv 2",numeric:true,disablePadding:false,id:"c5"},
+                {label:"Inv 3",numeric:true,disablePadding:false,id:"c6"},
               ]}/>
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>

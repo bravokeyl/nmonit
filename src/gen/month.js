@@ -164,8 +164,7 @@ class MonthGen extends Component {
           data['month'] = moment(data['ddt']).format("MMM Do YYYY");
           data["ddt"] = data['ddt'].split('/').reverse()[0];
         }
-        data['ltotal'] = Number(parseFloat(data["c4"]+data["c3"]+data["c2"]).toFixed(2));
-        data['stotal'] = Number(parseFloat(data["c1"]+data["c5"]+data["c6"]).toFixed(2));
+        data['loadtotal'] = Number(parseFloat(data["c4"]+data["c3"]+data["c2"]).toFixed(2));
         return d;
       });
     } else {
@@ -351,10 +350,6 @@ class MonthGen extends Component {
                    <Bar cursor="pointer" dataKey="c2" stackId="a" fill="#f44336"/>
                    <Bar cursor="pointer" dataKey="c3" stackId="a" fill="#ffc658"/>
                    <Bar cursor="pointer" dataKey="c4" stackId="a" fill="#3f51b5"/>
-
-                   <Bar cursor="pointer" dataKey="c1" stackId="b" fill="#1b5e20"/>
-                   <Bar cursor="pointer" dataKey="c5" stackId="b" fill="#4c8c4a"/>
-                   <Bar cursor="pointer" dataKey="c6" stackId="b" fill="#387002"/>
                 </BarChart>
               </ResponsiveContainer>
             </Paper>
@@ -365,14 +360,13 @@ class MonthGen extends Component {
               tdata={this.state.energyMonth}
               thead={[
                 {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
-                {label:"Load",numeric:true,disablePadding:false,id:"ltotal"},
-                {label:"Solar",numeric:true,disablePadding:false,id:"stotal"},
                 {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
                 {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
                 {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
-                {label:"Inv 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Inv 2",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Inv 3",numeric:true,disablePadding:false,id:"c6"},
+                {label:"Load Total",numeric:true,disablePadding:false,id:"mtotal"},
+                {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
+                {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
+                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"},
               ]}/>
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>

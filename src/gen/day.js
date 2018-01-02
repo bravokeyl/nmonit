@@ -150,8 +150,7 @@ class DayGen extends Component {
           data['month'] = moment(data['ddt']).format("MMM Do");
           data["ddt"] = data['ddt'].split('/').reverse()[0];
         }
-        data['load'] = parseFloat(Number(data["c2"] + data["c3"] + data["c4"])).toFixed(2);
-        data['solar'] = parseFloat(Number(data["c1"] + data["c5"] + data["c6"])).toFixed(2);
+        data['total'] = parseFloat(Number(data["c2"] + data["c3"] + data["c4"])).toFixed(2);
         return d;
       });
     } else {
@@ -266,10 +265,6 @@ class DayGen extends Component {
                  <Bar dataKey="c2" stackId="a" fill="#f44336" />
                  <Bar dataKey="c3" stackId="a" fill="#ffc658" />
                  <Bar dataKey="c4" stackId="a" fill="#3f51b5" />
-
-                 <Bar dataKey="c1" stackId="b" fill="#1b5e20" />
-                 <Bar dataKey="c5" stackId="b" fill="#4c8c4a" />
-                 <Bar dataKey="c6" stackId="b" fill="#003300" />
                  <Line type='monotone' dataKey='total' dots={true}
                    strokeDasharray="5 5" stroke='#ff7300'/>
               </ComposedChart>
@@ -292,14 +287,14 @@ class DayGen extends Component {
               tdata={this.state.energyDay}
               thead={[
                 {label:"Hour",numeric:false,disablePadding:false,id:"ddt"},
-                {label:"Load",numeric:true,disablePadding:false,id:"dtotal"},
-                {label:"Solar",numeric:true,disablePadding:false,id:"stotal"},
                 {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
                 {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
                 {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
-                {label:"Inv 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Inv 2",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Inv 3",numeric:true,disablePadding:false,id:"c6"},
+                {label:"Load Total",numeric:true,disablePadding:false,id:"dtotal"},
+                {label:"Channel 1",numeric:true,disablePadding:false,id:"c1"},
+                {label:"Channel 5",numeric:true,disablePadding:false,id:"c5"},
+                {label:"Channel 6",numeric:true,disablePadding:false,id:"c6"},
+
               ]}/>
           </Grid>
         </Grid>

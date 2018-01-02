@@ -14,6 +14,7 @@ import Overview from './overview';
 import Dashboard from './dashboard';
 import Login from './login';
 import NL from './logs';
+import SG from './gen';
 import Profile from './profile';
 import Bad404 from './404';
 
@@ -78,6 +79,7 @@ class App extends Component {
                         <Route exact path="/" component={Overview} />
                         <Route exact path="/d" component={Dashboard} />
                         <Route path="/l" component={NL} />
+                        <Route path="/g" component={SG} />
                         <Route exact path="/p"
                             render={(props) => (<Profile {...props} authHandler={(e)=>this.logOut(e)}/>)} />
                         <Route component={Bad404} />

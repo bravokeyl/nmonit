@@ -287,16 +287,18 @@ class EnhancedTable extends React.Component {
                     // </TableCell>
                     }
                     <TableCell padding="none">{n.day || n.month}</TableCell>
-                    <TableCell numeric>{n.c2}</TableCell>
-                    <TableCell numeric>{n.c3}</TableCell>
-                    <TableCell numeric>{n.c4}</TableCell>
                     <TableCell numeric style={{fontWeight:'500'}}>
                       {Number(parseFloat(n.c2+n.c3+n.c4).toFixed(2))}
                     </TableCell>
-                    <TableCell numeric>0</TableCell>
-                    <TableCell numeric>0</TableCell>
-                    <TableCell numeric>0</TableCell>
-
+                    <TableCell numeric style={{fontWeight:'500'}}>
+                      {Number(parseFloat(n.c1+n.c5+n.c6).toFixed(2))}
+                    </TableCell>
+                    <TableCell numeric>{n.c2}</TableCell>
+                    <TableCell numeric>{n.c3}</TableCell>
+                    <TableCell numeric>{n.c4}</TableCell>
+                    <TableCell numeric>{Number(parseFloat(n.c1).toFixed(3))}</TableCell>
+                    <TableCell numeric>{Number(parseFloat(n.c5).toFixed(3))}</TableCell>
+                    <TableCell numeric>{Number(parseFloat(n.c6).toFixed(3))}</TableCell>
                   </TableRow>
                 );
               })}

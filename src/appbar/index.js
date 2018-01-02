@@ -56,11 +56,19 @@ function ButtonAppBar(props) {
                   Logs
                 </Button>
               </Link>
+              {
+              // <Link to="/g">
+              //   <Button color="contrast">
+              //     Generation
+              //   </Button>
+              // </Link>
+
               <Link to="/e">
                 <Button color="contrast">
                   Events
                 </Button>
               </Link>
+              }
               <Link to="/p">
                 <Button  color="contrast">
                   Profile
