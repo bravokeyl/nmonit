@@ -220,6 +220,9 @@ class Dashboard extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
+        <Typography type="title" style={{margin:16, marginBottom: 0}}>
+          PVSystem: Shyamala Hospital, Khammam
+        </Typography>
         <Grid container spacing={0}>
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>

@@ -11,9 +11,11 @@ import SwipeableViews from 'react-swipeable-views';
 import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
-import { signOut } from '../aws/cognito';
+import config from '../aws';
+import { getIdToken,signOut, getCurrentUserName } from '../aws/cognito';
+import offlineFetch from '../common/fetch-cache';
 
-import avatar from './avatar.jpg';
+import avatar from './avatar200.png';
 import Contacts from './contacts';
 import System from './system';
 import SystemImage from './image';
@@ -80,11 +82,36 @@ const styles = theme => ({
   }
 });
 
+const API_KEY = config.LocalAPIKey;
+const APIHEADERS = {
+  headers: {
+    "X-Api-Key": API_KEY,
+  },
+  method: 'GET',
+  offline: {
+    storage: 'localStorage',
+    timeout: 5000,
+    expires: 300000,
+    debug: true,
+    renew: false,
+    retries: 3,
+    retryDelay: 1000,
+  }
+};
+
 class Profile extends Component {
   constructor(props){
     super(props);
     this.state = {
       value: 0,
+      user: {
+        name: "Unknown",
+        uname: "Unknown",
+        uid: "000",
+        designation: 'Unknown',
+        role: 'Unknown',
+        avatar: avatar
+      }
     }
     this.handleSignOut = this.handleSignOut.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -100,6 +127,35 @@ class Profile extends Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
+  componentDidMount() {
+    let user = getCurrentUserName();
+    if(user) {
+      APIHEADERS.offline.expires = 30*24*60*60*1000;
+      // APIHEADERS.headers.Authorization = this.state.idToken;
+      let purl = "https://api.blufieldsenergy.com/v1/me?un="+user;
+      let self = this;
+      offlineFetch(purl,APIHEADERS)
+      .then(response => response.json())
+      .then(function(response) {
+        console.log(response)
+        if(response){
+          self.setState({
+            user: response.user[0]
+          });
+        } else {
+          self.handleSignOut();
+        }
+        return response;
+      })
+      .catch((err)=>{
+        console.error("Profile Fetch Error:",err);
+      });
+
+    } else {
+      this.handleSignOut();
+    }
+
+  };
   render(){
     const { classes } = this.props;
     const { value } = this.state;
@@ -109,13 +165,13 @@ class Profile extends Component {
           <Grid item xs={12} sm={3}>
             <Card className={classes.card}>
               <div className={classes.avatarWrap}>
-                <img src={avatar} className={classes.avatar} alt="bravokeyl's avatar" />
+                <img src={this.state.user.avatar} className={classes.avatar} alt="Profile Avatar" title={this.state.user.name}/>
               </div>
               <Typography type="title" gutterBottom align="center">
-                bravokeyl <small className={classes.uid}>#007</small>
+                {this.state.user.name} <small className={classes.uid}>#{this.state.user.uid}</small>
               </Typography>
               <Typography gutterBottom align="center">
-                Product Engineer
+                {this.state.user.designation}
               </Typography>
               <div className={classes.social}>
                 <Email className={classes.icon} />

@@ -116,6 +116,15 @@ export const getCurrentUser = (callback) => {
   }
 }
 
+export const getCurrentUserName = (callback) => {
+  const cognitoUser = userPool.getCurrentUser();
+  if (!cognitoUser) return false;
+  if (cognitoUser !== null) {
+    let user = cognitoUser.getUsername();
+    return user;
+  }
+}
+
 export const signinCallback = (googleUser) => {
   // if (authResult['status']['signed_in']) {
     console.log("SignIn Call back");

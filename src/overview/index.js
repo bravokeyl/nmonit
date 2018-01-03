@@ -253,7 +253,7 @@ class Overview extends Component {
       }));
       return response;
     }, function(error) {
-      console.error("ERR",error);
+      console.error("Day Fetch Error",error);
     });
 
     offlineFetch(weekURL,APIHEADERS)
@@ -354,6 +354,9 @@ class Overview extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
+        <Typography type="title" style={{margin:16, marginBottom: 0}}>
+          PVSystem: Shyamala Hospital, Khammam 
+        </Typography>
         <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
           Consumption
         </Typography>
