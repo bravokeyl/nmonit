@@ -281,19 +281,12 @@ class Overview extends Component {
         return _.sum(e);
       });
       let weektotalGen = _.sum(meg);
-      self.setState( prevState => ({
-        ...prevState.gen,
-        weekEnergyL: parseFloat(weektotal).toFixed(2),
-        weekEnergyGenL: parseFloat(weektotalGen).toFixed(2),
-        weekEnergyRL: parseFloat(me[1]).toFixed(2),
-        weekEnergyYL: parseFloat(me[2]).toFixed(2),
-        weekEnergyBL: parseFloat(me[3]).toFixed(2),
-      }));
+      console.log(me,"MEMME")
       self.setState(prevState => ({
         weekEnergyL: parseFloat(weektotal).toFixed(2),
-        weekEnergyRL: parseFloat(me[1]).toFixed(2),
-        weekEnergyYL: parseFloat(me[2]).toFixed(2),
-        weekEnergyBL: parseFloat(me[3]).toFixed(2),
+        weekEnergyRL: parseFloat(me[0]).toFixed(2),
+        weekEnergyYL: parseFloat(me[1]).toFixed(2),
+        weekEnergyBL: parseFloat(me[2]).toFixed(2),
         gen: {
           ...prevState.gen,
           weekEnergyGenL: parseFloat(weektotalGen).toFixed(2)
@@ -355,7 +348,7 @@ class Overview extends Component {
     return (
       <div className={classes.root}>
         <Typography type="title" style={{margin:16, marginBottom: 0}}>
-          PVSystem: Shyamala Hospital, Khammam 
+          PVSystem: Shyamala Hospital, Khammam
         </Typography>
         <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
           Consumption
