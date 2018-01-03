@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
@@ -43,19 +43,19 @@ function ButtonAppBar(props) {
           </Typography>
           <Hidden smDown>
             <ul className={classes.flex}>
-              <Link to="/">
+              <NavLink to="/" exact activeClassName="nm-active">
                 <Button color="contrast">
                   Overview
                 </Button>
-              </Link>
-              <Link to="/d">
+              </NavLink>
+              <NavLink to="/d" activeClassName="nm-active">
                 <Button color="contrast">Dashboard</Button>
-              </Link>
-              <Link to="/l">
+              </NavLink>
+              <NavLink to="/l" activeClassName="nm-active">
                 <Button color="contrast">
                   Logs
                 </Button>
-              </Link>
+              </NavLink>
               {
               // <Link to="/g">
               //   <Button color="contrast">
@@ -63,17 +63,17 @@ function ButtonAppBar(props) {
               //   </Button>
               // </Link>
 
-              <Link to="/e">
+              <NavLink to="/e" activeClassName="nm-active">
                 <Button color="contrast">
                   Events
                 </Button>
-              </Link>
+              </NavLink>
               }
-              <Link to="/p">
+              <NavLink to="/p" activeClassName="nm-active">
                 <Button  color="contrast">
                   Profile
                 </Button>
-              </Link>
+              </NavLink>
             </ul>
           </Hidden>
         </Toolbar>
