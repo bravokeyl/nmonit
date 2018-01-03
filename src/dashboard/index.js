@@ -121,12 +121,21 @@ class Dashboard extends Component {
       c2Voltage: 0,
       c3Voltage: 0,
       c4Voltage: 0,
+      c1Voltage: 0,
+      c5Voltage: 0,
+      c6Voltage: 0,
       c2Current: 0,
       c3Current: 0,
       c4Current: 0,
+      c1Current: 0,
+      c5Current: 0,
+      c6Current: 0,
       c2Power: 0,
       c3Power: 0,
       c4Power: 0,
+      c1Power: 0,
+      c5Power: 0,
+      c6Power: 0,
       liveTimestamp: false,
       relativeTimestamp: 0,
       isLive: false,
@@ -169,7 +178,7 @@ class Dashboard extends Component {
   };
   getLiveData = () => {
     APIHEADERS.headers.Authorization = this.state.idToken;
-    for(let i=2;i<5;i++){
+    for(let i=1;i<7;i++){
       let url = "https://api.blufieldsenergy.com/v1/l?c="+i;
       let self = this;
       offlineFetch(url,APIHEADERS)
@@ -230,10 +239,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    R-Phase: Voltage
+                    Inv 1: Voltage
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c2Voltage} V
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.c1Voltage} V
                   </Typography>
                 </CardContent>
               </div>
@@ -248,10 +257,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    R-Phase: Current
+                    Inv 1: Current
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c2Current} Amps
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.c1Current} Amps
                   </Typography>
                 </CardContent>
               </div>
@@ -266,10 +275,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    R-Phase: Power
+                    Inv 1: Power
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.c2Power} W
+                    {this.state.progessL?<CircularProgress size={24} />:this.state.c1Power} W
                   </Typography>
                 </CardContent>
               </div>
@@ -287,10 +296,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    Y-Phase: Voltage
+                    Inv 2: Voltage
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c3Voltage} V
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.c5Voltage} V
                   </Typography>
                 </CardContent>
               </div>
@@ -305,10 +314,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    Y-Phase: Current
+                    Inv 2: Current
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c3Current} Amps
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.c5Current} Amps
                   </Typography>
                 </CardContent>
               </div>
@@ -323,10 +332,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    Y-Phase: Power
+                    Inv 2: Power
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.c3Power} W
+                    {this.state.progessL?<CircularProgress size={24} />:this.state.c5Power} W
                   </Typography>
                 </CardContent>
               </div>
@@ -344,10 +353,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    B-Phase: Voltage
+                    Inv 3: Voltage
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c4Voltage} V
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.c6Voltage} V
                   </Typography>
                 </CardContent>
               </div>
@@ -362,10 +371,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    B-Phase: Current
+                    Inv 3: Current
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c4Current} Amps
+                    {this.state.progessL?<CircularProgress size={24} />: this.state.c6Current} Amps
                   </Typography>
                 </CardContent>
               </div>
@@ -380,10 +389,10 @@ class Dashboard extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    B-Phase: Power
+                    Inv 3: Power
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.c4Power} W
+                    {this.state.progessL?<CircularProgress size={24} />:this.state.c6Power} W
                   </Typography>
                 </CardContent>
               </div>
