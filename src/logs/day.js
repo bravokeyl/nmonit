@@ -135,28 +135,52 @@ class DayGen extends Component {
 
   transformData = (d) => {
     if(d){
+      let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
       d.map((data, i) => {
-        data["c2"] = util(data["c2"]);
-        data["c3"] = util(data["c3"]);
-        data["c4"] = util(data["c4"]);
+        if(ap == 'l'){
+          data["R"] = util(data["c2"]);
+          data["Y"] = util(data["c4"]);
+          data["B"] = util(data["c6"]);
 
-        data["c1"] = util(data["c1"]);
-        data["c5"] = util(data["c5"]);
-        data["c6"] = util(data["c6"]);
+          data["i1"] = util(data["c1"]);
+          data["i2"] = util(data["c3"]);
+          data["i3"] = util(data["c5"]);
 
-        if(data["c2"] < 0) data["c2"] = 0;
-        if(data["c3"] < 0) data["c3"] = 0;
-        if(data["c4"] < 0) data["c4"] = 0;
-        if(data['dhr']){
-          data["dhr"] = data['dhr'].split('/').reverse()[0];
-          data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+          if(data["R"] < 0) data["R"] = 0;
+          if(data["Y"] < 0) data["Y"] = 0;
+          if(data["B"] < 0) data["B"] = 0;
+
+          if(data['dhr']){
+            data["dhr"] = data['dhr'].split('/').reverse()[0];
+            data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+          }
+          if(data['ddt']){
+            data['month'] = moment(data['ddt']).format("MMM Do");
+            data["ddt"] = data['ddt'].split('/').reverse()[0];
+          }
+        } else {
+          data["R"] = util(data["c2"]);
+          data["Y"] = util(data["c3"]);
+          data["B"] = util(data["c4"]);
+
+          data["i1"] = util(data["c1"]);
+          data["i2"] = util(data["c5"]);
+          data["i3"] = util(data["c6"]);
+
+          if(data["R"] < 0) data["R"] = 0;
+          if(data["Y"] < 0) data["Y"] = 0;
+          if(data["B"] < 0) data["B"] = 0;
+          if(data['dhr']){
+            data["dhr"] = data['dhr'].split('/').reverse()[0];
+            data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+          }
+          if(data['ddt']){
+            data['month'] = moment(data['ddt']).format("MMM Do");
+            data["ddt"] = data['ddt'].split('/').reverse()[0];
+          }
         }
-        if(data['ddt']){
-          data['month'] = moment(data['ddt']).format("MMM Do");
-          data["ddt"] = data['ddt'].split('/').reverse()[0];
-        }
-        data['load'] = parseFloat(Number(data["c2"] + data["c3"] + data["c4"])).toFixed(2);
-        data['solar'] = parseFloat(Number(data["c1"] + data["c5"] + data["c6"])).toFixed(2);
+        data['load'] = parseFloat(Number(data["R"] + data["Y"] + data["B"])).toFixed(2);
+        data['solar'] = parseFloat(Number(data["i1"] + data["i2"] + data["i3"])).toFixed(2);
         return d;
       });
     } else {
@@ -173,7 +197,9 @@ class DayGen extends Component {
       dateApiHeaders.offline.expires = 1000*60*5;
     }
     let dhr = moment(date).format('YYYY/MM/DD');
-    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+dhr;
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
+    let url = baseApiURL+"h?dhr="+dhr;
     let self = this;
     self.setState({
       progress: true
@@ -270,13 +296,13 @@ class DayGen extends Component {
                  <YAxis/>
                  <CartesianGrid strokeDasharray="2 3"/>
                  <Tooltip />
-                 <Bar dataKey="c2" stackId="a" fill="#f44336" />
-                 <Bar dataKey="c3" stackId="a" fill="#ffc658" />
-                 <Bar dataKey="c4" stackId="a" fill="#3f51b5" />
+                 <Bar dataKey="R" stackId="a" fill="#f44336" />
+                 <Bar dataKey="Y" stackId="a" fill="#ffc658" />
+                 <Bar dataKey="B" stackId="a" fill="#3f51b5" />
 
-                 <Bar dataKey="c1" stackId="b" fill="#1b5e20" />
-                 <Bar dataKey="c5" stackId="b" fill="#4c8c4a" />
-                 <Bar dataKey="c6" stackId="b" fill="#003300" />
+                 <Bar dataKey="i1" stackId="b" fill="#1b5e20" />
+                 <Bar dataKey="i2" stackId="b" fill="#4c8c4a" />
+                 <Bar dataKey="i3" stackId="b" fill="#003300" />
                  <Line type='monotone' dataKey='total' dots={true}
                    strokeDasharray="5 5" stroke='#ff7300'/>
               </ComposedChart>
@@ -301,12 +327,12 @@ class DayGen extends Component {
                 {label:"Hour",numeric:false,disablePadding:false,id:"ddt"},
                 {label:"Load",numeric:true,disablePadding:false,id:"dtotal"},
                 {label:"Solar",numeric:true,disablePadding:false,id:"stotal"},
-                {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
-                {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
-                {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
-                {label:"Inv 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Inv 2",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Inv 3",numeric:true,disablePadding:false,id:"c6"},
+                {label:"R-Load",numeric:true,disablePadding:false,id:"R"},
+                {label:"Y-Load",numeric:true,disablePadding:false,id:"Y"},
+                {label:"B-Load",numeric:true,disablePadding:false,id:"B"},
+                {label:"Inv 1",numeric:true,disablePadding:false,id:"i1"},
+                {label:"Inv 2",numeric:true,disablePadding:false,id:"i2"},
+                {label:"Inv 3",numeric:true,disablePadding:false,id:"i3"},
               ]}/>
           </Grid>
         </Grid>
