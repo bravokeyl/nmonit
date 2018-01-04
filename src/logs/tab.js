@@ -134,10 +134,11 @@ class Logs extends Component {
   };
 
   componentDidMount(){
+    console.log("TAB PROPS:",this.props);
     console.info("Log component did mount");
   }
   render(){
-    const { classes } = this.props;
+    const { classes,apiPath } = this.props;
     return (
       <div className={classes.root}>
         <Grid item xs={12} sm={12}>
@@ -157,9 +158,9 @@ class Logs extends Component {
             axis='x'
             index={this.state.value}
             onChangeIndex={this.handleChangeIndex}>
-            <DayGen date={this.state.date}/>
-            <MonthGen month={this.state.month} indexV={this.handleDayChange} />
-            <YearGen indexV={this.handleMonthChange} />
+            <DayGen date={this.state.date} apiPath={apiPath} />
+            <MonthGen month={this.state.month} indexV={this.handleDayChange} apiPath={apiPath} />
+            <YearGen indexV={this.handleMonthChange} apiPath={apiPath} />
           </SwipeableViews>
         </Grid>
       </div>

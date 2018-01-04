@@ -248,7 +248,7 @@ class MonthGen extends Component {
     }
   }
   componentDidMount(){
-    console.info("MonthGen component did mount");
+    console.info("MonthGen component did mount",this.props.apiPath);
     let { month } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
     let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;

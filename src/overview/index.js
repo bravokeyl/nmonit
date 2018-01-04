@@ -12,7 +12,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import config from '../aws';
-import { getIdToken } from '../aws/cognito';
+import { getIdToken,getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import BKPanel from '../common/panel';
 
@@ -165,18 +165,23 @@ class Overview extends Component {
 
   componentDidMount(){
     let { date, month } = this.state;
+    console.info("Overview did mount:",this.props,getCurrentUserName());
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     APIHEADERS.headers.Authorization = this.state.idToken;
-    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
-    let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
-    let weekURL = "https://api.blufieldsenergy.com/v1/w";
-    let monthURL = "https://api.blufieldsenergy.com/v1/m";
+    let url = baseApiURL+"h?dhr="+date;
+    let dayURL = baseApiURL+"d?ddm="+month;
+    let weekURL = baseApiURL+"w";
+    let monthURL = baseApiURL+"m";
     let self = this;
 
     offlineFetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
-
+      if(!de){
+        de = [];
+      }
       let dayEnergyConsumption = {"c2":[],"c3":[],"c4":[]};
       let dayEnergyGeneration = {"c1":[],"c5":[],"c6":[]};
       console.log("URL HourWise",de);
@@ -271,8 +276,8 @@ class Overview extends Component {
         dayEnergyGen["c6"].push(e.c6);
         return e;
       });
-      console.log("weekURL dayWise",de);
-      console.log("weekURL dayWise",dayEnergyGen);
+      // console.log("weekURL dayWise",de);
+      // console.log("weekURL dayWise",dayEnergyGen);
       let me = _.map(dayEnergy,(e,i)=>{
         return _.sum(e);
       });

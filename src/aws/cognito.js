@@ -48,15 +48,9 @@ export const authenticateUser = (email, password, callback) => {
   const cognitoUser = new CognitoUser(userData)
   cognitoUser.authenticateUser(authDetails, {
     onSuccess: (result) => {
-      console.log("access token",result);
-      // Config.credentials = new CognitoIdentityCredentials({
-      //     IdentityPoolId : poolData.IdentityPoolId, // your identity pool id here
-      //     Logins : {
-      //         // Change the key below according to the specific region your user pool is in.
-      //         'cognito-idp.us-east-1.amazonaws.com/us-east-1_i0cqc5l3m' : result.getIdToken().getJwtToken()
-      //     }
-      // });
-      callback(null, result);
+      getCurrentUserData().then((r)=>{
+        callback(null, r);
+      })
     },
     onFailure: err => {
       console.error("Auth error",err);
@@ -123,6 +117,30 @@ export const getCurrentUserName = (callback) => {
     let user = cognitoUser.getUsername();
     return user;
   }
+}
+
+export const getCurrentUserData = (callback) => {
+  let uname = getCurrentUserName();
+  let url = "https://api.blufieldsenergy.com/v1/me?un="+uname;
+  let self = this;
+  const API_KEY = poolData.LocalAPIKey;
+  const APIHEADERS = {
+    headers: {
+      "X-Api-Key": API_KEY,
+    },
+    method: 'GET'
+  };
+  return fetch(url,APIHEADERS)
+    .then(response => response.json())
+    .then(function(response) {
+      console.log("UDATA RES:",response.user[0].p);
+      window.localStorage.setItem('nuser',JSON.stringify(response.user[0]));
+      return true;
+    })
+    .catch((err)=>{
+      console.error("APP Fetch Error:",err);
+      return false;
+    });
 }
 
 export const signinCallback = (googleUser) => {

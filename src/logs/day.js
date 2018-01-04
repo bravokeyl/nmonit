@@ -139,6 +139,11 @@ class DayGen extends Component {
         data["c2"] = util(data["c2"]);
         data["c3"] = util(data["c3"]);
         data["c4"] = util(data["c4"]);
+
+        data["c1"] = util(data["c1"]);
+        data["c5"] = util(data["c5"]);
+        data["c6"] = util(data["c6"]);
+
         if(data["c2"] < 0) data["c2"] = 0;
         if(data["c3"] < 0) data["c3"] = 0;
         if(data["c4"] < 0) data["c4"] = 0;
@@ -210,7 +215,7 @@ class DayGen extends Component {
     }
   }
   componentDidMount(){
-    console.log("DayGen component did mount");
+    console.log("DayGen component did mount",this.props.apiPath);
     let { date } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
     let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;

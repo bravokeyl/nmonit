@@ -76,7 +76,7 @@ class Login extends Component {
         this.setState({ loading: false })
         return;
       }
-      this.props.authHandler(this.props.history);
+      this.props.authHandler(result,this.props.history);
     });
   }
   componentDidMount(){

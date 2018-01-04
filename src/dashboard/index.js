@@ -214,7 +214,7 @@ class Dashboard extends Component {
     }
   };
   componentDidMount(){
-    console.log("Dashboard component did mount");
+    console.log("Dashboard component did mount",this.props.apiPath);
 
     let self = this;
     let intervalId = setInterval(self.updateliveTimestamp, 10*1000);

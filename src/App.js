@@ -7,7 +7,7 @@ import { deepOrange, indigo } from 'material-ui/colors';
 import red from 'material-ui/colors/red';
 import Grid from 'material-ui/Grid';
 
-import { getCurrentUser } from './aws/cognito';
+import { getCurrentUser, getCurrentUserData } from './aws/cognito';
 
 import ButtonAppBar from './appbar';
 import Overview from './overview';
@@ -32,22 +32,26 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isLoggedin: false
+      isLoggedin: false,
+      apiPath: "demo"
     }
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
   }
-  logIn = r => {
+  logIn = (r,f) => {
     console.log("Login authHandler");
-    this.setState({
-      isLoggedin: true
-    });
-    // r.push('/');
+    if(f){
+      this.setState({
+        isLoggedin: true
+      });
+    }
   }
   logOut = r => {
     console.log("Logout authHandler");
+    window.localStorage.removeItem('nuser');
     this.setState({
-      isLoggedin: false
+      isLoggedin: false,
+      apiPath: "demo"
     });
     r.push('/');
   }
@@ -56,12 +60,16 @@ class App extends Component {
     let isLoggedIn = getCurrentUser();
     if(isLoggedIn){
       self.setState({
-        isLoggedin: true
+        isLoggedin: true,
       });
     }
     console.log("APP component will mount, isUserLoggedIn:",isLoggedIn);
   }
+  componentWillUnmount(){
+    console.log("APP component will unmount")
+  }
   render() {
+    const newProps = {...this.props, apiPath: this.state.apiPath }
     return (
       <div className="App">
         <Router>
@@ -69,19 +77,23 @@ class App extends Component {
               {
                 !this.state.isLoggedin ?
                 <Route path="/"
-                  render={(props) => (<Login {...props} authHandler={(e)=>this.logIn(e)} />)}/>:
+                  render={(props) => (<Login {...props} authHandler={(e,f)=>this.logIn(e,f)} />)}/>:
                 (
                   <div>
                   <ButtonAppBar classes={{}} />
                   <Grid container spacing={0}>
                     <Grid item xs={12}>
                       <Switch>
-                        <Route exact path="/" component={Overview} />
-                        <Route exact path="/d" component={Dashboard} />
-                        <Route path="/l" component={NL} />
-                        <Route path="/g" component={SG} />
+                        <Route exact path="/"
+                        render={(routeProps) => (<Overview {...newProps}  {...routeProps} />)} />
+                        <Route exact path="/d"
+                        render={(routeProps) => (<Dashboard {...newProps} {...routeProps} />)}/>
+                        <Route path="/l"
+                        render={(routeProps) => (<NL {...newProps} {...routeProps} />)} />
+                        <Route path="/g"
+                        render={(routeProps) => (<SG {...newProps} {...routeProps} />)} />
                         <Route exact path="/p"
-                            render={(props) => (<Profile {...props} authHandler={(e)=>this.logOut(e)}/>)} />
+                        render={(routeProps) => (<Profile {...newProps} {...routeProps} authHandler={(e,f)=>this.logOut(e,f)}/>)} />
                         <Route component={Bad404} />
                       </Switch>
                     </Grid>

@@ -209,7 +209,7 @@ class YearGen extends Component {
   };
 
   componentDidMount(){
-    console.info("YearGen component did mount");
+    console.info("YearGen component did mount",this.props.apiPath);
     let { year } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
     let yearURL = "https://api.blufieldsenergy.com/v1/m?ddm="+year;
