@@ -164,7 +164,9 @@ class YearGen extends Component {
   changeYearEnergy = (year) => {
     let yearApiHeaders = APIHEADERS;
     yearApiHeaders.offline.expires = 1000*60*60;
-    let url = "https://api.blufieldsenergy.com/v1/m?ddm="+year;
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
+    let url = baseApiURL+"m?ddm="+year;
     let self = this;
     let prevYear = this.state.selectedYear;
     self.setState({
@@ -211,8 +213,10 @@ class YearGen extends Component {
   componentDidMount(){
     console.info("YearGen component did mount",this.props.apiPath);
     let { year } = this.state;
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     APIHEADERS.headers.Authorization = this.state.idToken;
-    let yearURL = "https://api.blufieldsenergy.com/v1/m?ddm="+year;
+    let yearURL = baseApiURL+"m?ddm="+year;
     let self = this;
 
     offlineFetch(yearURL,APIHEADERS)

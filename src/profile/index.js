@@ -12,7 +12,7 @@ import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
 import config from '../aws';
-import { getIdToken,signOut, getCurrentUserName } from '../aws/cognito';
+import { signOut, getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 
 import avatar from './avatar200.png';

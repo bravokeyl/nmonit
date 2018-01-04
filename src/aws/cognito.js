@@ -122,7 +122,6 @@ export const getCurrentUserName = (callback) => {
 export const getCurrentUserData = (callback) => {
   let uname = getCurrentUserName();
   let url = "https://api.blufieldsenergy.com/v1/me?un="+uname;
-  let self = this;
   const API_KEY = poolData.LocalAPIKey;
   const APIHEADERS = {
     headers: {

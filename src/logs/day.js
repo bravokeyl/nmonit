@@ -15,7 +15,7 @@ import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { Line, ComposedChart, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
+import { Line, ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
@@ -216,9 +216,11 @@ class DayGen extends Component {
   }
   componentDidMount(){
     console.log("DayGen component did mount",this.props.apiPath);
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     let { date } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
-    let url = "https://api.blufieldsenergy.com/v1/h?dhr="+date;
+    let url = baseApiURL+"h?dhr="+date;
     let self = this;
 
     offlineFetch(url,APIHEADERS)

@@ -149,13 +149,42 @@ class MonthGen extends Component {
 
   transformData = (d) => {
     if(d){
+      let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
       d.map((data, i) => {
-        data["c2"] = util(data["c2"]);
-        data["c3"] = util(data["c3"]);
-        data["c4"] = util(data["c4"]);
-        if(data["c2"] < 0) data["c2"] = 0;
-        if(data["c3"] < 0) data["c3"] = 0;
-        if(data["c4"] < 0) data["c4"] = 0;
+        if( ap == 'l'){
+          data["R"] = util(data["c2"]);
+          data["Y"] = util(data["c4"]);
+          data["B"] = util(data["c6"]);
+
+          data["i1"] = util(data["c1"]);
+          data["i2"] = util(data["c3"]);
+          data["i3"] = util(data["c5"]);
+
+          if(data["R"] < 0) data["R"] = 0;
+          if(data["Y"] < 0) data["Y"] = 0;
+          if(data["B"] < 0) data["B"] = 0;
+
+          if(data["i1"] < 0) data["i1"] = 0;
+          if(data["i2"] < 0) data["i2"] = 0;
+          if(data["i3"] < 0) data["i3"] = 0;
+        } else {
+          data["c1"] = util(data["c2"]);
+          data["c2"] = util(data["c3"]);
+          data["c3"] = util(data["c4"]);
+
+          data["c4"] = util(data["c1"]);
+          data["c5"] = util(data["c5"]);
+          data["c6"] = util(data["c6"]);
+
+          if(data["c1"] < 0) data["c2"] = 0;
+          if(data["c2"] < 0) data["c3"] = 0;
+          if(data["c3"] < 0) data["c4"] = 0;
+
+          if(data["c4"] < 0) data["c1"] = 0;
+          if(data["c5"] < 0) data["c5"] = 0;
+          if(data["c6"] < 0) data["c6"] = 0;
+        }
+
         if(data['dhr']){
           data["dhr"] = data['dhr'].split('/').reverse()[0];
           data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
@@ -164,8 +193,8 @@ class MonthGen extends Component {
           data['month'] = moment(data['ddt']).format("MMM Do YYYY");
           data["ddt"] = data['ddt'].split('/').reverse()[0];
         }
-        data['ltotal'] = Number(parseFloat(data["c4"]+data["c3"]+data["c2"]).toFixed(2));
-        data['stotal'] = Number(parseFloat(data["c1"]+data["c5"]+data["c6"]).toFixed(2));
+        data['ltotal'] = Number(parseFloat(data["c1"]+data["c2"]+data["c3"]).toFixed(2));
+        data['stotal'] = Number(parseFloat(data["c4"]+data["c5"]+data["c6"]).toFixed(2));
         return d;
       });
     } else {
@@ -192,7 +221,9 @@ class MonthGen extends Component {
       month = this.state.selectedYear+"/"+month;
       ddm = moment(monthYear,'YYYY/MMMM').format("YYYY/MM");
     }
-    let url = "https://api.blufieldsenergy.com/v1/d?ddm="+ddm;
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
+    let url = baseApiURL+"d?ddm="+ddm;
     let self = this;
     let prevMonth = this.state.selectedMonth;
     self.setState({
@@ -250,8 +281,10 @@ class MonthGen extends Component {
   componentDidMount(){
     console.info("MonthGen component did mount",this.props.apiPath);
     let { month } = this.state;
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     APIHEADERS.headers.Authorization = this.state.idToken;
-    let dayURL = "https://api.blufieldsenergy.com/v1/d?ddm="+month;
+    let dayURL = baseApiURL+"d?ddm="+month;
     let self = this;
 
     offlineFetch(dayURL,APIHEADERS)
@@ -259,9 +292,9 @@ class MonthGen extends Component {
     .then(function(response) {
       let de;
       if(response.energy){
-        de =  self.transformData(response.energy);
+        de =  self.transformData(response.energy,apiPath);
       } else {
-        de =  self.transformData([response]);
+        de =  self.transformData([response],apiPath);
       }
 
       self.setState({
@@ -348,13 +381,13 @@ class MonthGen extends Component {
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
-                   <Bar cursor="pointer" dataKey="c2" stackId="a" fill="#f44336"/>
-                   <Bar cursor="pointer" dataKey="c3" stackId="a" fill="#ffc658"/>
-                   <Bar cursor="pointer" dataKey="c4" stackId="a" fill="#3f51b5"/>
+                   <Bar cursor="pointer" dataKey="R" stackId="a" fill="#f44336"/>
+                   <Bar cursor="pointer" dataKey="Y" stackId="a" fill="#ffc658"/>
+                   <Bar cursor="pointer" dataKey="B" stackId="a" fill="#3f51b5"/>
 
-                   <Bar cursor="pointer" dataKey="c1" stackId="b" fill="#1b5e20"/>
-                   <Bar cursor="pointer" dataKey="c5" stackId="b" fill="#4c8c4a"/>
-                   <Bar cursor="pointer" dataKey="c6" stackId="b" fill="#387002"/>
+                   <Bar cursor="pointer" dataKey="i1" stackId="b" fill="#1b5e20"/>
+                   <Bar cursor="pointer" dataKey="i2" stackId="b" fill="#4c8c4a"/>
+                   <Bar cursor="pointer" dataKey="i3" stackId="b" fill="#387002"/>
                 </BarChart>
               </ResponsiveContainer>
             </Paper>
@@ -367,12 +400,12 @@ class MonthGen extends Component {
                 {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
                 {label:"Load",numeric:true,disablePadding:false,id:"ltotal"},
                 {label:"Solar",numeric:true,disablePadding:false,id:"stotal"},
-                {label:"R-Load",numeric:true,disablePadding:false,id:"c2"},
-                {label:"Y-Load",numeric:true,disablePadding:false,id:"c3"},
-                {label:"B-Load",numeric:true,disablePadding:false,id:"c4"},
-                {label:"Inv 1",numeric:true,disablePadding:false,id:"c1"},
-                {label:"Inv 2",numeric:true,disablePadding:false,id:"c5"},
-                {label:"Inv 3",numeric:true,disablePadding:false,id:"c6"},
+                {label:"R-Load",numeric:true,disablePadding:false,id:"R"},
+                {label:"Y-Load",numeric:true,disablePadding:false,id:"Y"},
+                {label:"B-Load",numeric:true,disablePadding:false,id:"B"},
+                {label:"Inv 1",numeric:true,disablePadding:false,id:"i1"},
+                {label:"Inv 2",numeric:true,disablePadding:false,id:"i2"},
+                {label:"Inv 3",numeric:true,disablePadding:false,id:"i3"},
               ]}/>
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>

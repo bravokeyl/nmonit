@@ -177,9 +177,11 @@ class Dashboard extends Component {
    self.setState({intervalId: intervalId});
   };
   getLiveData = () => {
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     APIHEADERS.headers.Authorization = this.state.idToken;
     for(let i=1;i<7;i++){
-      let url = "https://api.blufieldsenergy.com/v1/l?c="+i;
+      let url = baseApiURL+"l?c="+i;
       let self = this;
       offlineFetch(url,APIHEADERS)
       .then(response => response.json())
@@ -215,7 +217,6 @@ class Dashboard extends Component {
   };
   componentDidMount(){
     console.log("Dashboard component did mount",this.props.apiPath);
-
     let self = this;
     let intervalId = setInterval(self.updateliveTimestamp, 10*1000);
     self.setState({liveTimestampId: intervalId});
@@ -227,10 +228,11 @@ class Dashboard extends Component {
   }
   render(){
     const { classes } = this.props;
+    const pvsystem = (window.localStorage.nuser) ? JSON.parse(window.localStorage.nuser).plant : null;
     return (
       <div className={classes.root}>
         <Typography type="title" style={{margin:16, marginBottom: 0}}>
-          PVSystem: Shyamala Hospital, Khammam
+          PVSystem: {pvsystem}
         </Typography>
         <Grid container spacing={0}>
           <Grid item xs={6} sm={3}>

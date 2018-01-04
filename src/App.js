@@ -7,7 +7,7 @@ import { deepOrange, indigo } from 'material-ui/colors';
 import red from 'material-ui/colors/red';
 import Grid from 'material-ui/Grid';
 
-import { getCurrentUser, getCurrentUserData } from './aws/cognito';
+import { getCurrentUser } from './aws/cognito';
 
 import ButtonAppBar from './appbar';
 import Overview from './overview';

@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 
-import { authenticateUser, signinCallback } from '../aws/cognito';
+import { authenticateUser } from '../aws/cognito';
 
 import bg from './bg.jpg';
 const styles = theme => ({
@@ -44,12 +44,12 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
 });
-const signOut = () => {
-  var auth2 = window.gapi.auth2.getAuthInstance();
-  auth2.signOut().then(function () {
-    console.log('User signed out.');
-  });
-};
+// const signOut = () => {
+//   var auth2 = window.gapi.auth2.getAuthInstance();
+//   auth2.signOut().then(function () {
+//     console.log('User signed out.');
+//   });
+// };
 class Login extends Component {
   constructor(props){
     super(props);

@@ -8,11 +8,8 @@ import Typography from 'material-ui/Typography';
 import Logs from './tab';
 const NL = (props) => (
   <div>
-    <Typography type="title" style={{margin:16, marginBottom: 0}}>
-      PVSystem: Shyamala Hospital, Khammam
-    </Typography>
     {
-      
+
       // <Route path={`${match.url}/:dhr`} component={Logs}/>
     }
    <Route exact path={`${props.match.url}`}

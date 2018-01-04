@@ -165,7 +165,7 @@ class Overview extends Component {
 
   componentDidMount(){
     let { date, month } = this.state;
-    console.info("Overview did mount:",this.props,getCurrentUserName());
+    console.info("Overview did mount");
     let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
     let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     APIHEADERS.headers.Authorization = this.state.idToken;
@@ -184,8 +184,6 @@ class Overview extends Component {
       }
       let dayEnergyConsumption = {"c2":[],"c3":[],"c4":[]};
       let dayEnergyGeneration = {"c1":[],"c5":[],"c6":[]};
-      console.log("URL HourWise",de);
-      console.log("URL HourWise",dayEnergyGeneration);
       de.map((e,i)=>{
         dayEnergyConsumption["c2"].push(_.sum(e.c2));
         dayEnergyConsumption["c3"].push(_.sum(e.c3));
@@ -228,8 +226,6 @@ class Overview extends Component {
 
       let monthgroup = {"c2":[],"c3":[],"c4":[]};
       let monthgroupGen = {"c1":[],"c5":[],"c6":[]};
-      console.log("dayURL dayWise",de);
-      console.log("dayURL dayWise",monthgroupGen);
       de.map((e,i)=>{
         monthgroup["c2"].push(e.c2);
         monthgroup["c3"].push(e.c3);
@@ -350,11 +346,21 @@ class Overview extends Component {
 
   render(){
     const { classes } = this.props;
+    const pvsystem = (window.localStorage.nuser) ? JSON.parse(window.localStorage.nuser).plant : null;
     return (
       <div className={classes.root}>
         <Typography type="title" style={{margin:16, marginBottom: 0}}>
-          PVSystem: Shyamala Hospital, Khammam
+          PVSystem: {pvsystem}
         </Typography>
+        <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
+          Generation
+        </Typography>
+        <Grid container spacing={0}>
+          <BKPanel data={{energy: this.state.gen.todayEnergyGenL}} title='Energy - Today'/>
+          <BKPanel data={{energy: this.state.gen.weekEnergyGenL}} title='Energy - This Week'/>
+          <BKPanel data={{energy: this.state.gen.monthEnergyGenL}} title='Energy - This Month'/>
+          <BKPanel data={{energy: this.state.gen.totalEnergyGenL}} title='Energy - Total'/>
+        </Grid>
         <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
           Consumption
         </Typography>
@@ -431,15 +437,6 @@ class Overview extends Component {
               </Typography>
             </Card>
           </Grid>
-        </Grid>
-        <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
-          Generation
-        </Typography>
-        <Grid container spacing={0}>
-          <BKPanel data={{energy: this.state.gen.todayEnergyGenL}} title='Energy - Today'/>
-          <BKPanel data={{energy: this.state.gen.weekEnergyGenL}} title='Energy - This Week'/>
-          <BKPanel data={{energy: this.state.gen.monthEnergyGenL}} title='Energy - This Month'/>
-          <BKPanel data={{energy: this.state.gen.totalEnergyGenL}} title='Energy - Total'/>
         </Grid>
       </div>
     );
