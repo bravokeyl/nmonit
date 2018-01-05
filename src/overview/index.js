@@ -15,6 +15,7 @@ import config from '../aws';
 import { getIdToken,getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import BKPanel from '../common/panel';
+import {channelMap} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -135,12 +136,13 @@ class Overview extends Component {
   transformData = (d) => {
     if(d){
       d.map((data, i) => {
-        data["c2"] = util(data["c2"]);
-        data["c3"] = util(data["c3"]);
-        data["c4"] = util(data["c4"]);
-        if(data["c2"] < 0) data["c2"] = 0;
-        if(data["c3"] < 0) data["c3"] = 0;
-        if(data["c4"] < 0) data["c4"] = 0;
+        // data["c2"] = util(data["c2"]);
+        // data["c3"] = util(data["c3"]);
+        // data["c4"] = util(data["c4"]);
+        // if(data["c2"] < 0) data["c2"] = 0;
+        // if(data["c3"] < 0) data["c3"] = 0;
+        // if(data["c4"] < 0) data["c4"] = 0;
+        data = channelMap(data);
         if(data['dhr']){
           data["dhr"] = data['dhr'].split('/').reverse()[0];
           data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
@@ -182,15 +184,25 @@ class Overview extends Component {
       if(!de){
         de = [];
       }
-      let dayEnergyConsumption = {"c2":[],"c3":[],"c4":[]};
-      let dayEnergyGeneration = {"c1":[],"c5":[],"c6":[]};
+      let dayEnergyConsumption = {"R":[],"Y":[],"B":[]};
+      let dayEnergyGeneration = {"i1":[],"i2":[],"i3":[]};
       de.map((e,i)=>{
-        dayEnergyConsumption["c2"].push(_.sum(e.c2));
-        dayEnergyConsumption["c3"].push(_.sum(e.c3));
-        dayEnergyConsumption["c4"].push(_.sum(e.c4));
-        dayEnergyGeneration["c1"].push(_.sum(e.c1));
-        dayEnergyGeneration["c5"].push(_.sum(e.c5));
-        dayEnergyGeneration["c6"].push(_.sum(e.c6));
+        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
+        if(ap === 'l'){
+          dayEnergyConsumption["R"].push(_.sum(e.c2));
+          dayEnergyConsumption["Y"].push(_.sum(e.c4));
+          dayEnergyConsumption["B"].push(_.sum(e.c6));
+          dayEnergyGeneration["i1"].push(_.sum(e.c1));
+          dayEnergyGeneration["i2"].push(_.sum(e.c3));
+          dayEnergyGeneration["i3"].push(_.sum(e.c5));
+        } else {
+          dayEnergyConsumption["R"].push(_.sum(e.c2));
+          dayEnergyConsumption["Y"].push(_.sum(e.c4));
+          dayEnergyConsumption["B"].push(_.sum(e.c6));
+          dayEnergyGeneration["i1"].push(_.sum(e.c1));
+          dayEnergyGeneration["i2"].push(_.sum(e.c3));
+          dayEnergyGeneration["i3"].push(_.sum(e.c5));
+        }
         return e;
       });
       let mec = _.map(dayEnergyConsumption,(e,i)=>{
@@ -224,15 +236,25 @@ class Overview extends Component {
         energyMonth: de,
       });
 
-      let monthgroup = {"c2":[],"c3":[],"c4":[]};
-      let monthgroupGen = {"c1":[],"c5":[],"c6":[]};
-      de.map((e,i)=>{
-        monthgroup["c2"].push(e.c2);
-        monthgroup["c3"].push(e.c3);
-        monthgroup["c4"].push(e.c4);
-        monthgroupGen["c1"].push(e.c1);
-        monthgroupGen["c5"].push(e.c5);
-        monthgroupGen["c6"].push(e.c6);
+      let monthgroup = {"R":[],"Y":[],"B":[]};
+      let monthgroupGen = {"i1":[],"i2":[],"i3":[]};
+      de.map((e,i) => {
+        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
+        if(ap === 'l'){
+          monthgroup["R"].push(e.c2);
+          monthgroup["Y"].push(e.c4);
+          monthgroup["B"].push(e.c6);
+          monthgroupGen["i1"].push(e.c1);
+          monthgroupGen["i2"].push(e.c3);
+          monthgroupGen["i3"].push(e.c5);
+        } else {
+          monthgroup["R"].push(e.c2);
+          monthgroup["Y"].push(e.c4);
+          monthgroup["B"].push(e.c6);
+          monthgroupGen["i1"].push(e.c1);
+          monthgroupGen["i2"].push(e.c3);
+          monthgroupGen["i3"].push(e.c5);
+        }
         return e;
       });
       let me = _.map(monthgroup,(e,i)=>{
@@ -309,26 +331,37 @@ class Overview extends Component {
         de = [de]
         console.log("Not array",de)
       }
-      let dayEnergy = {"c2":[],"c3":[],"c4":[]};
-      let dayEnergyGen = {"c1":[],"c5":[],"c6":[]};
+      let totalEnergy = {"R":[],"Y":[],"B":[]};
+      let totalEnergyGen = {"i1":[],"i2":[],"i3":[]};
       de.map((e,i)=>{
-        dayEnergy["c2"].push(e.c2);
-        dayEnergy["c3"].push(e.c3);
-        dayEnergy["c4"].push(e.c4);
-        dayEnergyGen["c1"].push(e.c1);
-        dayEnergyGen["c5"].push(e.c5);
-        dayEnergyGen["c6"].push(e.c6);
+
+        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
+        if(ap === 'l'){
+          totalEnergy["R"].push(e.c2);
+          totalEnergy["Y"].push(e.c4);
+          totalEnergy["B"].push(e.c6);
+          totalEnergyGen["i1"].push(e.c1);
+          totalEnergyGen["i2"].push(e.c3);
+          totalEnergyGen["i3"].push(e.c5);
+        } else {
+          totalEnergy["R"].push(e.c2);
+          totalEnergy["Y"].push(e.c4);
+          totalEnergy["B"].push(e.c6);
+          totalEnergyGen["i1"].push(e.c1);
+          totalEnergyGen["i2"].push(e.c3);
+          totalEnergyGen["i3"].push(e.c5);
+        }
         return e;
       });
-      let me = _.map(dayEnergy,(e,i)=>{
+      let me = _.map(totalEnergy,(e,i)=>{
         return _.sum(e);
       });
-      let meg = _.map(dayEnergyGen,(e,i)=>{
+      let meg = _.map(totalEnergyGen,(e,i)=>{
         return _.sum(e);
       });
       let yeartotal = _.sum(me);
       let yeartotalGen = _.sum(meg);
-      console.log(meg,"MEG Total")
+      console.log(meg,me,"MEG Total");
       self.setState(prevState => ({
         totalEnergyL: parseFloat(yeartotal).toFixed(2),
         gen: {
@@ -359,7 +392,7 @@ class Overview extends Component {
           <BKPanel data={{energy: this.state.gen.todayEnergyGenL}} title='Energy - Today'/>
           <BKPanel data={{energy: this.state.gen.weekEnergyGenL}} title='Energy - This Week'/>
           <BKPanel data={{energy: this.state.gen.monthEnergyGenL}} title='Energy - This Month'/>
-          <BKPanel data={{energy: this.state.gen.totalEnergyGenL}} title='Energy - Total'/>
+          <BKPanel data={{energy: this.state.gen.totalEnergyGenL}} title='Energy - Year'/>
         </Grid>
         <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
           Consumption
@@ -371,7 +404,7 @@ class Overview extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    Energy - Today
+                    Load - Today
                   </Typography>
                   <Typography type="headline" component="h2">
                     {this.state.progessL?<CircularProgress size={24} />: this.state.todayEnergyL} kWh
@@ -389,7 +422,7 @@ class Overview extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    Energy - This Week
+                    Load - This Week
                   </Typography>
                   <Typography type="headline" component="h2">
                     {this.state.progessL?<CircularProgress size={24} />: this.state.weekEnergyL} kWh
@@ -407,7 +440,7 @@ class Overview extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    Energy - This Month
+                    Load - This Month
                   </Typography>
                   <Typography type="headline" component="h2">
                     {this.state.progessL?<CircularProgress size={24} />:this.state.monthEnergyL} kWh
@@ -425,7 +458,7 @@ class Overview extends Component {
                 <ChromeReaderModeIcon className={classes.icon}/>
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
-                    Energy - Total
+                    Load - Year
                   </Typography>
                   <Typography type="headline" component="h2">
                     {this.state.progessL?<CircularProgress size={24} />:this.state.totalEnergyL} kWh

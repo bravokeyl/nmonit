@@ -27,6 +27,7 @@ import offlineFetch from '../common/fetch-cache';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
+import {channelMap} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -149,41 +150,8 @@ class MonthGen extends Component {
 
   transformData = (d) => {
     if(d){
-      let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
       d.map((data, i) => {
-        if( ap == 'l'){
-          data["R"] = util(data["c2"]);
-          data["Y"] = util(data["c4"]);
-          data["B"] = util(data["c6"]);
-
-          data["i1"] = util(data["c1"]);
-          data["i2"] = util(data["c3"]);
-          data["i3"] = util(data["c5"]);
-
-          if(data["R"] < 0) data["R"] = 0;
-          if(data["Y"] < 0) data["Y"] = 0;
-          if(data["B"] < 0) data["B"] = 0;
-
-          if(data["i1"] < 0) data["i1"] = 0;
-          if(data["i2"] < 0) data["i2"] = 0;
-          if(data["i3"] < 0) data["i3"] = 0;
-        } else {
-          data["c1"] = util(data["c2"]);
-          data["c2"] = util(data["c3"]);
-          data["c3"] = util(data["c4"]);
-
-          data["c4"] = util(data["c1"]);
-          data["c5"] = util(data["c5"]);
-          data["c6"] = util(data["c6"]);
-
-          if(data["c1"] < 0) data["c2"] = 0;
-          if(data["c2"] < 0) data["c3"] = 0;
-          if(data["c3"] < 0) data["c4"] = 0;
-
-          if(data["c4"] < 0) data["c1"] = 0;
-          if(data["c5"] < 0) data["c5"] = 0;
-          if(data["c6"] < 0) data["c6"] = 0;
-        }
+        data = channelMap(data);
 
         if(data['dhr']){
           data["dhr"] = data['dhr'].split('/').reverse()[0];

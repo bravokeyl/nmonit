@@ -24,6 +24,7 @@ import 'react-dates/lib/css/_datepicker.css';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
+import {channelMap} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -135,52 +136,18 @@ class DayGen extends Component {
 
   transformData = (d) => {
     if(d){
-      let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
       d.map((data, i) => {
-        if(ap == 'l'){
-          data["R"] = util(data["c2"]);
-          data["Y"] = util(data["c4"]);
-          data["B"] = util(data["c6"]);
-
-          data["i1"] = util(data["c1"]);
-          data["i2"] = util(data["c3"]);
-          data["i3"] = util(data["c5"]);
-
-          if(data["R"] < 0) data["R"] = 0;
-          if(data["Y"] < 0) data["Y"] = 0;
-          if(data["B"] < 0) data["B"] = 0;
-
-          if(data['dhr']){
-            data["dhr"] = data['dhr'].split('/').reverse()[0];
-            data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
-          }
-          if(data['ddt']){
-            data['month'] = moment(data['ddt']).format("MMM Do");
-            data["ddt"] = data['ddt'].split('/').reverse()[0];
-          }
-        } else {
-          data["R"] = util(data["c2"]);
-          data["Y"] = util(data["c3"]);
-          data["B"] = util(data["c4"]);
-
-          data["i1"] = util(data["c1"]);
-          data["i2"] = util(data["c5"]);
-          data["i3"] = util(data["c6"]);
-
-          if(data["R"] < 0) data["R"] = 0;
-          if(data["Y"] < 0) data["Y"] = 0;
-          if(data["B"] < 0) data["B"] = 0;
-          if(data['dhr']){
-            data["dhr"] = data['dhr'].split('/').reverse()[0];
-            data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
-          }
-          if(data['ddt']){
-            data['month'] = moment(data['ddt']).format("MMM Do");
-            data["ddt"] = data['ddt'].split('/').reverse()[0];
-          }
-        }
+        data = channelMap(data);
         data['load'] = parseFloat(Number(data["R"] + data["Y"] + data["B"])).toFixed(2);
         data['solar'] = parseFloat(Number(data["i1"] + data["i2"] + data["i3"])).toFixed(2);
+        if(data['dhr']){
+          data["dhr"] = data['dhr'].split('/').reverse()[0];
+          data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+        }
+        if(data['ddt']){
+          data['month'] = moment(data['ddt']).format("MMM Do");
+          data["ddt"] = data['ddt'].split('/').reverse()[0];
+        }
         return d;
       });
     } else {

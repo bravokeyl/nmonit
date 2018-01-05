@@ -288,17 +288,17 @@ class EnhancedTable extends React.Component {
                     }
                     <TableCell padding="none">{n.day || n.month}</TableCell>
                     <TableCell numeric style={{fontWeight:'500'}}>
-                      {Number(parseFloat(n.c2+n.c3+n.c4).toFixed(2))}
+                      {Number(parseFloat(n.R+n.Y+n.B).toFixed(2))}
                     </TableCell>
                     <TableCell numeric style={{fontWeight:'500'}}>
-                      {Number(parseFloat(n.c1+n.c5+n.c6).toFixed(2))}
+                      {Number(parseFloat(n.i1+n.i2+n.i3).toFixed(2))}
                     </TableCell>
-                    <TableCell numeric>{n.c2}</TableCell>
-                    <TableCell numeric>{n.c3}</TableCell>
-                    <TableCell numeric>{n.c4}</TableCell>
-                    <TableCell numeric>{Number(parseFloat(n.c1).toFixed(3))}</TableCell>
-                    <TableCell numeric>{Number(parseFloat(n.c5).toFixed(3))}</TableCell>
-                    <TableCell numeric>{Number(parseFloat(n.c6).toFixed(3))}</TableCell>
+                    <TableCell numeric>{n.R}</TableCell>
+                    <TableCell numeric>{n.Y}</TableCell>
+                    <TableCell numeric>{n.B}</TableCell>
+                    <TableCell numeric>{Number(parseFloat(n.i1).toFixed(3))}</TableCell>
+                    <TableCell numeric>{Number(parseFloat(n.i2).toFixed(3))}</TableCell>
+                    <TableCell numeric>{Number(parseFloat(n.i3).toFixed(3))}</TableCell>
                   </TableRow>
                 );
               })}
