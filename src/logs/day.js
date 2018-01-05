@@ -201,9 +201,8 @@ class DayGen extends Component {
   }
   componentWillReceiveProps(n,o) {
     if(n.date){
-
       let nd = moment(n.date,'YYYY/MM/DD');
-      console.log("Day PROPS",n.date,nd.format('YYYY/MM/DD'))
+      console.log("Day PROPS",nd.format('YYYY/MM/DD'))
       this.changeEnergy(nd);
     }
   }
@@ -219,12 +218,10 @@ class DayGen extends Component {
     offlineFetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
-
       let de =  self.transformData(response.energy);
       self.setState({
         energyDay: de
       });
-
       return response;
     });
 

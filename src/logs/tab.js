@@ -134,7 +134,6 @@ class Logs extends Component {
   };
 
   componentDidMount(){
-    console.log("TAB PROPS:",this.props);
     console.info("Log component did mount");
   }
   render(){

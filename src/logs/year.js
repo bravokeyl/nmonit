@@ -26,6 +26,7 @@ import offlineFetch from '../common/fetch-cache';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
+import {channelMap} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -141,16 +142,7 @@ class YearGen extends Component {
   transformData = (d) => {
     if(d){
       d.map((data, i) => {
-        data["c2"] = util(data["c2"]);
-        data["c3"] = util(data["c3"]);
-        data["c4"] = util(data["c4"]);
-
-        data["c1"] = util(data["c1"]);
-        data["c5"] = util(data["c5"]);
-        data["c6"] = util(data["c6"]);
-        if(data["c2"] < 0) data["c2"] = 0;
-        if(data["c3"] < 0) data["c3"] = 0;
-        if(data["c4"] < 0) data["c4"] = 0;
+        data = channelMap(data);
         data['month'] = moment(data['ddm']).format("MMMM YYYY");
         data["md"]= data['ddm'];
         data["ddm"] = moment(data['ddm']).format("MMM YYYY");
@@ -176,6 +168,10 @@ class YearGen extends Component {
     offlineFetch(url,yearApiHeaders)
     .then(response => response.json())
     .then(function(response) {
+      console.log("Year Res:",response);
+      if(response && !response.energy){
+        response.energy = [response];
+      }
       if(response.energy) {
         let de =  self.transformData(response.energy);
         self.setState({

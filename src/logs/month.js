@@ -270,42 +270,6 @@ class MonthGen extends Component {
         monthprogress: false,
       });
       console.log("TME:",self.state.energyMonth);
-      let weekDays = getCurrentWeekArray();
-      let weekEnergy = de.filter((e)=>{
-        return weekDays.indexOf(e.ddt) !== -1
-      });
-      let group = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
-      let monthgroup = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]}
-
-      weekEnergy.map((e,i)=>{
-        group["c2"].push(e.c2);
-        group["c3"].push(e.c3);
-        group["c4"].push(e.c4);
-        return e;
-      });
-
-      let ge = _.map(group,(e,i)=>{
-        return _.sum(e);
-      });
-      de.map((e,i)=>{
-        monthgroup["c2"].push(e.c2);
-        monthgroup["c3"].push(e.c3);
-        monthgroup["c4"].push(e.c4);
-        return e;
-      });
-      let me = _.map(monthgroup,(e,i)=>{
-        return _.sum(e);
-      });
-      let getotal = _.sum(ge);
-      let metotal = _.sum(me);
-      self.setState({
-        weekEnergyRL: parseFloat(ge[1]).toFixed(3),
-        weekEnergyYL: parseFloat(ge[2]).toFixed(3),
-        weekEnergyBL: parseFloat(ge[3]).toFixed(3),
-        weekEnergyL:  parseFloat(getotal).toFixed(3),
-        monthEnergyL: parseFloat(metotal).toFixed(3),
-        progessL: false,
-      });
       return response;
     });
 
