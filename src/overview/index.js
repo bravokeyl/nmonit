@@ -4,19 +4,16 @@ import { withStyles } from 'material-ui/styles';
 
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
-import Card, { CardContent } from 'material-ui/Card';
-import { CircularProgress } from 'material-ui/Progress';
-import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
+import ReactHighcharts from 'react-highcharts';
 
 import moment from 'moment';
 import _ from 'lodash';
 
 import config from '../aws';
-import { getIdToken,getCurrentUserName } from '../aws/cognito';
+import {getIdToken} from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
-import BKPanel from '../common/panel';
 import OverGen from './generation';
 import OverCon from './consumption';
 import {channelMap} from '../common/utils';
@@ -90,29 +87,54 @@ const styles = theme => ({
     border: '1px solid #eee',
   }
 });
-var configd = {
-  xAxis: {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  },
-  series: [{
-    data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
-  }]
-};
-
-const getCurrentWeekString = () => {
-  let weekStart = moment().weekday(0).format("Do MMM");
-  let weekEnd = moment().format("Do MMM");
-  return weekStart+"-"+weekEnd;
-}
-const util = (d) => {
-  let o = 0;
-  if(Array.isArray(d)) {
-    o = d.reduce((sum, value) => Number(parseFloat(sum ))+ Number(parseFloat(value)), 0);
-    o = Number(parseFloat(o).toFixed(2))
-  } else{
-    o = Number(parseFloat(d).toFixed(2));
-  }
-  return o;
+const barconfig = {
+  chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Browser market shares January, 2015 to May, 2015'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        }
+    },
+    series: [{
+        name: 'Brands',
+        colorByPoint: true,
+        data: [{
+            name: 'Microsoft Internet Explorer',
+            y: 56.33
+        }, {
+            name: 'Chrome',
+            y: 24.03,
+            sliced: true,
+            selected: true
+        }, {
+            name: 'Firefox',
+            y: 10.38
+        }, {
+            name: 'Safari',
+            y: 4.77
+        }, {
+            name: 'Opera',
+            y: 0.91
+        }, {
+            name: 'Proprietary or Undetectable',
+            y: 0.2
+        }]
+    }]
 }
 
 class Overview extends Component {
@@ -437,24 +459,33 @@ class Overview extends Component {
         <Typography type="title" style={{margin:16}}>
           PVSystem: {pvsystem}
         </Typography>
-        <Tabs
-          value={this.state.value}
-          onChange={this.handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          fullWidth
-          className={classes.tabsheader}
-        >
-          <Tab label="Generation" />
-          <Tab label="Consumption" />
-        </Tabs>
-        <SwipeableViews
-          axis='x'
-          index={this.state.value}
-          onChangeIndex={this.handleChangeIndex}>
-          <OverGen data={this.state.gen} />
-          <OverCon data={this.state.load}/>
-        </SwipeableViews>
+        <Grid container spacing={0}>
+          <Grid item xs={12} sm={6}>
+            <Tabs
+              value={this.state.value}
+              onChange={this.handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              fullWidth
+              className={classes.tabsheader}
+            >
+              <Tab label="Generation" />
+              <Tab label="Consumption" />
+            </Tabs>
+            <SwipeableViews
+              axis='x'
+              index={this.state.value}
+              onChangeIndex={this.handleChangeIndex}>
+              <OverGen data={this.state.gen} />
+              <OverCon data={this.state.load}/>
+            </SwipeableViews>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Grid container spacing={0}>
+              <ReactHighcharts config={barconfig} ref="chart"></ReactHighcharts>
+            </Grid>
+          </Grid>
+        </Grid>
       </div>
     );
   }

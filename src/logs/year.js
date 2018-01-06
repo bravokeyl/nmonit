@@ -98,16 +98,7 @@ const styles = theme => ({
 });
 
 const years = ["2015","2016","2017","2018"];
-const util = (d) => {
-  let o = 0;
-  if(Array.isArray(d)) {
-    o = d.reduce((sum, value) => Number(parseFloat(sum ))+ Number(parseFloat(value)), 0);
-    o = Number(parseFloat(o).toFixed(3))
-  } else{
-    o = Number(parseFloat(d).toFixed(3));
-  }
-  return o;
-}
+
 class YearGen extends Component {
   constructor(props){
     super(props);

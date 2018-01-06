@@ -13,7 +13,8 @@ const styles = theme => ({
     padding: 16,
   },
 });
-var configd = {
+
+const configd = {
   xAxis: {
     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   },
@@ -29,12 +30,9 @@ const getCurrentWeekString = () => {
 }
 
 class OverCon extends Component {
-  constructor(props){
-    super(props);
-  }
 
   render(){
-    const { classes, data } = this.props;
+    const { data } = this.props;
     return (
       <div className="nm-generation">
         <Grid container spacing={0}>

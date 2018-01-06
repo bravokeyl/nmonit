@@ -64,9 +64,8 @@ class BKPanel extends Component {
   }
   render(){
     const { classes,data,title,footer,color,icon } = this.props;
-    // console.log("Rendering panel",data,title);
     return (
-    <Grid item xs={12} sm={3}>
+    <Grid item xs={12} sm={6}>
       <Card className={classes.card}>
         <div className={classes.details}>
           {
