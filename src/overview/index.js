@@ -173,7 +173,7 @@ class Overview extends Component {
     APIHEADERS.headers.Authorization = this.state.idToken;
     let url = baseApiURL+"h?dhr="+date;
     let dayURL = baseApiURL+"d?ddm="+month;
-    let weekURL = baseApiURL+"w";
+    let weekURL = baseApiURL+"we";
     let monthURL = baseApiURL+"m";
     let self = this;
 
@@ -283,15 +283,25 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  response.energy;
-      let dayEnergy = {"c2":[],"c3":[],"c4":[]};
-      let dayEnergyGen = {"c1":[],"c5":[],"c6":[]};
+      let dayEnergy = {"R":[],"Y":[],"B":[]};
+      let dayEnergyGen = {"i1":[],"i2":[],"i3":[]};
       de.map((e,i)=>{
-        dayEnergy["c2"].push(e.c2);
-        dayEnergy["c3"].push(e.c3);
-        dayEnergy["c4"].push(e.c4);
-        dayEnergyGen["c1"].push(e.c1);
-        dayEnergyGen["c5"].push(e.c5);
-        dayEnergyGen["c6"].push(e.c6);
+        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
+        if(ap === 'l'){
+          dayEnergy["R"].push(e.c2);
+          dayEnergy["Y"].push(e.c4);
+          dayEnergy["B"].push(e.c6);
+          dayEnergyGen["i1"].push(e.c1);
+          dayEnergyGen["i2"].push(e.c3);
+          dayEnergyGen["i3"].push(e.c5);
+        } else {
+          dayEnergy["R"].push(e.c2);
+          dayEnergy["Y"].push(e.c4);
+          dayEnergy["B"].push(e.c6);
+          dayEnergyGen["i1"].push(e.c1);
+          dayEnergyGen["i2"].push(e.c3);
+          dayEnergyGen["i3"].push(e.c5);
+        }
         return e;
       });
       // console.log("weekURL dayWise",de);
@@ -389,10 +399,16 @@ class Overview extends Component {
           Generation
         </Typography>
         <Grid container spacing={0}>
-          <BKPanel data={{energy: this.state.gen.todayEnergyGenL}} title='Energy - Today'/>
-          <BKPanel data={{energy: this.state.gen.weekEnergyGenL}} title='Energy - This Week'/>
-          <BKPanel data={{energy: this.state.gen.monthEnergyGenL}} title='Energy - This Month'/>
-          <BKPanel data={{energy: this.state.gen.totalEnergyGenL}} title='Energy - Year'/>
+          <BKPanel color="green" icon data={this.state.gen.todayEnergyGenL+" kWh"} title='Energy - Today' footer="Last updated:"/>
+          <BKPanel color="green" icon data={this.state.gen.weekEnergyGenL+" kWh"} title='Energy - This Week' footer={getCurrentWeekString()}/>
+          <BKPanel color="green" icon data={this.state.gen.monthEnergyGenL+" kWh"} title='Energy - This Month' footer="Units generated"/>
+          <BKPanel color="green" icon data={this.state.gen.totalEnergyGenL+" kWh"} title='Energy - Year' footer="Units generated"/>
+        </Grid>
+        <Grid container spacing={0}>
+          <BKPanel data={Number(parseFloat(this.state.gen.todayEnergyGenL*9.5).toFixed(3))} title='Revenue - Today'/>
+          <BKPanel data={Number(parseFloat(this.state.gen.weekEnergyGenL*9.5).toFixed(3))} title='Revenue - This Week'/>
+          <BKPanel data={Number(parseFloat(this.state.gen.monthEnergyGenL*9.5).toFixed(3))} title='Revenue - This Month'/>
+          <BKPanel data={Number(parseFloat(this.state.gen.totalEnergyGenL*9.5).toFixed(3))} title='Revenue - Year'/>
         </Grid>
         <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
           Consumption

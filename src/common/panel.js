@@ -7,6 +7,7 @@ import Grid from 'material-ui/Grid';
 import Card, { CardContent } from 'material-ui/Card';
 import { CircularProgress } from 'material-ui/Progress';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
+import AssessmentIcon from 'material-ui-icons/Assessment';
 
 const styles = theme => ({
   root: {
@@ -40,7 +41,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f96f40",
+    fill: "#f06267",
   },
   info: {
     marginBottom: 12,
@@ -62,24 +63,27 @@ class BKPanel extends Component {
     this.state = {}
   }
   render(){
-    const { classes,data,title } = this.props;
+    const { classes,data,title,footer,color,icon } = this.props;
     // console.log("Rendering panel",data,title);
     return (
     <Grid item xs={12} sm={3}>
       <Card className={classes.card}>
         <div className={classes.details}>
-          <ChromeReaderModeIcon className={classes.icon}/>
+          {
+            icon ? <AssessmentIcon className={classes.icon} style={{fill:color}}/> :
+            <ChromeReaderModeIcon className={classes.icon} style={{fill:color}}/>
+          }
           <CardContent className={classes.content}>
             <Typography type="body1" className={classes.title}>
               {title || "No Title"}
             </Typography>
             <Typography type="headline" component="h2">
-              {this.state.progessL?<CircularProgress size={24} />: data.energy} kWh
+              {this.state.progessL?<CircularProgress size={24} />: data}
             </Typography>
           </CardContent>
         </div>
         <Typography type="body1" className={classes.info}>
-          Last updated: {this.state.lastupdated}
+          {footer || ""}
         </Typography>
       </Card>
     </Grid>
@@ -89,7 +93,6 @@ class BKPanel extends Component {
 
 BKPanel.propTypes = {
   classes: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(BKPanel);
