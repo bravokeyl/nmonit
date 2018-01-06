@@ -87,6 +87,63 @@ const styles = theme => ({
     border: '1px solid #eee',
   }
 });
+
+var RP = Number(parseFloat((34.75*100)/(134.19+12.88)).toFixed(2));
+var YP = Number(parseFloat((73.98*100)/(134.19+12.88)).toFixed(2));
+var BP = Number(parseFloat((25.46*100)/(134.19+12.88)).toFixed(2));
+
+var I1 = Number(parseFloat((4.76*100)/(134.19+12.88)).toFixed(2));
+var I2 = Number(parseFloat((3.82*100)/(134.19+12.88)).toFixed(2));
+var I3 = Number(parseFloat((4.3*100)/(134.19+12.88)).toFixed(2));
+
+var LP = RP+YP+BP;
+var SP = I1+I2+I3;
+
+var categories = ['Load', 'Solar'],
+    data = [{
+        color: "rgb(43,144,143)",
+        y: LP,
+        drilldown: {
+            name: 'Phases',
+            categories: ['R-Phase', 'Y-Phase', 'B-Phase'],
+            data: [RP,YP,BP],
+            color: ["#f44336","#ffc658","#3f51b5"]
+        }
+    }, {
+        color: "rgb(27, 94, 32)",
+        y: SP,
+        drilldown: {
+            name: 'Inverters',
+            categories: ['Inv 1', 'Inv 2', 'Inv 3'],
+            data: [I1,I2,I3],
+            color: ["#1b5e20","#4c8c4a","#387002"]
+        }
+    }],
+    pieEnergyData = [],
+    pieChannelData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+for (i = 0; i < dataLen; i += 1) {
+    pieEnergyData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        pieChannelData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: data[i].drilldown.color[j]
+        });
+    }
+}
+
 const barconfig = {
   chart: {
         plotBackgroundColor: null,
@@ -111,7 +168,7 @@ const barconfig = {
         }
     },
     series: [{
-        name: 'Brands',
+        name: 'Energy',
         colorByPoint: true,
         data: [{
             name: 'Load',
@@ -125,6 +182,71 @@ const barconfig = {
     }]
 }
 
+const pieDrill = {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: null
+    },
+    subtitle: {
+        text: null
+    },
+    yAxis: {
+        title: {
+            text: 'Energy'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: '%'
+    },
+    series: [{
+        name: 'Energy',
+        data: pieEnergyData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Phases',
+        data: pieChannelData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y + '%' : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+};
 class Overview extends Component {
   constructor(props){
     super(props);
@@ -470,7 +592,7 @@ class Overview extends Component {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Grid container spacing={0}>
-              <ReactHighcharts config={barconfig} ref="chart"></ReactHighcharts>
+              <ReactHighcharts config={pieDrill} ref="chart"></ReactHighcharts>
             </Grid>
           </Grid>
         </Grid>
