@@ -231,7 +231,7 @@ class Dashboard extends Component {
     const pvsystem = (window.localStorage.nuser) ? JSON.parse(window.localStorage.nuser).plant : null;
     return (
       <div className={classes.root}>
-        <Typography type="title" style={{margin:16, marginBottom: 0}}>
+        <Typography type="title" style={{margin:16}}>
           PVSystem: {pvsystem}
         </Typography>
         <Grid container spacing={0}>

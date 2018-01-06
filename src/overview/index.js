@@ -7,6 +7,8 @@ import Grid from 'material-ui/Grid';
 import Card, { CardContent } from 'material-ui/Card';
 import { CircularProgress } from 'material-ui/Progress';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import SwipeableViews from 'react-swipeable-views';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -15,6 +17,8 @@ import config from '../aws';
 import { getIdToken,getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import BKPanel from '../common/panel';
+import OverGen from './generation';
+import OverCon from './consumption';
 import {channelMap} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
@@ -77,8 +81,23 @@ const styles = theme => ({
   },
   opacity: {
     opacity: 0.5
+  },
+  tabsheader: {
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: 16,
+      marginRight: 16,
+    },
+    border: '1px solid #eee',
   }
 });
+var configd = {
+  xAxis: {
+    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  },
+  series: [{
+    data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
+  }]
+};
 
 const getCurrentWeekString = () => {
   let weekStart = moment().weekday(0).format("Do MMM");
@@ -118,6 +137,12 @@ class Overview extends Component {
         monthEnergyGenL: 0,
         totalEnergyGenL: 0,
       },
+      load: {
+        todayEnergyL: 0,
+        weekEnergyL: 0,
+        monthEnergyL: 0,
+        totalEnergyL: 0,
+      },
       energyDay: [],
       energyMonth: [],
       date: moment().format('YYYY/MM/DD'),
@@ -128,20 +153,25 @@ class Overview extends Component {
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
+
+      value: 0,
     }
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
-
+  handleChange = (event, value) => {
+    this.setState({
+      value: value
+    });
+  };
+  handleChangeIndex = index => {
+    this.setState({ value: index });
+  };
   transformData = (d) => {
     if(d){
       d.map((data, i) => {
-        // data["c2"] = util(data["c2"]);
-        // data["c3"] = util(data["c3"]);
-        // data["c4"] = util(data["c4"]);
-        // if(data["c2"] < 0) data["c2"] = 0;
-        // if(data["c3"] < 0) data["c3"] = 0;
-        // if(data["c4"] < 0) data["c4"] = 0;
         data = channelMap(data);
         if(data['dhr']){
           data["dhr"] = data['dhr'].split('/').reverse()[0];
@@ -214,10 +244,13 @@ class Overview extends Component {
       let daytotalConsumption = _.sum(mec);
       let daytotalGeneration = _.sum(meg);
       self.setState(prevState => ({
-        todayEnergyL: parseFloat(daytotalConsumption).toFixed(3),
         gen: {
           ...prevState.gen,
           todayEnergyGenL: parseFloat(daytotalGeneration).toFixed(3)
+        },
+        load: {
+          ...prevState.load,
+          todayEnergyL: parseFloat(daytotalConsumption).toFixed(3),
         }
       }));
       return response;
@@ -267,11 +300,14 @@ class Overview extends Component {
       let metotal = _.sum(me);
       let metotalGen = _.sum(meg);
       self.setState(prevState => ({
-        monthEnergyL: parseFloat(metotal).toFixed(2),
         progessL: false,
         gen: {
           ...prevState.gen,
           monthEnergyGenL: parseFloat(metotalGen).toFixed(3)
+        },
+        load: {
+          ...prevState.load,
+          monthEnergyL: parseFloat(metotal).toFixed(3),
         }
       }));
       return response;
@@ -316,13 +352,16 @@ class Overview extends Component {
       let weektotalGen = _.sum(meg);
       console.log(me,"MEMME")
       self.setState(prevState => ({
-        weekEnergyL: parseFloat(weektotal).toFixed(2),
-        weekEnergyRL: parseFloat(me[0]).toFixed(2),
-        weekEnergyYL: parseFloat(me[1]).toFixed(2),
-        weekEnergyBL: parseFloat(me[2]).toFixed(2),
         gen: {
           ...prevState.gen,
-          weekEnergyGenL: parseFloat(weektotalGen).toFixed(2)
+          weekEnergyGenL: parseFloat(weektotalGen).toFixed(3)
+        },
+        load: {
+          ...prevState.load,
+          weekEnergyL: parseFloat(weektotal).toFixed(3),
+          weekEnergyRL: parseFloat(me[0]).toFixed(3),
+          weekEnergyYL: parseFloat(me[1]).toFixed(3),
+          weekEnergyBL: parseFloat(me[2]).toFixed(3),
         }
       }));
       return response;
@@ -373,10 +412,13 @@ class Overview extends Component {
       let yeartotalGen = _.sum(meg);
       console.log(meg,me,"MEG Total");
       self.setState(prevState => ({
-        totalEnergyL: parseFloat(yeartotal).toFixed(2),
         gen: {
           ...prevState.gen,
           totalEnergyGenL: parseFloat(yeartotalGen).toFixed(3)
+        },
+        load: {
+          ...prevState.load,
+          totalEnergyL: parseFloat(yeartotal).toFixed(3)
         }
       }));
       return response;
@@ -392,101 +434,27 @@ class Overview extends Component {
     const pvsystem = (window.localStorage.nuser) ? JSON.parse(window.localStorage.nuser).plant : null;
     return (
       <div className={classes.root}>
-        <Typography type="title" style={{margin:16, marginBottom: 0}}>
+        <Typography type="title" style={{margin:16}}>
           PVSystem: {pvsystem}
         </Typography>
-        <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
-          Generation
-        </Typography>
-        <Grid container spacing={0}>
-          <BKPanel color="green" icon data={this.state.gen.todayEnergyGenL+" kWh"} title='Energy - Today' footer="Last updated:"/>
-          <BKPanel color="green" icon data={this.state.gen.weekEnergyGenL+" kWh"} title='Energy - This Week' footer={getCurrentWeekString()}/>
-          <BKPanel color="green" icon data={this.state.gen.monthEnergyGenL+" kWh"} title='Energy - This Month' footer="Units generated"/>
-          <BKPanel color="green" icon data={this.state.gen.totalEnergyGenL+" kWh"} title='Energy - Year' footer="Units generated"/>
-        </Grid>
-        <Grid container spacing={0}>
-          <BKPanel data={Number(parseFloat(this.state.gen.todayEnergyGenL*9.5).toFixed(3))} title='Revenue - Today'/>
-          <BKPanel data={Number(parseFloat(this.state.gen.weekEnergyGenL*9.5).toFixed(3))} title='Revenue - This Week'/>
-          <BKPanel data={Number(parseFloat(this.state.gen.monthEnergyGenL*9.5).toFixed(3))} title='Revenue - This Month'/>
-          <BKPanel data={Number(parseFloat(this.state.gen.totalEnergyGenL*9.5).toFixed(3))} title='Revenue - Year'/>
-        </Grid>
-        <Typography type="subheading" style={{margin:16, marginBottom: 0}}>
-          Consumption
-        </Typography>
-        <Grid container spacing={0}>
-          <Grid item xs={12} sm={3}>
-            <Card className={classes.card}>
-              <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
-                <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
-                    Load - Today
-                  </Typography>
-                  <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.todayEnergyL} kWh
-                  </Typography>
-                </CardContent>
-              </div>
-              <Typography type="body1" className={classes.info}>
-                Last updated: {this.state.lastupdated}
-              </Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Card className={classes.card}>
-              <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
-                <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
-                    Load - This Week
-                  </Typography>
-                  <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.weekEnergyL} kWh
-                  </Typography>
-                </CardContent>
-              </div>
-              <Typography type="body1" className={classes.info}>
-                {getCurrentWeekString()} - ({this.state.weekEnergyRL +"+"+this.state.weekEnergyYL+"+"+this.state.weekEnergyBL})
-              </Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Card className={classes.card}>
-              <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
-                <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
-                    Load - This Month
-                  </Typography>
-                  <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.monthEnergyL} kWh
-                  </Typography>
-                </CardContent>
-              </div>
-              <Typography type="body1" className={classes.info}>
-                Units consumed
-              </Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Card className={classes.card}>
-              <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
-                <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
-                    Load - Year
-                  </Typography>
-                  <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.totalEnergyL} kWh
-                  </Typography>
-                </CardContent>
-              </div>
-              <Typography type="body1" className={classes.info}>
-                Units consumed
-              </Typography>
-            </Card>
-          </Grid>
-        </Grid>
+        <Tabs
+          value={this.state.value}
+          onChange={this.handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          fullWidth
+          className={classes.tabsheader}
+        >
+          <Tab label="Generation" />
+          <Tab label="Consumption" />
+        </Tabs>
+        <SwipeableViews
+          axis='x'
+          index={this.state.value}
+          onChangeIndex={this.handleChangeIndex}>
+          <OverGen data={this.state.gen} />
+          <OverCon data={this.state.load}/>
+        </SwipeableViews>
       </div>
     );
   }
