@@ -15,6 +15,9 @@ const styles = theme => ({
 });
 
 const configd = {
+  title: {
+    text: "Power"
+  },
   xAxis: {
     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   },
