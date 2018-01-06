@@ -187,7 +187,7 @@ const pieDrill = {
         type: 'pie'
     },
     title: {
-        text: null
+        text: "<b>Generation vs Load</b>"
     },
     subtitle: {
         text: null
@@ -218,7 +218,7 @@ const pieDrill = {
             distance: -30
         }
     }, {
-        name: 'Phases',
+        name: 'Energy',
         data: pieChannelData,
         size: '80%',
         innerSize: '60%',

@@ -4,3 +4,7 @@ a {
 a.nm-active button {
   background: rgba(255,255,255,0.3)
 }
+.highcharts-credits {
+  visibility: hidden;
+  display: none;
+}
