@@ -27,6 +27,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: 'column',
     margin: 16,
+    position: 'relative'
   },
   details: {
     display: 'flex',
@@ -43,7 +44,7 @@ const styles = theme => ({
     paddingLeft: 16,
     fill: "#f06267",
   },
-  info: {
+  footer: {
     marginBottom: 12,
     paddingLeft: 16,
     color: theme.palette.text.secondary,
@@ -53,7 +54,19 @@ const styles = theme => ({
   },
   opacity: {
     opacity: 0.5
-  }
+  },
+  info: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 30,
+    height: 30,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: "rgba(244,244,244,0.8)",
+    cursor: 'pointer',
+  },
 });
 
 
@@ -63,7 +76,7 @@ class BKPanel extends Component {
     this.state = {}
   }
   render(){
-    const { classes,data,title,footer,color,icon } = this.props;
+    const { classes,data,title,footer,color,icon,info } = this.props;
     return (
     <Grid item xs={12} sm={6}>
       <Card className={classes.card}>
@@ -81,9 +94,10 @@ class BKPanel extends Component {
             </Typography>
           </CardContent>
         </div>
-        <Typography type="body1" className={classes.info}>
+        <Typography type="body1" className={classes.footer}>
           {footer || ""}
         </Typography>
+        { info ? <div className={classes.info}>i</div>: '' }
       </Card>
     </Grid>
     )

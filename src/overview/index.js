@@ -453,6 +453,10 @@ class Overview extends Component {
       let de =  response.energy;
       let dayEnergy = {"R":[],"Y":[],"B":[]};
       let dayEnergyGen = {"i1":[],"i2":[],"i3":[]};
+      if(!de) {
+        console.log("No Data");
+        de = [];
+      }
       de.map((e,i)=>{
         let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
         if(ap === 'l'){

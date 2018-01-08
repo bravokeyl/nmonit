@@ -25,7 +25,7 @@ class OverCon extends Component {
     return (
       <div className="nm-generation">
         <Grid container spacing={0}>
-          <BKPanel color="green" icon data={data.todayEnergyGenL+" kWh"} title='Energy - Today' footer="Last updated:"/>
+          <BKPanel color="green" icon info data={data.todayEnergyGenL+" kWh"} title='Energy - Today' footer="Last updated:"/>
           <BKPanel color="green" icon data={data.weekEnergyGenL+" kWh"} title='Energy - This Week' footer={getCurrentWeekString()}/>
           <BKPanel color="green" icon data={data.monthEnergyGenL+" kWh"} title='Energy - This Month' footer="Units generated"/>
           <BKPanel color="green" icon data={data.totalEnergyGenL+" kWh"} title='Energy - Year' footer="Units generated"/>
