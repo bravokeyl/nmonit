@@ -144,43 +144,43 @@ for (i = 0; i < dataLen; i += 1) {
     }
 }
 
-const barconfig = {
-  chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: ''
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: false
-            },
-            showInLegend: true
-        }
-    },
-    series: [{
-        name: 'Energy',
-        colorByPoint: true,
-        data: [{
-            name: 'Load',
-            y: 56.33
-        }, {
-            name: 'Solar',
-            y: 24.03,
-            sliced: true,
-            selected: true
-        }]
-    }]
-}
+// const barconfig = {
+//   chart: {
+//         plotBackgroundColor: null,
+//         plotBorderWidth: null,
+//         plotShadow: false,
+//         type: 'pie'
+//     },
+//     title: {
+//         text: ''
+//     },
+//     tooltip: {
+//         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+//     },
+//     plotOptions: {
+//         pie: {
+//             allowPointSelect: true,
+//             cursor: 'pointer',
+//             dataLabels: {
+//                 enabled: false
+//             },
+//             showInLegend: true
+//         }
+//     },
+//     series: [{
+//         name: 'Energy',
+//         colorByPoint: true,
+//         data: [{
+//             name: 'Load',
+//             y: 56.33
+//         }, {
+//             name: 'Solar',
+//             y: 24.03,
+//             sliced: true,
+//             selected: true
+//         }]
+//     }]
+// }
 
 const pieDrill = {
     chart: {

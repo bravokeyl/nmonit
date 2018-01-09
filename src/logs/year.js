@@ -97,8 +97,7 @@ const styles = theme => ({
   }
 });
 
-const years = ["2015","2016","2017","2018"];
-
+const years = ["2016","2017","2018"];
 class YearGen extends Component {
   constructor(props){
     super(props);
@@ -123,6 +122,8 @@ class YearGen extends Component {
       yearprogress: true,
       dialogOpen: false,
       selectedYear: moment().format('YYYY'),
+
+      chartData : [],
     }
     this.changeYearEnergy = this.changeYearEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
@@ -131,18 +132,42 @@ class YearGen extends Component {
   }
 
   transformData = (d) => {
+    let cdarr = [];
+    let chartData = [
+      {"month":"Jan","solar":0,"load":0},{"month":"Feb","solar":0,"load":0},{"month":"Mar","solar":0,"load":0},
+      {"month":"Apr","solar":0,"load":0},{"month":"May","solar":0,"load":0},{"month":"Jun","solar":0,"load":0},
+      {"month":"Jul","solar":0,"load":0},{"month":"Aug","solar":0,"load":0},{"month":"Sep","solar":0,"load":0},
+      {"month":"Oct","solar":0,"load":0},{"month":"Nov","solar":0,"load":0},{"month":"Dec","solar":0,"load":0}
+    ];
     if(d){
-      d.map((data, i) => {
+      cdarr = _.sortBy(d,["ddm"]);
+      cdarr.map((data, i) => {
         data = channelMap(data);
-        data['month'] = moment(data['ddm']).format("MMMM YYYY");
+        data['month'] = moment(data['ddm']).format("MMM");
+        chartData.map((m,j) => {
+          let dm = data.month.toLowerCase();
+          let cdm = m.month.toLowerCase();
+          if(dm === cdm){
+            m.solar = data.solar;
+            m.load = data.load;
+            m.R = data.R;
+            m.Y = data.Y;
+            m.B = data.B;
+            m.i1 = data.i1;
+            m.i2 = data.i2;
+            m.i3 = data.i3;
+          }
+          return chartData;
+        });
         data["md"]= data['ddm'];
         data["ddm"] = moment(data['ddm']).format("MMM YYYY");
-        return d;
+        return cdarr;
       });
     } else {
-      d = [];
+      cdarr = [];
     }
-    return d;
+
+    return [cdarr,chartData];
   }
   changeYearEnergy = (year) => {
     let yearApiHeaders = APIHEADERS;
@@ -165,9 +190,11 @@ class YearGen extends Component {
       }
       if(response.energy) {
         let de =  self.transformData(response.energy);
+        console.log("YEAR ENERGY:",de)
         self.setState({
-          energyYear: de,
+          energyYear: de[0],
           yearprogress: false,
+          chartData: de[1]
         });
       } else {
         self.setState({
@@ -190,8 +217,12 @@ class YearGen extends Component {
   }
   handleClick(data,e) {
     if(data){
-      console.log(data,"activ")
-      this.props.indexV(e,1,moment(data.activeLabel,'MMM YYYY'));
+      let cm = moment();
+      let sm = moment(data.activeLabel,'MMM');
+      let mdiff = cm.diff(sm,"months");
+      if(mdiff >= 0) {
+        this.props.indexV(e,1,moment(data.activeLabel,'MMM YYYY'));
+      }
     } else {
       console.log("Clicked outside of the bars");
     }
@@ -215,10 +246,10 @@ class YearGen extends Component {
       } else {
         de =  self.transformData([response]);
       }
-      console.log("YEAR ENERGY:",de)
       self.setState({
-        energyYear: de,
+        energyYear: de[0],
         yearprogress: false,
+        chartData: de[1],
       });
       return response;
     });
@@ -255,21 +286,22 @@ class YearGen extends Component {
               </div>
               { this.state.yearprogress ? <LinearProgress />: ""}
               <ResponsiveContainer height={350} className={ this.state.yearprogress?classes.opacity:"bk-default"}>
-                <BarChart data={_.sortBy(this.state.energyYear,['md'])}
+                <BarChart data={this.state.chartData}
                       maxBarSize={30} unit="kWh"
                       margin={{top: 20, right: 30, left: 20, bottom: 40}}
                       onClick={this.handleClick}>
-                   <XAxis dataKey="ddm" angle={-45} textAnchor="end" interval={0}/>
+                   <XAxis dataKey={"month"} angle={-45} textAnchor="end" interval={0}/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
-                   <Tooltip />
-                   <Bar cursor="pointer" dataKey="c2" stackId="a" fill="#f44336"/>
-                   <Bar cursor="pointer" dataKey="c3" stackId="a" fill="#ffc658"/>
-                   <Bar cursor="pointer" dataKey="c4" stackId="a" fill="#3f51b5"/>
+                   <Tooltip/>
+                   <Bar cursor="pointer" dataKey="R" stackId="a" fill="#f44336"/>
+                   <Bar cursor="pointer" dataKey="Y" stackId="a" fill="#ffc658"/>
+                   <Bar cursor="pointer" dataKey="B" stackId="a" fill="#3f51b5"/>
 
-                   <Bar cursor="pointer" dataKey="c1" stackId="b" fill="#1b5e20"/>
-                   <Bar cursor="pointer" dataKey="c5" stackId="b" fill="#4c8c4a"/>
-                   <Bar cursor="pointer" dataKey="c6" stackId="b" fill="#387002"/>
+                   <Bar cursor="pointer" dataKey="i1" stackId="b" fill="#1b5e20"/>
+                   <Bar cursor="pointer" dataKey="i2" stackId="b" fill="#4c8c4a"/>
+                   <Bar cursor="pointer" dataKey="i3" stackId="b" fill="#387002"/>
+
                 </BarChart>
               </ResponsiveContainer>
             </Paper>

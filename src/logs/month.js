@@ -143,6 +143,7 @@ class MonthGen extends Component {
         }
         if(data['ddt']){
           data['month'] = moment(data['ddt']).format("MMM Do YYYY");
+          data['xm'] = moment(data['ddt']).format("MMM Do");
           data["ddt"] = data['ddt'].split('/').reverse()[0];
         }
         data['ltotal'] = Number(parseFloat(data["c1"]+data["c2"]+data["c3"]).toFixed(2));
@@ -293,7 +294,7 @@ class MonthGen extends Component {
                       maxBarSize={30} unit="kWh"
                       margin={{top: 20, right: 30, left: 20, bottom: 40}}
                       onClick={this.handleClick}>
-                   <XAxis dataKey="month" angle={-45} textAnchor="end" interval={0}/>
+                   <XAxis dataKey="xm" angle={-45} textAnchor="end" interval={0}/>
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
