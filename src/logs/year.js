@@ -26,7 +26,7 @@ import offlineFetch from '../common/fetch-cache';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
-import {channelMap} from '../common/utils';
+import {channelMap,bkLog} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -156,6 +156,7 @@ class YearGen extends Component {
             m.i1 = data.i1;
             m.i2 = data.i2;
             m.i3 = data.i3;
+            m.date = data['ddm'];
           }
           return chartData;
         });
@@ -166,7 +167,7 @@ class YearGen extends Component {
     } else {
       cdarr = [];
     }
-
+    bkLog("CDD::::",chartData);
     return [cdarr,chartData];
   }
   changeYearEnergy = (year) => {
@@ -184,13 +185,13 @@ class YearGen extends Component {
     offlineFetch(url,yearApiHeaders)
     .then(response => response.json())
     .then(function(response) {
-      console.log("Year Res:",response);
+      bkLog("Year Res:",response);
       if(response && !response.energy){
         response.energy = [response];
       }
       if(response.energy) {
         let de =  self.transformData(response.energy);
-        console.log("YEAR ENERGY:",de)
+        bkLog("YEAR ENERGY:",de)
         self.setState({
           energyYear: de[0],
           yearprogress: false,
@@ -216,20 +217,21 @@ class YearGen extends Component {
 
   }
   handleClick(data,e) {
+    bkLog(data,e.target);
     if(data){
       let cm = moment();
-      let sm = moment(data.activeLabel,'MMM');
-      let mdiff = cm.diff(sm,"months");
+      let sm = moment(this.state.selectedYear+" "+data.activeLabel,'YYYY MMM');
+      let mdiff = cm.diff(sm,"days");
       if(mdiff >= 0) {
         this.props.indexV(e,1,moment(data.activeLabel,'MMM YYYY'));
       }
     } else {
-      console.log("Clicked outside of the bars");
+      bkLog("Clicked outside of the bars");
     }
   };
 
   componentDidMount(){
-    console.info("YearGen component did mount",this.props.apiPath);
+    bkLog("YearGen component did mount",this.props.apiPath);
     let { year } = this.state;
     let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
     let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";

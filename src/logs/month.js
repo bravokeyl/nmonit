@@ -27,7 +27,7 @@ import offlineFetch from '../common/fetch-cache';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
-import {channelMap} from '../common/utils';
+import {channelMap,bkLog} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -156,12 +156,12 @@ class MonthGen extends Component {
     return d;
   }
   changeMonthEnergy = (month,y) => {
-    console.log("Month",month);
+    bkLog("Month",month);
     if(moment(month,"MMMM").isValid()){
       // month =
     }
     let monthdiff = moment().diff(moment(month,'YYYY/MM'),'days');
-    console.log("Month Diff",monthdiff)
+    bkLog("Month Diff",monthdiff)
     let monthApiHeaders = APIHEADERS;
     if(monthdiff >= 1) {
       monthApiHeaders.offline.expires = 1000*60*60*24*28;
@@ -207,7 +207,7 @@ class MonthGen extends Component {
     this.setState({ dialogOpen: false });
   }
   handleSelectMonth = name => event => {
-    console.log(event.target.value,"EVENT")
+    bkLog(event.target.value,"EVENT")
     this.changeMonthEnergy(event.target.value,true);
   };
   handleChange = () => {
@@ -215,16 +215,16 @@ class MonthGen extends Component {
   }
   handleClick(data,e) {
     if(data){
-      console.log("Month active label",data)
+      bkLog("Month active label",data)
       this.props.indexV(e,0,moment(data.activeLabel,'MMM Do YYYY'));
     } else {
-      console.log("Clicked outside of the bars");
+      bkLog("Clicked outside of the bars");
     }
   };
   componentWillReceiveProps(n,o) {
     if(n.month){
       let nd = moment(n.month,'YYYY/MM').format("YYYY/MM");
-      console.log("PROPS Month",n.month,nd);
+      bkLog("PROPS Month",n.month,nd);
       this.setState({
         selectedYear: moment(nd).format('YYYY')
       })
@@ -232,7 +232,7 @@ class MonthGen extends Component {
     }
   }
   componentDidMount(){
-    console.info("MonthGen component did mount",this.props.apiPath);
+    bkLog("MonthGen component did mount",this.props.apiPath);
     let { month } = this.state;
     let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
     let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
@@ -254,7 +254,7 @@ class MonthGen extends Component {
         energyMonth: de,
         monthprogress: false,
       });
-      console.log("TME:",self.state.energyMonth);
+      bkLog("TME:",self.state.energyMonth);
       return response;
     });
 

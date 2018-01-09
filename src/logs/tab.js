@@ -11,7 +11,7 @@ import moment from 'moment';
 import DayGen from './day';
 import MonthGen from './month';
 import YearGen from './year';
-
+import {bkLog} from '../common/utils';
 const styles = theme => ({
   root: {
     padding: 16,
@@ -106,7 +106,7 @@ class Logs extends Component {
     });
   };
   handleDayChange = (event, value, date) => {
-    console.log("HANDLE DAY CHANGE",value,date);
+    bkLog("HANDLE DAY CHANGE",value,date);
     if(!date){
       date = moment();
     };
@@ -116,7 +116,7 @@ class Logs extends Component {
     });
   };
   handleMonthChange = (event, value, month) => {
-    console.log("HANDLE MONTH CHANGE",value,month);
+    bkLog("HANDLE MONTH CHANGE",value,month);
     if(!month){
       month = moment().format('YYYY/MM');
     };
@@ -134,7 +134,7 @@ class Logs extends Component {
   };
 
   componentDidMount(){
-    console.info("Log component did mount");
+    bkLog("Log component did mount");
   }
   render(){
     const { classes,apiPath } = this.props;

@@ -24,7 +24,7 @@ import 'react-dates/lib/css/_datepicker.css';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
-import {channelMap} from '../common/utils';
+import {channelMap,bkLog} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -192,12 +192,12 @@ class DayGen extends Component {
   componentWillReceiveProps(n,o) {
     if(n.date){
       let nd = moment(n.date,'YYYY/MM/DD');
-      console.log("Day PROPS",nd.format('YYYY/MM/DD'))
+      bkLog("Day PROPS",nd.format('YYYY/MM/DD'))
       this.changeEnergy(nd);
     }
   }
   componentDidMount(){
-    console.log("DayGen component did mount",this.props.apiPath);
+    bkLog("DayGen component did mount",this.props.apiPath);
     let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
     let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     let { date } = this.state;
@@ -232,7 +232,7 @@ class DayGen extends Component {
                   <SingleDatePicker
                     date={this.state.startDate}
                     displayFormat="DD/MM/YYYY"
-                    onDateChange={date => {console.log("Date Changed"); this.changeEnergy(date);}}
+                    onDateChange={date => {bkLog("Date Changed"); this.changeEnergy(date);}}
                     focused={this.state.focused}
                     numberOfMonths={1}
                     horizontalMargin={64}

@@ -54,5 +54,11 @@ export  const channelMap = (data) => {
   }
   return data;
 }
+const log = (a,b=null,c=null,d=null) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(a,b,c,d);
+  }
+}
 
+export const bkLog = log;
 export default clearAPICache;

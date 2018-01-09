@@ -17,6 +17,7 @@ import NL from './logs';
 import SG from './gen';
 import Profile from './profile';
 import Bad404 from './404';
+import {bkLog} from './common/utils';
 
 import './App.css';
 
@@ -39,7 +40,7 @@ class App extends Component {
     this.logOut = this.logOut.bind(this);
   }
   logIn = (r,f) => {
-    console.log("Login authHandler");
+    bkLog("Login authHandler");
     if(f){
       this.setState({
         isLoggedin: true
@@ -47,7 +48,7 @@ class App extends Component {
     }
   }
   logOut = r => {
-    console.log("Logout authHandler");
+    bkLog("Logout authHandler");
     window.localStorage.removeItem('nuser');
     this.setState({
       isLoggedin: false,
@@ -63,10 +64,10 @@ class App extends Component {
         isLoggedin: true,
       });
     }
-    console.log("APP component will mount, isUserLoggedIn:",isLoggedIn);
+    bkLog("APP component will mount, isUserLoggedIn:",isLoggedIn);
   }
   componentWillUnmount(){
-    console.log("APP component will unmount")
+    bkLog("APP component will unmount")
   }
   render() {
     const newProps = {...this.props, apiPath: this.state.apiPath }
