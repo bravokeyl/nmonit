@@ -16,7 +16,7 @@ import {getIdToken} from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import OverGen from './generation';
 import OverCon from './consumption';
-import {channelMap} from '../common/utils';
+import {channelMap,bkLog} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -329,7 +329,7 @@ class Overview extends Component {
 
   componentDidMount(){
     let { date, month } = this.state;
-    console.info("Overview did mount");
+    bkLog("Overview did mount");
     let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
     let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
     APIHEADERS.headers.Authorization = this.state.idToken;
@@ -444,7 +444,7 @@ class Overview extends Component {
       }));
       return response;
     }, function(error) {
-      console.error("Day Fetch Error",error);
+      bkLog("Day Fetch Error",error);
     });
 
     offlineFetch(weekURL,APIHEADERS)
@@ -454,7 +454,7 @@ class Overview extends Component {
       let dayEnergy = {"R":[],"Y":[],"B":[]};
       let dayEnergyGen = {"i1":[],"i2":[],"i3":[]};
       if(!de) {
-        console.log("No Data");
+        bkLog("No Data");
         de = [];
       }
       de.map((e,i)=>{
@@ -476,8 +476,8 @@ class Overview extends Component {
         }
         return e;
       });
-      // console.log("weekURL dayWise",de);
-      // console.log("weekURL dayWise",dayEnergyGen);
+      // bkLog("weekURL dayWise",de);
+      // bkLog("weekURL dayWise",dayEnergyGen);
       let me = _.map(dayEnergy,(e,i)=>{
         return _.sum(e);
       });
@@ -486,7 +486,7 @@ class Overview extends Component {
         return _.sum(e);
       });
       let weektotalGen = _.sum(meg);
-      console.log(me,"MEMME")
+      bkLog(me,"MEMME")
       self.setState(prevState => ({
         gen: {
           ...prevState.gen,
@@ -503,7 +503,7 @@ class Overview extends Component {
       return response;
     })
     .catch((err)=>{
-      console.error("Week Fetch Error:",err);
+      bkLog("Week Fetch Error:",err);
     });
     APIHEADERS.offline.expires = 60*60*1000;
 
@@ -511,10 +511,10 @@ class Overview extends Component {
     .then(response => response.json())
     .then(function(response) {
       let de =  response;
-      console.log(response,"MONTHURL")
+      bkLog(response,"MONTHURL")
       if(!Array.isArray(de)){
         de = [de]
-        console.log("Not array",de)
+        bkLog("Not array",de)
       }
       let totalEnergy = {"R":[],"Y":[],"B":[]};
       let totalEnergyGen = {"i1":[],"i2":[],"i3":[]};
@@ -546,7 +546,7 @@ class Overview extends Component {
       });
       let yeartotal = _.sum(me);
       let yeartotalGen = _.sum(meg);
-      console.log(meg,me,"MEG Total");
+      bkLog(meg,me,"MEG Total");
       self.setState(prevState => ({
         gen: {
           ...prevState.gen,
@@ -560,7 +560,7 @@ class Overview extends Component {
       return response;
     })
     .catch((err)=>{
-      console.error("Month Fetch Error:",err);
+      bkLog("Month Fetch Error:",err);
     });
 
   }

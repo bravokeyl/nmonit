@@ -16,6 +16,7 @@ import moment from 'moment';
 import offlineFetch from '../common/fetch-cache';
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
+import {bkLog} from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -216,7 +217,7 @@ class Dashboard extends Component {
     }
   };
   componentDidMount(){
-    console.log("Dashboard component did mount",this.props.apiPath);
+    bkLog("Dashboard component did mount",this.props.apiPath);
     let self = this;
     let intervalId = setInterval(self.updateliveTimestamp, 10*1000);
     self.setState({liveTimestampId: intervalId});

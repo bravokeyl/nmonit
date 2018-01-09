@@ -14,6 +14,7 @@ import { withStyles } from 'material-ui/styles';
 import config from '../aws';
 import { signOut, getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
+import {bkLog} from '../common/utils';
 
 import avatar from './avatar200.png';
 import Contacts from './contacts';
@@ -137,7 +138,7 @@ class Profile extends Component {
       offlineFetch(purl,APIHEADERS)
       .then(response => response.json())
       .then(function(response) {
-        console.log(response)
+        bkLog(response)
         if(response){
           self.setState({
             user: response.user[0]
