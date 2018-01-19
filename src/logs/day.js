@@ -15,7 +15,7 @@ import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { Line, ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from  'recharts';
+import { Line, LineChart, ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend} from  'recharts';
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
@@ -95,6 +95,17 @@ const styles = theme => ({
   }
 });
 
+const linedata = [
+      { apparentPower: null, timestamp: null},
+];
+
+const ticksArr = [
+  "00:30","01:30","02:30","03:30","04:30",
+  "05:30",
+  "06:30","07:30","08:30","09:30","10:30",
+  "11:30","12:30","13:30","14:30","15:30",
+  "16:30","17:30","18:30","19:30","20:30"
+]
 class DayGen extends Component {
   constructor(props){
     super(props);
@@ -119,11 +130,42 @@ class DayGen extends Component {
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
+      powerLine: linedata
     }
     this.changeEnergy = this.changeEnergy.bind(this);
+    this.handlePower = this.handlePower.bind(this);
     this.transformData = this.transformData.bind(this);
+    this.tranformPower = this.tranformPower.bind(this);
   }
-
+  tranformPower = (d) => {
+    let pow = [];
+    let min;
+    d.map((e,i)=>{
+      if(!isNaN(Number(e.apparentPower))){
+        if(i==0){
+          min = moment(e.timestamp).format('HHmm');
+          pow.push({
+            apparentPower: e.apparentPower,
+            timestamp: moment(e.timestamp).format('HH:mm')
+          });
+        } else {
+          // min = moment(e.timestamp).format('HHmm');
+          if(min != moment(e.timestamp).format('HHmm')){
+            bkLog("NEQ:",min,moment(e.timestamp).format('HHmm'));
+            min = moment(e.timestamp).format('HHmm');
+            pow.push({
+              apparentPower: e.apparentPower,
+              timestamp: moment(e.timestamp).format('HH:mm')
+            });
+          } else {
+            // bkLog("EQ:",min,moment(e.timestamp).format('HHmm'));
+          }
+        }
+      }
+    });
+    console.log("Pow Trans:",pow.length);
+    return pow;
+  }
   transformData = (d) => {
     if(d){
       d.map((data, i) => {
@@ -186,7 +228,25 @@ class DayGen extends Component {
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
   }
-
+  handlePower = (date) => {
+    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
+    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
+    let url = baseApiURL+"h?dhr="+date;
+    url = baseApiURL+"power";
+    let self = this;
+    offlineFetch(url,APIHEADERS)
+    .then(response => response.json())
+    .then(function(response) {
+      let pow = [];
+      if(response.power){
+        pow = self.tranformPower(response.power)
+        self.setState({
+          powerLine: pow
+        });
+      }
+      return response;
+    });
+  }
   handleChange = () => {
   }
   componentWillReceiveProps(n,o) {
@@ -194,6 +254,7 @@ class DayGen extends Component {
       let nd = moment(n.date,'YYYY/MM/DD');
       bkLog("Day PROPS",nd.format('YYYY/MM/DD'))
       this.changeEnergy(nd);
+      this.handlePower(nd);
     }
   }
   componentDidMount(){
@@ -212,6 +273,20 @@ class DayGen extends Component {
       self.setState({
         energyDay: de
       });
+      return response;
+    });
+    url = baseApiURL+"power";
+    offlineFetch(url,APIHEADERS)
+    .then(response => response.json())
+    .then(function(response) {
+      let pow = [];
+      if(response.power){
+        pow = self.tranformPower(response.power)
+        self.setState({
+          powerLine: pow
+        });
+      }
+      bkLog("Power:",response.power.length);
       return response;
     });
 
@@ -243,6 +318,17 @@ class DayGen extends Component {
                 </div>
                 { this.state.progress ? <LinearProgress />: ""}
                 <ResponsiveContainer height={350} className={ this.state.progress?classes.opacity:"bk-default"}>
+                  <LineChart width={600} height={300} data={this.state.powerLine}
+                    margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                   <XAxis dataKey="timestamp" interval="60"/>
+                   <YAxis/>
+                   <CartesianGrid strokeDasharray="3 3"/>
+                   <Tooltip/>
+                   <Legend />
+                   <Line type="monotone" dataKey="apparentPower" stroke="#8884d8" activeDot={{r: 8}}/>
+                  </LineChart>
+                </ResponsiveContainer>
+                <ResponsiveContainer height={350} className={ this.state.progress?classes.opacity:"bk-default"}>
                   <ComposedChart data={_.sortBy(this.state.energyDay,['dhr'])}
                     maxBarSize={30}
                     margin={{top: 20, right: 30, left: 20, bottom: 5}} barSize={30}>
@@ -259,7 +345,8 @@ class DayGen extends Component {
                  <Bar dataKey="i3" stackId="b" fill="#003300" />
                  <Line type='monotone' dataKey='total' dots={true}
                    strokeDasharray="5 5" stroke='#ff7300'/>
-              </ComposedChart>
+                 <Legend />
+                 </ComposedChart>
                 </ResponsiveContainer>
               </div>
             </Paper>
