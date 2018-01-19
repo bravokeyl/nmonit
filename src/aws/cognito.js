@@ -93,7 +93,7 @@ export const getCurrentUser = (callback) => {
   if (cognitoUser !== null) {
     return cognitoUser.getSession((err, session) => {
       if (err) {
-        console.log("Cognito Session Err",err);
+        console.error("Cognito Session Err",err);
         return false;
       }
       if(session){
@@ -132,7 +132,6 @@ export const getCurrentUserData = (callback) => {
   return fetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
-      console.log("UDATA RES:",response.user[0].p);
       window.localStorage.setItem('nuser',JSON.stringify(response.user[0]));
       return true;
     })

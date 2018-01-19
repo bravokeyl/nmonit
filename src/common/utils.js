@@ -24,30 +24,34 @@ const util = (d) => {
 export  const channelMap = (data) => {
   let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
   if(ap === 'l'){
-    data["R"] = util(data["c2"]);
-    data["Y"] = util(data["c4"]);
-    data["B"] = util(data["c6"]);
+    if(!data["R"]){
+      data["R"] = util(data["c2"]);
+      data["Y"] = util(data["c4"]);
+      data["B"] = util(data["c6"]);
+      data["i1"] = util(data["c1"]);
+      data["i2"] = util(data["c3"]);
+      data["i3"] = util(data["c5"]);
+    }
     if(data["R"] < 0) data["R"] = 0;
     if(data["Y"] < 0) data["Y"] = 0;
     if(data["B"] < 0) data["B"] = 0;
 
-    data["i1"] = util(data["c1"]);
-    data["i2"] = util(data["c3"]);
-    data["i3"] = util(data["c5"]);
     if(data["i1"] < 0) data["i1"] = 0;
     if(data["i2"] < 0) data["i2"] = 0;
     if(data["i3"] < 0) data["i3"] = 0;
   } else {
-    data["R"] = util(data["c2"]);
-    data["Y"] = util(data["c3"]);
-    data["B"] = util(data["c4"]);
+    if(!data["R"]){
+      data["R"] = util(data["c2"]);
+      data["Y"] = util(data["c3"]);
+      data["B"] = util(data["c4"]);
+      data["i1"] = util(data["c1"]);
+      data["i2"] = util(data["c5"]);
+      data["i3"] = util(data["c6"]);
+    }
     if(data["R"] < 0) data["R"] = 0;
     if(data["Y"] < 0) data["Y"] = 0;
     if(data["B"] < 0) data["B"] = 0;
 
-    data["i1"] = util(data["c1"]);
-    data["i2"] = util(data["c5"]);
-    data["i3"] = util(data["c6"]);
     if(data["i1"] < 0) data["i1"] = 0;
     if(data["i2"] < 0) data["i2"] = 0;
     if(data["i3"] < 0) data["i3"] = 0;

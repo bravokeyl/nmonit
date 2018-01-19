@@ -136,7 +136,7 @@ class MonthGen extends Component {
     if(d){
       d.map((data, i) => {
         data = channelMap(data);
-
+        console.log("CMAP DATA:",data)
         if(data['dhr']){
           data["dhr"] = data['dhr'].split('/').reverse()[0];
           data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);

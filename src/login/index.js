@@ -6,6 +6,7 @@ import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 
 import { authenticateUser } from '../aws/cognito';
+import { bkLog } from '../common/utils';
 
 import bg from './bg.jpg';
 const styles = theme => ({
@@ -80,7 +81,7 @@ class Login extends Component {
     });
   }
   componentDidMount(){
-    console.log("Login component Did mount");
+    bkLog("Login component Did mount");
   }
 
   render() {
