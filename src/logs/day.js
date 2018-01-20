@@ -15,7 +15,8 @@ import { SingleDatePicker, isInclusivelyBeforeDay } from 'react-dates';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { Line, LineChart, ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend} from  'recharts';
+import ReactHighcharts from 'react-highcharts';
+import { Line, ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend} from  'recharts';
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
@@ -99,13 +100,35 @@ const linedata = [
       { apparentPower: null, timestamp: null},
 ];
 
-const ticksArr = [
-  "00:30","01:30","02:30","03:30","04:30",
-  "05:30",
-  "06:30","07:30","08:30","09:30","10:30",
-  "11:30","12:30","13:30","14:30","15:30",
-  "16:30","17:30","18:30","19:30","20:30"
-]
+const highLineconfig = {
+  chart: {
+    zoomType: 'x',
+    type: 'spline'
+  },
+  title: {
+      text: 'Power over time'
+  },
+  subtitle: {
+      text: document.ontouchstart === undefined ?
+              'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+  },
+  legend: {
+      enabled: false
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: {
+      month: '%e. %b',
+      year: '%b'
+    },
+  },
+  series: [{
+    data: [
+    [Date.UTC(2018,1,1),0]
+  ]
+  }]
+};
+
 class DayGen extends Component {
   constructor(props){
     super(props);
@@ -130,40 +153,53 @@ class DayGen extends Component {
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
-      powerLine: linedata
+      powerLine: linedata,
+      highPowerLine: highLineconfig
     }
     this.changeEnergy = this.changeEnergy.bind(this);
     this.handlePower = this.handlePower.bind(this);
     this.transformData = this.transformData.bind(this);
     this.tranformPower = this.tranformPower.bind(this);
+    ReactHighcharts.Highcharts.setOptions({
+        global : {
+            useUTC : false
+        }
+    });
   }
   tranformPower = (d) => {
     let pow = [];
     let min;
     d.map((e,i)=>{
       if(!isNaN(Number(e.apparentPower))){
-        if(i==0){
+        if(i===0){
           min = moment(e.timestamp).format('HHmm');
-          pow.push({
-            apparentPower: e.apparentPower,
-            timestamp: moment(e.timestamp).format('HH:mm')
-          });
+          pow.push([
+            Number(moment(e.timestamp).format('x')),
+            e.apparentPower
+          ]);
         } else {
           // min = moment(e.timestamp).format('HHmm');
-          if(min != moment(e.timestamp).format('HHmm')){
-            bkLog("NEQ:",min,moment(e.timestamp).format('HHmm'));
+          if(min !== moment(e.timestamp).format('HHmm')){
+            // bkLog("NEQ:",min,moment(e.timestamp).format('HHmm'));
             min = moment(e.timestamp).format('HHmm');
-            pow.push({
-              apparentPower: e.apparentPower,
-              timestamp: moment(e.timestamp).format('HH:mm')
-            });
+            pow.push([
+              Number(moment(e.timestamp).format('x')),
+              e.apparentPower
+            ]);
           } else {
             // bkLog("EQ:",min,moment(e.timestamp).format('HHmm'));
           }
         }
       }
+
+      return d;
     });
-    console.log("Pow Trans:",pow.length);
+
+    let dummy = [[Date.UTC(2017,5,2),0.7695],
+    [Date.UTC(2017,5,3),0.7648],
+    [Date.UTC(2017,6,4),0.7645],
+    [Date.UTC(2017,6,10),0.3272]];
+    bkLog("Pow Trans:",pow,dummy);
     return pow;
   }
   transformData = (d) => {
@@ -281,7 +317,14 @@ class DayGen extends Component {
     .then(function(response) {
       let pow = [];
       if(response.power){
-        pow = self.tranformPower(response.power)
+        pow = self.tranformPower(response.power);
+        let chart = self.refs.lchart.getChart();
+        console.log("POWW DATA:",pow);
+
+        chart.series[0].update({
+            data: pow
+        }, true);
+
         self.setState({
           powerLine: pow
         });
@@ -317,17 +360,9 @@ class DayGen extends Component {
                   />
                 </div>
                 { this.state.progress ? <LinearProgress />: ""}
-                <ResponsiveContainer height={350} className={ this.state.progress?classes.opacity:"bk-default"}>
-                  <LineChart width={600} height={300} data={this.state.powerLine}
-                    margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                   <XAxis dataKey="timestamp" interval="60"/>
-                   <YAxis/>
-                   <CartesianGrid strokeDasharray="3 3"/>
-                   <Tooltip/>
-                   <Legend />
-                   <Line type="monotone" dataKey="apparentPower" stroke="#8884d8" activeDot={{r: 8}}/>
-                  </LineChart>
-                </ResponsiveContainer>
+
+                <ReactHighcharts config={this.state.highPowerLine} ref="lchart"></ReactHighcharts>
+
                 <ResponsiveContainer height={350} className={ this.state.progress?classes.opacity:"bk-default"}>
                   <ComposedChart data={_.sortBy(this.state.energyDay,['dhr'])}
                     maxBarSize={30}
