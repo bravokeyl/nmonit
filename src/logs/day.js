@@ -479,7 +479,7 @@ class DayGen extends Component {
                     Day Energy ( Hour wise ) - {moment(this.state.date).format('Do MMM YYYY')}
                   </Typography>
                   <Button dense onClick={()=>{ this.changeChartType("spline");}}>
-                  Spine
+                  Spline
                   </Button>
                   <Button dense onClick={()=>{ this.changeChartType("bar");}}>
                   Bar
