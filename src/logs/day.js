@@ -207,7 +207,10 @@ class DayGen extends Component {
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
-      highPowerLine: highLineconfig
+      highPowerLine: highLineconfig,
+
+      showGridPower: false,
+      showSolarPower: true
     }
     this.changeEnergy = this.changeEnergy.bind(this);
     this.handlePower = this.handlePower.bind(this);
@@ -229,17 +232,73 @@ class DayGen extends Component {
       },
     });
   }
-  changeChartGroup = (type) => {
+  changeChartGroup = (group) => {
     let chart = this.refs.lchart.getChart();
-    chart.series[3].update({
-      visible: false
-    });
-    chart.series[4].update({
-      visible: false
-    });
-    chart.series[5].update({
-      visible: false
-    });
+    console.log(group,"grid:",this.state.showGridPower,"solar:",this.state.showSolarPower);
+
+    switch (group) {
+      case 'grid':
+        chart.series[0].update({
+          visible: false
+        });
+        chart.series[1].update({
+          visible: false
+        });
+        chart.series[2].update({
+          visible: false
+        });
+        chart.series[3].update({
+          visible: true
+        });
+        chart.series[4].update({
+          visible: true
+        });
+        chart.series[5].update({
+          visible: true
+        });
+
+        break;
+      case 'solar':
+        chart.series[0].update({
+          visible: true
+        });
+        chart.series[1].update({
+          visible: true
+        });
+        chart.series[2].update({
+          visible: true
+        });
+        chart.series[3].update({
+          visible: false
+        });
+        chart.series[4].update({
+          visible: false
+        });
+        chart.series[5].update({
+          visible: false
+        });
+        break;
+      default:
+        chart.series[0].update({
+          visible: true
+        });
+        chart.series[1].update({
+          visible: true
+        });
+        chart.series[2].update({
+          visible: true
+        });
+        chart.series[3].update({
+          visible: true
+        });
+        chart.series[4].update({
+          visible: true
+        });
+        chart.series[5].update({
+          visible: true
+        });
+    }
+
   }
   tranformPower = (d) => {
     let pow = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
@@ -253,8 +312,7 @@ class DayGen extends Component {
         let dq = e.q;
         for (; k < len; k += 1) {
           let dm = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm").format('x');
-          // console.log(dq,dm,keys[k]);
-          pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
+          pow[chan].push( [Number(dm),obj[keys[k]].power] );
         }
       }
       return pow;
@@ -420,17 +478,20 @@ class DayGen extends Component {
                   <Typography color="inherit" className={classes.panelTitle}>
                     Day Energy ( Hour wise ) - {moment(this.state.date).format('Do MMM YYYY')}
                   </Typography>
-                  <Button dense onClick={()=>{ this.changeChartType("line");}}>
-                  Line
-                  </Button>
                   <Button dense onClick={()=>{ this.changeChartType("spline");}}>
-                  Spline
+                  Spine
                   </Button>
-                  <Button dense raised onClick={()=>{ this.changeChartGroup("solar");}}>
+                  <Button dense onClick={()=>{ this.changeChartType("bar");}}>
+                  Bar
+                  </Button>
+                  <Button dense onClick={()=>{ this.changeChartGroup("solar");}}>
                   Solar
                   </Button>
                   <Button dense onClick={()=>{ this.changeChartGroup("grid");}}>
                   Grid
+                  </Button>
+                  <Button dense onClick={()=>{ this.changeChartGroup("both");}}>
+                  Both
                   </Button>
                   <SingleDatePicker
                     date={this.state.startDate}
