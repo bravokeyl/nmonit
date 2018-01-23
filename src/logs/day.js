@@ -20,6 +20,7 @@ import { Line, ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Respons
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
+import { Colors } from '../common/constants';
 
 import 'react-dates/lib/css/_datepicker.css';
 
@@ -93,17 +94,23 @@ const styles = theme => ({
   },
   opacity: {
     opacity: 0.5
-  }
+  },
+  panelHeader: {
+    display: 'flex',
+    flex: 1,
+    borderBottom: "1px solid #eee",
+    paddingBottom: 10
+  },
+  panelTitle: {
+    flex: 1,
+    alignSelf: "center"
+  },
 });
-
-const linedata = [
-      { apparentPower: null, timestamp: null},
-];
 
 const highLineconfig = {
   chart: {
     zoomType: 'x',
-    type: 'spline'
+    type: 'area'
   },
   title: {
       text: 'Power over time'
@@ -113,7 +120,12 @@ const highLineconfig = {
               'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
   },
   legend: {
-      enabled: false
+      enabled: true
+  },
+  yAxis: {
+      title: {
+          text: 'Power in Watts'
+      }
   },
   xAxis: {
     type: 'datetime',
@@ -122,11 +134,53 @@ const highLineconfig = {
       year: '%b'
     },
   },
-  series: [{
-    data: [
-    [Date.UTC(2018,1,1),0]
+  series: [
+    {
+      name: "Inverter 1",
+      color: Colors.I1Color,
+      data: [
+        [Date.UTC(2017,5,2),0.7695]
+      ]
+    },
+    {
+      name: "Inverter 2",
+      color: Colors.I2Color,
+      data: [
+        [Date.UTC(2017,5,2),2.7695]
+      ]
+    },
+    {
+      name: "Inverter 3",
+      color: Colors.I3Color,
+      data: [
+        [Date.UTC(2017,5,2),1.7695]
+      ]
+    },
+    {
+      name: "R-Phase",
+      color: Colors.RPhaseColor,
+      visible: false,
+      data: [
+        [Date.UTC(2017,5,3),0.7695]
+      ]
+    },
+    {
+      name: "Y-Phase",
+      color: Colors.YPhaseColor,
+      visible: false,
+      data: [
+        [Date.UTC(2017,5,3),2.7695]
+      ]
+    },
+    {
+      name: "B-Phase",
+      visible: false,
+      color: Colors.BPhaseColor,
+      data: [
+        [Date.UTC(2017,5,3),1.7695]
+      ]
+    }
   ]
-  }]
 };
 
 class DayGen extends Component {
@@ -153,53 +207,60 @@ class DayGen extends Component {
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
-      powerLine: linedata,
       highPowerLine: highLineconfig
     }
     this.changeEnergy = this.changeEnergy.bind(this);
     this.handlePower = this.handlePower.bind(this);
     this.transformData = this.transformData.bind(this);
     this.tranformPower = this.tranformPower.bind(this);
+    this.changeChartType = this.changeChartType.bind(this);
+    this.changeChartGroup = this.changeChartGroup.bind(this);
     ReactHighcharts.Highcharts.setOptions({
-        global : {
-            useUTC : false
-        }
+      global : {
+          useUTC : false
+      }
+    });
+  }
+  changeChartType = (type) => {
+    let chart = this.refs.lchart.getChart();
+    chart.update({
+      chart: {
+        type
+      },
+    });
+  }
+  changeChartGroup = (type) => {
+    let chart = this.refs.lchart.getChart();
+    chart.series[3].update({
+      visible: false
+    });
+    chart.series[4].update({
+      visible: false
+    });
+    chart.series[5].update({
+      visible: false
     });
   }
   tranformPower = (d) => {
-    let pow = [];
-    let min;
+    let pow = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
     d.map((e,i)=>{
-      if(!isNaN(Number(e.apparentPower))){
-        if(i===0){
-          min = moment(e.timestamp).format('HHmm');
-          pow.push([
-            Number(moment(e.timestamp).format('x')),
-            e.apparentPower
-          ]);
-        } else {
-          // min = moment(e.timestamp).format('HHmm');
-          if(min !== moment(e.timestamp).format('HHmm')){
-            // bkLog("NEQ:",min,moment(e.timestamp).format('HHmm'));
-            min = moment(e.timestamp).format('HHmm');
-            pow.push([
-              Number(moment(e.timestamp).format('x')),
-              e.apparentPower
-            ]);
-          } else {
-            // bkLog("EQ:",min,moment(e.timestamp).format('HHmm'));
-          }
+      for(let c = 1; c<7;c++){
+        let chan = "c"+c;
+        let obj = e[chan];
+        let keys = Object.keys(obj)
+          , k = 0
+          , len = keys.length;
+        let dq = e.q;
+        for (; k < len; k += 1) {
+          let dm = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm").format('x');
+          // console.log(dq,dm,keys[k]);
+          pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
         }
       }
-
-      return d;
+      return pow;
     });
 
-    let dummy = [[Date.UTC(2017,5,2),0.7695],
-    [Date.UTC(2017,5,3),0.7648],
-    [Date.UTC(2017,6,4),0.7645],
-    [Date.UTC(2017,6,10),0.3272]];
-    bkLog("Pow Trans:",pow,dummy);
+    bkLog("Pow Trans:",pow);
     return pow;
   }
   transformData = (d) => {
@@ -319,10 +380,23 @@ class DayGen extends Component {
       if(response.power){
         pow = self.tranformPower(response.power);
         let chart = self.refs.lchart.getChart();
-        console.log("POWW DATA:",pow);
-
         chart.series[0].update({
-            data: pow
+            data: _.sortBy(pow["c1"],[function(o) { return o[0]; }])
+        }, true);
+        chart.series[1].update({
+            data: _.sortBy(pow["c5"],[function(o) { return o[0]; }])
+        }, true);
+        chart.series[2].update({
+            data: _.sortBy(pow["c6"],[function(o) { return o[0]; }])
+        }, true);
+        chart.series[3].update({
+            data: _.sortBy(pow["c2"],[function(o) { return o[0]; }])
+        }, true);
+        chart.series[4].update({
+            data: _.sortBy(pow["c3"],[function(o) { return o[0]; }])
+        }, true);
+        chart.series[5].update({
+            data: _.sortBy(pow["c4"],[function(o) { return o[0]; }])
         }, true);
 
         self.setState({
@@ -342,11 +416,22 @@ class DayGen extends Component {
           <Grid item xs={12} sm={12}>
             <Paper className={classes.paper} elevation={4}>
               <div>
-                <div className={classes.flex}>
-                  <Typography color="inherit" className={classes.flex}>
+                <div className={classes.panelHeader}>
+                  <Typography color="inherit" className={classes.panelTitle}>
                     Day Energy ( Hour wise ) - {moment(this.state.date).format('Do MMM YYYY')}
                   </Typography>
-
+                  <Button dense onClick={()=>{ this.changeChartType("line");}}>
+                  Line
+                  </Button>
+                  <Button dense onClick={()=>{ this.changeChartType("spline");}}>
+                  Spline
+                  </Button>
+                  <Button dense raised onClick={()=>{ this.changeChartGroup("solar");}}>
+                  Solar
+                  </Button>
+                  <Button dense onClick={()=>{ this.changeChartGroup("grid");}}>
+                  Grid
+                  </Button>
                   <SingleDatePicker
                     date={this.state.startDate}
                     displayFormat="DD/MM/YYYY"
@@ -371,7 +456,7 @@ class DayGen extends Component {
                  <YAxis/>
                  <CartesianGrid strokeDasharray="2 3"/>
                  <Tooltip />
-                 <Bar dataKey="R" stackId="a" fill="#f44336" />
+                 <Bar dataKey="R" stackId="a" fill={Colors.RPhaseColor} />
                  <Bar dataKey="Y" stackId="a" fill="#ffc658" />
                  <Bar dataKey="B" stackId="a" fill="#3f51b5" />
 

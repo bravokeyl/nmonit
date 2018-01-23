@@ -8,3 +8,11 @@ a.nm-active button {
   visibility: hidden;
   display: none;
 }
+.DateInput {
+  font-size: 14px;
+  line-height: 18px;
+  padding: 8px 6px;
+}
+.DateInput_displayText {
+  padding: 0px 4px;
+}
