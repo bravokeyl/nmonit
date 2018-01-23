@@ -24,6 +24,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
+import { Colors } from '../common/constants';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
@@ -298,13 +299,13 @@ class MonthGen extends Component {
                    <YAxis/>
                    <CartesianGrid strokeDasharray="2 3"/>
                    <Tooltip />
-                   <Bar cursor="pointer" dataKey="R" stackId="a" fill="#f44336"/>
-                   <Bar cursor="pointer" dataKey="Y" stackId="a" fill="#ffc658"/>
-                   <Bar cursor="pointer" dataKey="B" stackId="a" fill="#3f51b5"/>
+                   <Bar cursor="pointer" dataKey="R" stackId="a" fill={Colors.RPhaseColor} />
+                   <Bar cursor="pointer" dataKey="Y" stackId="a" fill={Colors.YPhaseColor} />
+                   <Bar cursor="pointer" dataKey="B" stackId="a" fill={Colors.BPhaseColor} />
 
-                   <Bar cursor="pointer" dataKey="i1" stackId="b" fill="#1b5e20"/>
-                   <Bar cursor="pointer" dataKey="i2" stackId="b" fill="#4c8c4a"/>
-                   <Bar cursor="pointer" dataKey="i3" stackId="b" fill="#387002"/>
+                   <Bar cursor="pointer" dataKey="i1" stackId="b" fill={Colors.I1Color} />
+                   <Bar cursor="pointer" dataKey="i2" stackId="b" fill={Colors.I2Color} />
+                   <Bar cursor="pointer" dataKey="i3" stackId="b" fill={Colors.I3Color} />
                 </BarChart>
               </ResponsiveContainer>
             </Paper>

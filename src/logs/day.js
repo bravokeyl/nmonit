@@ -518,12 +518,12 @@ class DayGen extends Component {
                  <CartesianGrid strokeDasharray="2 3"/>
                  <Tooltip />
                  <Bar dataKey="R" stackId="a" fill={Colors.RPhaseColor} />
-                 <Bar dataKey="Y" stackId="a" fill="#ffc658" />
-                 <Bar dataKey="B" stackId="a" fill="#3f51b5" />
+                 <Bar dataKey="Y" stackId="a" fill={Colors.YPhaseColor} />
+                 <Bar dataKey="B" stackId="a" fill={Colors.BPhaseColor} />
 
-                 <Bar dataKey="i1" stackId="b" fill="#1b5e20" />
-                 <Bar dataKey="i2" stackId="b" fill="#4c8c4a" />
-                 <Bar dataKey="i3" stackId="b" fill="#003300" />
+                 <Bar dataKey="i1" stackId="b" fill={Colors.I1Color} />
+                 <Bar dataKey="i2" stackId="b" fill={Colors.I2Color} />
+                 <Bar dataKey="i3" stackId="b" fill={Colors.I3Color} />
                  <Line type='monotone' dataKey='total' dots={true}
                    strokeDasharray="5 5" stroke='#ff7300'/>
                  <Legend />
