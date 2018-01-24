@@ -15,7 +15,6 @@ import Overview from './overview';
 import Dashboard from './dashboard';
 import Login from './login';
 import NL from './logs';
-import SG from './gen';
 import Profile from './profile';
 import Bad404 from './404';
 import {bkLog} from './common/utils';
@@ -99,10 +98,6 @@ class App extends Component {
 
                           <Route path="/l"
                           render={(routeProps) => (<NL {...newProps} {...routeProps} />)} />
-
-
-                          <Route path="/g"
-                          render={(routeProps) => (<SG {...newProps} {...routeProps} />)} />
 
                           <Route exact path="/p"
                           render={(routeProps) => (<Profile {...newProps} {...routeProps} authHandler={(e,f)=>this.logOut(e,f)}/>)} />
