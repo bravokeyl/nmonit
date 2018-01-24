@@ -117,7 +117,7 @@ const highLineconfig = {
   },
   subtitle: {
       text: document.ontouchstart === undefined ?
-              'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+              'Click and drag in the plot to zoom in' : 'Pinch the chart to zoom in'
   },
   legend: {
       enabled: true
@@ -133,6 +133,11 @@ const highLineconfig = {
       month: '%e. %b',
       year: '%b'
     },
+    crosshair: true,
+  },
+  tooltip: {
+    shared: true,
+    pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y} W</b><br/>',
   },
   series: [
     {
@@ -177,7 +182,7 @@ const highLineconfig = {
       visible: false,
       color: Colors.BPhaseColor,
       data: [
-        
+
       ]
     }
   ]
@@ -212,12 +217,15 @@ class DayGen extends Component {
       showGridPower: false,
       showSolarPower: true
     }
+
     this.changeEnergy = this.changeEnergy.bind(this);
     this.handlePower = this.handlePower.bind(this);
     this.transformData = this.transformData.bind(this);
     this.tranformPower = this.tranformPower.bind(this);
     this.changeChartType = this.changeChartType.bind(this);
     this.changeChartGroup = this.changeChartGroup.bind(this);
+    this.updatePowerCharts = this.updatePowerCharts.bind(this);
+
     ReactHighcharts.Highcharts.setOptions({
       global : {
           useUTC : false
@@ -299,23 +307,34 @@ class DayGen extends Component {
 
   }
   tranformPower = (d) => {
-    let pow = {"c1":[],"c2":[],"c3":[],"c4":[],"c5":[],"c6":[]};
+    let pow = {"i1":[],"i2":[],"i3":[],"R":[],"Y":[],"B":[]};
+    let carr = ["i1","i2","i3","R","Y","B"];
     d.map((e,i)=>{
       for(let c = 1; c<7;c++){
-        let chan = "c"+c;
+        let chan = "i"+c;
+        chan = carr[c-1];
         let obj = e[chan];
         let keys = Object.keys(obj)
           , k = 0
           , len = keys.length;
         let dq = e.q;
         for (; k < len; k += 1) {
-          let dm = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm").format('x');
-          pow[chan].push( [Number(dm),obj[keys[k]].power] );
+          let dmh = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm");
+          let dm  = dmh.format('x');
+          let chr = dmh.format('HH');
+          if(chan === "i1" || chan === "i2" || chan === "i3"){
+            if( chr >= 6 && chr <=18) {
+              pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
+            } else {
+              pow[chan].push( [Number(dm),0] );
+            }
+          } else {
+            pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
+          }
         }
       }
       return pow;
     });
-
     bkLog("Pow Trans:",pow);
     return pow;
   }
@@ -382,20 +401,19 @@ class DayGen extends Component {
     this.setState({ dialogOpen: false });
   }
   handlePower = (date) => {
+    let cdate = moment(date).format("YYYY/MM/DD");
+    bkLog("Change Power:",cdate)
     let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
     let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
-    let url = baseApiURL+"h?dhr="+date;
-    url = baseApiURL+"power";
+    let url = baseApiURL+"power?date="+cdate;
     let self = this;
     offlineFetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let pow = [];
       if(response.power){
-        pow = self.tranformPower(response.power)
-        self.setState({
-          powerLine: pow
-        });
+        pow = self.tranformPower(response.power);
+        self.updatePowerCharts(pow);
       }
       return response;
     });
@@ -405,10 +423,32 @@ class DayGen extends Component {
   componentWillReceiveProps(n,o) {
     if(n.date){
       let nd = moment(n.date,'YYYY/MM/DD');
-      bkLog("Day PROPS",nd.format('YYYY/MM/DD'))
+      bkLog("Day PROPS",nd.format('YYYY/MM/DD'));
       this.changeEnergy(nd);
       this.handlePower(nd);
     }
+  }
+  updatePowerCharts = (pow) => {
+    let self = this;
+    let chart = self.refs.lchart.getChart();
+    chart.series[0].update({
+        data: _.sortBy(pow["i1"],[function(o) { return o[0]; }])
+    }, true);
+    chart.series[1].update({
+        data: _.sortBy(pow["i2"],[function(o) { return o[0]; }])
+    }, true);
+    chart.series[2].update({
+        data: _.sortBy(pow["i3"],[function(o) { return o[0]; }])
+    }, true);
+    chart.series[3].update({
+        data: _.sortBy(pow["R"],[function(o) { return o[0]; }])
+    }, true);
+    chart.series[4].update({
+        data: _.sortBy(pow["Y"],[function(o) { return o[0]; }])
+    }, true);
+    chart.series[5].update({
+        data: _.sortBy(pow["B"],[function(o) { return o[0]; }])
+    }, true);
   }
   componentDidMount(){
     bkLog("DayGen component did mount",this.props.apiPath);
@@ -428,36 +468,15 @@ class DayGen extends Component {
       });
       return response;
     });
-    url = baseApiURL+"power";
+    
+    url = baseApiURL+"power?date="+date;
     offlineFetch(url,APIHEADERS)
     .then(response => response.json())
     .then(function(response) {
       let pow = [];
       if(response.power){
         pow = self.tranformPower(response.power);
-        let chart = self.refs.lchart.getChart();
-        chart.series[0].update({
-            data: _.sortBy(pow["c1"],[function(o) { return o[0]; }])
-        }, true);
-        chart.series[1].update({
-            data: _.sortBy(pow["c5"],[function(o) { return o[0]; }])
-        }, true);
-        chart.series[2].update({
-            data: _.sortBy(pow["c6"],[function(o) { return o[0]; }])
-        }, true);
-        chart.series[3].update({
-            data: _.sortBy(pow["c2"],[function(o) { return o[0]; }])
-        }, true);
-        chart.series[4].update({
-            data: _.sortBy(pow["c3"],[function(o) { return o[0]; }])
-        }, true);
-        chart.series[5].update({
-            data: _.sortBy(pow["c4"],[function(o) { return o[0]; }])
-        }, true);
-
-        self.setState({
-          powerLine: pow
-        });
+        self.updatePowerCharts(pow);
         bkLog("Power:",response.power.length);
       }
 
@@ -495,7 +514,8 @@ class DayGen extends Component {
                   <SingleDatePicker
                     date={this.state.startDate}
                     displayFormat="DD/MM/YYYY"
-                    onDateChange={date => {bkLog("Date Changed"); this.changeEnergy(date);}}
+                    onDateChange={date => {bkLog("Date Changed"); this.changeEnergy(date);
+                    this.handlePower(date);}}
                     focused={this.state.focused}
                     numberOfMonths={1}
                     horizontalMargin={64}
