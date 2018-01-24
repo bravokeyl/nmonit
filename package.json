@@ -1,6 +1,6 @@
 {
   "name": "app.blufieldsenergy.com",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "amazon-cognito-identity-js": "^1.21.0",
@@ -26,5 +26,13 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "description": "Monitoring solution for Solar and Grid",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bravokeyl/nmonit.git"
+  },
+  "author": "bravokeyl <bravokeyl@gmail.com>",
+  "license": "GPL-2.0+"
 }
