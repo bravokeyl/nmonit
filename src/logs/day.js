@@ -309,32 +309,37 @@ class DayGen extends Component {
   tranformPower = (d) => {
     let pow = {"i1":[],"i2":[],"i3":[],"R":[],"Y":[],"B":[]};
     let carr = ["i1","i2","i3","R","Y","B"];
-    d.map((e,i)=>{
-      for(let c = 1; c<7;c++){
-        let chan = "i"+c;
-        chan = carr[c-1];
-        let obj = e[chan];
-        let keys = Object.keys(obj)
-          , k = 0
-          , len = keys.length;
-        let dq = e.q;
-        for (; k < len; k += 1) {
-          let dmh = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm");
-          let dm  = dmh.format('x');
-          let chr = dmh.format('HH');
-          if(chan === "i1" || chan === "i2" || chan === "i3"){
-            if( chr >= 6 && chr <=18) {
-              pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
+    try {
+      d.map((e,i)=>{
+        for(let c = 1; c<7;c++){
+          let chan = "i"+c;
+          chan = carr[c-1];
+          let obj = e[chan];
+          let keys = Object.keys(obj)
+            , k = 0
+            , len = keys.length;
+          let dq = e.q;
+          for (; k < len; k += 1) {
+            let dmh = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm");
+            let dm  = dmh.format('x');
+            let chr = dmh.format('HH');
+            if(chan === "i1" || chan === "i2" || chan === "i3"){
+              if( chr >= 6 && chr <=18) {
+                pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
+              } else {
+                pow[chan].push( [Number(dm),0] );
+              }
             } else {
-              pow[chan].push( [Number(dm),0] );
+              pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
             }
-          } else {
-            pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
           }
         }
-      }
-      return pow;
-    });
+        return pow;
+      });
+    } catch(e){
+      console.error("Power transform error");
+    }
+
     bkLog("Pow Trans:",pow);
     return pow;
   }
@@ -468,7 +473,7 @@ class DayGen extends Component {
       });
       return response;
     });
-    
+
     url = baseApiURL+"power?date="+date;
     offlineFetch(url,APIHEADERS)
     .then(response => response.json())

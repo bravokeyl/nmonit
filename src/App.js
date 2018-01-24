@@ -9,6 +9,7 @@ import Grid from 'material-ui/Grid';
 
 import { getCurrentUser } from './aws/cognito';
 
+import ErrorBoundary from './common/errorBoundary';
 import ButtonAppBar from './appbar';
 import Overview from './overview';
 import Dashboard from './dashboard';
@@ -77,26 +78,38 @@ class App extends Component {
             <MuiThemeProvider theme={theme}>
               {
                 !this.state.isLoggedin ?
-                <Route path="/"
-                  render={(props) => (<Login {...props} authHandler={(e,f)=>this.logIn(e,f)} />)}/>:
+                <ErrorBoundary>
+                  <Route path="/"
+                    render={(props) => (<Login {...props} authHandler={(e,f)=>this.logIn(e,f)} />)}/>
+                </ErrorBoundary>
+                :
                 (
                   <div>
                   <ButtonAppBar classes={{}} />
                   <Grid container spacing={0}>
                     <Grid item xs={12}>
-                      <Switch>
-                        <Route exact path="/"
-                        render={(routeProps) => (<Overview {...newProps}  {...routeProps} />)} />
-                        <Route exact path="/d"
-                        render={(routeProps) => (<Dashboard {...newProps} {...routeProps} />)}/>
-                        <Route path="/l"
-                        render={(routeProps) => (<NL {...newProps} {...routeProps} />)} />
-                        <Route path="/g"
-                        render={(routeProps) => (<SG {...newProps} {...routeProps} />)} />
-                        <Route exact path="/p"
-                        render={(routeProps) => (<Profile {...newProps} {...routeProps} authHandler={(e,f)=>this.logOut(e,f)}/>)} />
-                        <Route component={Bad404} />
-                      </Switch>
+                      <ErrorBoundary>
+                        <Switch>
+                          <Route exact path="/"
+                          render={(routeProps) => (<Overview {...newProps}  {...routeProps} />)} />
+
+                          <Route exact path="/d"
+                          render={(routeProps) => (<Dashboard {...newProps} {...routeProps} />)}/>
+
+
+                          <Route path="/l"
+                          render={(routeProps) => (<NL {...newProps} {...routeProps} />)} />
+
+
+                          <Route path="/g"
+                          render={(routeProps) => (<SG {...newProps} {...routeProps} />)} />
+
+                          <Route exact path="/p"
+                          render={(routeProps) => (<Profile {...newProps} {...routeProps} authHandler={(e,f)=>this.logOut(e,f)}/>)} />
+
+                          <Route component={Bad404} />
+                        </Switch>
+                      </ErrorBoundary>
                     </Grid>
                   </Grid>
                 </div>)
