@@ -11,7 +11,8 @@ import moment from 'moment';
 import DayGen from './day';
 import MonthGen from './month';
 import YearGen from './year';
-import {bkLog} from '../common/utils';
+import { bkLog } from '../common/utils';
+
 const styles = theme => ({
   root: {
     padding: 16,
@@ -27,14 +28,14 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 16,
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -44,7 +45,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f96f40",
+    fill: '#f96f40',
   },
   info: {
     marginBottom: 12,
@@ -52,10 +53,10 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   chart: {
-    height: 300
+    height: 300,
   },
   opacity: {
-    opacity: 0.5
+    opacity: 0.5,
   },
   tabsheader: {
     [theme.breakpoints.up('sm')]: {
@@ -63,36 +64,17 @@ const styles = theme => ({
       marginRight: 16,
     },
     border: '1px solid #eee',
-  }
+  },
 });
 
 class Logs extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      progessL: true,
-
-      lastupdated: moment(Date.now()).fromNow(),
-      todayEnergyL: 0,
-      weekEnergyL: 0,
-      weekEnergyRL: 0,
-      weekEnergyYL: 0,
-      weekEnergyBL: 0,
-      monthEnergyL: 0,
-      totalEnergyL: 0,
-      energyDay: [],
-      energyMonth: [],
       date: moment().format('YYYY/MM/DD'),
       month: moment().format('YYYY/MM'),
-      startDate: moment(),
-      focused: false,
-      progess: true,
-      monthprogress: true,
-      dialogOpen: false,
-      selectedMonth: moment().format('MMMM'),
-
       value: 1,
-    }
+    };
     this.handleChangeIndex = this.handleChangeIndex.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleDayChange = this.handleDayChange.bind(this);
@@ -102,42 +84,39 @@ class Logs extends Component {
 
   handleChange = (event, value) => {
     this.setState({
-      value: value
+      value,
     });
   };
-  handleDayChange = (event, value, date) => {
-    bkLog("HANDLE DAY CHANGE",value,date);
-    if(!date){
+  handleDayChange = (event, value, dt) => {
+    bkLog('HANDLE DAY CHANGE', value, dt);
+    let date = dt;
+    if (!date) {
       date = moment();
-    };
+    }
     this.setState({
-      value: value,
-      date: date
+      value,
+      date,
     });
   };
-  handleMonthChange = (event, value, month) => {
-    bkLog("HANDLE MONTH CHANGE",value,month);
-    if(!month){
+  handleMonthChange = (event, value, mnt) => {
+    bkLog('HANDLE MONTH CHANGE', value, mnt);
+    let month = mnt;
+    if (!month) {
       month = moment().format('YYYY/MM');
-    };
+    }
     this.setState({
-      value: value,
-      selectedMonth: month.format('MMMM'),
-      month: moment(month,'MMM YYYY').format('YYYY/MM')
+      value,
+      month: moment(month, 'MMM YYYY').format('YYYY/MM'),
     });
   };
   handleDate = (date) => {
     this.setState({ date });
   };
-  handleChangeIndex = index => {
+  handleChangeIndex = (index) => {
     this.setState({ value: index });
   };
-
-  componentDidMount(){
-    bkLog("Log component did mount");
-  }
-  render(){
-    const { classes,apiPath } = this.props;
+  render() {
+    const { classes, apiPath } = this.props;
     return (
       <div className={classes.root}>
         <Grid item xs={12} sm={12}>
@@ -154,9 +133,10 @@ class Logs extends Component {
             <Tab label="Year" />
           </Tabs>
           <SwipeableViews
-            axis='x'
+            axis="x"
             index={this.state.value}
-            onChangeIndex={this.handleChangeIndex}>
+            onChangeIndex={this.handleChangeIndex}
+          >
             <DayGen date={this.state.date} apiPath={apiPath} />
             <MonthGen month={this.state.month} indexV={this.handleDayChange} apiPath={apiPath} />
             <YearGen indexV={this.handleMonthChange} apiPath={apiPath} />
@@ -165,11 +145,11 @@ class Logs extends Component {
       </div>
     );
   }
-
 }
 
 Logs.propTypes = {
   classes: PropTypes.object.isRequired,
+  apiPath: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(Logs);

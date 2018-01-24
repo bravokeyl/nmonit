@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
-import { LinearProgress } from 'material-ui/Progress';
-
-import moment from 'moment';
+import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 
 const styles = theme => ({
   root: {
@@ -26,14 +21,14 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 16,
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -43,7 +38,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f96f40",
+    fill: '#f96f40',
   },
   info: {
     marginBottom: 12,
@@ -51,25 +46,19 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   chart: {
-    height: 300
+    height: 300,
   },
   opacity: {
-    opacity: 0.5
-  }
+    opacity: 0.5,
+  },
 });
 
 class DialogWrapper extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      date: moment().format('YYYY/MM/DD'),
-      month: moment().format('YYYY/MM'),
-      startDate: moment(),
-      focused: false,
-      progess: true,
       dialogOpen: false,
-    }
-
+    };
   }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
@@ -77,10 +66,7 @@ class DialogWrapper extends Component {
   handleChange = () => {
 
   }
-  componentDidMount(){
-
-  }
-  render(){
+  render() {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
@@ -88,7 +74,9 @@ class DialogWrapper extends Component {
           <Grid item xs={12} sm={12}>
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>
-              <DialogContent>If you think this is an issue, please contact NuevoMonit support engineer.</DialogContent>
+              <DialogContent>
+              If you think this is an issue, please contact NuevoMonit support engineer.
+              </DialogContent>
               <DialogActions>
                 <Button onClick={this.handleRequestClose} color="primary">
                   Okay
@@ -100,7 +88,6 @@ class DialogWrapper extends Component {
       </div>
     );
   }
-
 }
 
 DialogWrapper.propTypes = {

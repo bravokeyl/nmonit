@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import compose from 'recompose/compose';
 import withWidth from 'material-ui/utils/withWidth';
@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import Dialog, { DialogTitle, DialogContent,DialogActions } from 'material-ui/Dialog';
+import Dialog, { DialogTitle, DialogContent, DialogActions } from 'material-ui/Dialog';
 import { LinearProgress } from 'material-ui/Progress';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
@@ -20,7 +20,7 @@ import Select from 'material-ui/Select';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from  'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 import EnhancedTable from '../common/table';
 import offlineFetch from '../common/fetch-cache';
@@ -28,7 +28,7 @@ import { Colors } from '../common/constants';
 
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
-import {channelMap,bkLog} from '../common/utils';
+import { channelMap, bkLog } from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
