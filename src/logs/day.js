@@ -139,21 +139,21 @@ const highLineconfig = {
       name: "Inverter 1",
       color: Colors.I1Color,
       data: [
-        [Date.UTC(2017,5,2),0.7695]
+
       ]
     },
     {
       name: "Inverter 2",
       color: Colors.I2Color,
       data: [
-        [Date.UTC(2017,5,2),2.7695]
+
       ]
     },
     {
       name: "Inverter 3",
       color: Colors.I3Color,
       data: [
-        [Date.UTC(2017,5,2),1.7695]
+
       ]
     },
     {
@@ -161,7 +161,7 @@ const highLineconfig = {
       color: Colors.RPhaseColor,
       visible: false,
       data: [
-        [Date.UTC(2017,5,3),0.7695]
+
       ]
     },
     {
@@ -169,7 +169,7 @@ const highLineconfig = {
       color: Colors.YPhaseColor,
       visible: false,
       data: [
-        [Date.UTC(2017,5,3),2.7695]
+
       ]
     },
     {
@@ -177,7 +177,7 @@ const highLineconfig = {
       visible: false,
       color: Colors.BPhaseColor,
       data: [
-        [Date.UTC(2017,5,3),1.7695]
+        
       ]
     }
   ]
@@ -234,8 +234,6 @@ class DayGen extends Component {
   }
   changeChartGroup = (group) => {
     let chart = this.refs.lchart.getChart();
-    console.log(group,"grid:",this.state.showGridPower,"solar:",this.state.showSolarPower);
-
     switch (group) {
       case 'grid':
         chart.series[0].update({
@@ -460,8 +458,9 @@ class DayGen extends Component {
         self.setState({
           powerLine: pow
         });
+        bkLog("Power:",response.power.length);
       }
-      bkLog("Power:",response.power.length);
+
       return response;
     });
 

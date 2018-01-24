@@ -37,13 +37,14 @@ class System extends Component {
   }
   render(){
     const { classes } = this.props;
+    const system = JSON.parse(localStorage.getItem('nuser')).plant;
     return (
       <div className={classes.root}>
         <Grid container spacing={0}>
           <Grid item xs={12} sm={12}>
             <List>
               <ListItem>
-                PV system name: Khammam Shyamala Hospital
+                PV system name: {system}
               </ListItem>
               <ListItem>
                 Time zone : UTC+5:30
