@@ -315,29 +315,33 @@ class DayGen extends Component {
           let chan = "i"+c;
           chan = carr[c-1];
           let obj = e[chan];
-          let keys = Object.keys(obj)
-            , k = 0
-            , len = keys.length;
-          let dq = e.q;
-          for (; k < len; k += 1) {
-            let dmh = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm");
-            let dm  = dmh.format('x');
-            let chr = dmh.format('HH');
-            if(chan === "i1" || chan === "i2" || chan === "i3"){
-              if( chr >= 6 && chr <=18) {
-                pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
+          if(obj){
+            let keys = Object.keys(obj)
+              , k = 0
+              , len = keys.length;
+            let dq = e.q;
+            for (; k < len; k += 1) {
+              let dmh = moment(dq+"/"+keys[k],"YYYY/MM/DD/HH-mm");
+              let dm  = dmh.format('x');
+              let chr = dmh.format('HH');
+              if(chan === "i1" || chan === "i2" || chan === "i3"){
+                if( chr >= 6 && chr <=18) {
+                  pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
+                } else {
+                  pow[chan].push( [Number(dm),0] );
+                }
               } else {
-                pow[chan].push( [Number(dm),0] );
+                pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
               }
-            } else {
-              pow[chan].push( [Number(dm),obj[keys[k]].appPower] );
             }
+          } else {
+            console.warn("Power transform error: No obj",e,chan,obj);
           }
         }
         return pow;
       });
     } catch(e){
-      console.error("Power transform error");
+      console.error("Power transform error",e);
     }
 
     bkLog("Pow Trans:",pow);

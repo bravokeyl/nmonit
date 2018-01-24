@@ -9,14 +9,10 @@ class ErrorBoundary extends Component {
     }
   }
   componentDidCatch(error,errorInfo) {
-    console.error("ERROR BOUNDARY CATCHED");
     this.setState({
       error: error,
       errorInfo: errorInfo
     });
-  }
-  componentDidMount() {
-    console.info("ERROR BOUNDARY MOUNTED");
   }
   render() {
     if(this.state.errorInfo){
