@@ -9,7 +9,7 @@ import { withStyles } from 'material-ui/styles';
 
 import clearAPICache from '../common/utils';
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     padding: 16,
   },
@@ -18,7 +18,7 @@ const styles = theme => ({
     flex: 1,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 24,
     padding: 16,
@@ -26,16 +26,13 @@ const styles = theme => ({
 });
 
 class System extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      value: 0,
-    }
+      value: 'Sep 28th 2017',
+    };
   }
-  clearCacheHandler(){
-    clearAPICache();
-  }
-  render(){
+  render() {
     const { classes } = this.props;
     const system = JSON.parse(localStorage.getItem('nuser')).plant;
     return (
@@ -50,7 +47,7 @@ class System extends Component {
                 Time zone : UTC+5:30
               </ListItem>
               <ListItem>
-                Installation Date : Sep 28th 2017
+                Installation Date : {this.state.value}
               </ListItem>
               <ListItem>
                 Currency: INR
@@ -59,7 +56,7 @@ class System extends Component {
             <Typography type="subheading">Address:</Typography>
           </Grid>
           <Grid item sm={12}>
-            <Button onClick={this.clearCacheHandler}>
+            <Button onClick={clearAPICache}>
               Clear Cache
             </Button>
           </Grid>
@@ -67,7 +64,6 @@ class System extends Component {
       </div>
     );
   }
-
 }
 
 

@@ -14,7 +14,7 @@ import { withStyles } from 'material-ui/styles';
 import config from '../aws';
 import { signOut, getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
-import {bkLog} from '../common/utils';
+import { bkLog } from '../common/utils';
 
 import avatar from './avatar200.png';
 import Contacts from './contacts';
@@ -37,20 +37,20 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 24,
     padding: 16,
   },
   tabcard: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 24,
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -68,7 +68,7 @@ const styles = theme => ({
   avatar: {
     width: 140,
     height: 140,
-    borderRadius: "50%"
+    borderRadius: '50%',
   },
   uid: {
     fontSize: 12,
@@ -80,13 +80,13 @@ const styles = theme => ({
   },
   icon: {
     padding: '0 5px',
-  }
+  },
 });
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
   headers: {
-    "X-Api-Key": API_KEY,
+    'X-Api-Key': API_KEY,
   },
   method: 'GET',
   offline: {
@@ -97,67 +97,66 @@ const APIHEADERS = {
     renew: false,
     retries: 3,
     retryDelay: 1000,
-  }
+  },
 };
 
 class Profile extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       value: 0,
       user: {
-        name: "Unknown",
-        uname: "Unknown",
-        uid: "000",
+        name: 'Unknown',
+        uname: 'Unknown',
+        uid: '000',
         designation: 'Unknown',
         role: 'Unknown',
-        avatar: avatar
-      }
-    }
+        avatar,
+      },
+    };
     this.handleSignOut = this.handleSignOut.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
+
+  componentDidMount() {
+    const user = getCurrentUserName();
+    if (user) {
+      APIHEADERS.offline.expires = 30 * 24 * 60 * 60 * 1000;
+      // APIHEADERS.headers.Authorization = this.state.idToken;
+      const purl = `https://api.blufieldsenergy.com/v1/me?un=${user}`;
+      const self = this;
+      offlineFetch(purl, APIHEADERS)
+        .then(response => response.json())
+        .then((response) => {
+          bkLog(response);
+          if (response) {
+            self.setState({
+              user: response.user[0],
+            });
+          } else {
+            self.handleSignOut();
+          }
+          return response;
+        })
+        .catch((err) => {
+          console.error('Profile Fetch Error:', err);
+        });
+    } else {
+      this.handleSignOut();
+    }
+  }
+
   handleSignOut = () => {
     signOut();
     this.props.authHandler(this.props.history);
   };
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-  handleChangeIndex = index => {
-    this.setState({ value: index });
-  };
-  componentDidMount() {
-    let user = getCurrentUserName();
-    if(user) {
-      APIHEADERS.offline.expires = 30*24*60*60*1000;
-      // APIHEADERS.headers.Authorization = this.state.idToken;
-      let purl = "https://api.blufieldsenergy.com/v1/me?un="+user;
-      let self = this;
-      offlineFetch(purl,APIHEADERS)
-      .then(response => response.json())
-      .then(function(response) {
-        bkLog(response)
-        if(response){
-          self.setState({
-            user: response.user[0]
-          });
-        } else {
-          self.handleSignOut();
-        }
-        return response;
-      })
-      .catch((err)=>{
-        console.error("Profile Fetch Error:",err);
-      });
 
-    } else {
-      this.handleSignOut();
-    }
+  handleChange = (event, value) => this.setState({ value });
 
-  };
-  render(){
+  handleChangeIndex = index => this.setState({ value: index });
+
+  render() {
     const { classes } = this.props;
     const { value } = this.state;
     return (
@@ -166,7 +165,7 @@ class Profile extends Component {
           <Grid item xs={12} sm={3}>
             <Card className={classes.card}>
               <div className={classes.avatarWrap}>
-                <img src={this.state.user.avatar} className={classes.avatar} alt="Profile Avatar" title={this.state.user.name}/>
+                <img src={this.state.user.avatar} className={classes.avatar} alt="Profile Avatar" title={this.state.user.name} />
               </div>
               <Typography type="title" gutterBottom align="center">
                 {this.state.user.name} <small className={classes.uid}>#{this.state.user.uid}</small>
@@ -176,9 +175,9 @@ class Profile extends Component {
               </Typography>
               <div className={classes.social}>
                 <Email className={classes.icon} />
-                <Link className={classes.icon} />
+                <Link href="/" className={classes.icon} />
               </div>
-              <Button color="primary" onClick={this.handleSignOut} style={{margin: "8px 16px"}}>
+              <Button color="primary" onClick={this.handleSignOut} style={{ margin: '8px 16px' }}>
                 signOut
               </Button>
             </Card>
@@ -191,17 +190,18 @@ class Profile extends Component {
                 indicatorColor="primary"
                 textColor="primary"
                 fullWidth
-                style={{borderBottom: "1px solid #eee"}}
+                style={{ borderBottom: '1px solid #eee' }}
               >
                 <Tab label="System" />
-                <Tab label="Image"/>
-                <Tab label="Contacts"/>
-                <Tab label="Notifications"/>
+                <Tab label="Image" />
+                <Tab label="Contacts" />
+                <Tab label="Notifications" />
               </Tabs>
               <SwipeableViews
-                axis='x'
+                axis="x"
                 index={value}
-                onChangeIndex={this.handleChangeIndex}>
+                onChangeIndex={this.handleChangeIndex}
+              >
                 <System />
                 <SystemImage />
                 <Contacts />
@@ -213,12 +213,11 @@ class Profile extends Component {
       </div>
     );
   }
-
 }
-
 
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
+  authHandler: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Profile);
