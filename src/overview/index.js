@@ -12,16 +12,16 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import config from '../aws';
-import {getIdToken} from '../aws/cognito';
+import { getIdToken } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import OverGen from './generation';
 import OverCon from './consumption';
-import {channelMap,bkLog} from '../common/utils';
+import { channelMap, bkLog } from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
   headers: {
-    "X-Api-Key": API_KEY,
+    'X-Api-Key': API_KEY,
   },
   method: 'GET',
   offline: {
@@ -32,7 +32,7 @@ const APIHEADERS = {
     renew: false,
     retries: 3,
     retryDelay: 1000,
-  }
+  },
 };
 const styles = theme => ({
   root: {
@@ -49,14 +49,14 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 16,
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -66,7 +66,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f96f40",
+    fill: '#f96f40',
   },
   info: {
     marginBottom: 12,
@@ -74,10 +74,10 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   chart: {
-    height: 300
+    height: 300,
   },
   opacity: {
-    opacity: 0.5
+    opacity: 0.5,
   },
   tabsheader: {
     [theme.breakpoints.up('sm')]: {
@@ -85,184 +85,131 @@ const styles = theme => ({
       marginRight: 16,
     },
     border: '1px solid #eee',
-  }
+  },
 });
 
-var RP = Number(parseFloat((34.75*100)/(134.19+12.88)).toFixed(2));
-var YP = Number(parseFloat((73.98*100)/(134.19+12.88)).toFixed(2));
-var BP = Number(parseFloat((25.46*100)/(134.19+12.88)).toFixed(2));
+const RP = Number(parseFloat((34.75 * 100) / (134.19 + 12.88)).toFixed(2));
+const YP = Number(parseFloat((73.98 * 100) / (134.19 + 12.88)).toFixed(2));
+const BP = Number(parseFloat((25.46 * 100) / (134.19 + 12.88)).toFixed(2));
 
-var I1 = Number(parseFloat((4.76*100)/(134.19+12.88)).toFixed(2));
-var I2 = Number(parseFloat((3.82*100)/(134.19+12.88)).toFixed(2));
-var I3 = Number(parseFloat((4.3*100)/(134.19+12.88)).toFixed(2));
+const I1 = Number(parseFloat((4.76 * 100) / (134.19 + 12.88)).toFixed(2));
+const I2 = Number(parseFloat((3.82 * 100) / (134.19 + 12.88)).toFixed(2));
+const I3 = Number(parseFloat((4.3 * 100) / (134.19 + 12.88)).toFixed(2));
 
-var LP = RP+YP+BP;
-var SP = I1+I2+I3;
+const LP = RP + YP + BP;
+const SP = I1 + I2 + I3;
 
-var categories = ['Load', 'Solar'],
-    data = [{
-        color: "rgb(43,144,143)",
-        y: LP,
-        drilldown: {
-            name: 'Phases',
-            categories: ['R-Phase', 'Y-Phase', 'B-Phase'],
-            data: [RP,YP,BP],
-            color: ["#f44336","#ffc658","#3f51b5"]
-        }
-    }, {
-        color: "rgb(27, 94, 32)",
-        y: SP,
-        drilldown: {
-            name: 'Inverters',
-            categories: ['Inv 1', 'Inv 2', 'Inv 3'],
-            data: [I1,I2,I3],
-            color: ["#1b5e20","#4c8c4a","#387002"]
-        }
-    }],
-    pieEnergyData = [],
-    pieChannelData = [],
-    i,
-    j,
-    dataLen = data.length,
-    drillDataLen,
-    brightness;
+const categories = ['Load', 'Solar'];
+const data = [
+  {
+    color: 'rgb(43,144,143)',
+    y: LP,
+    drilldown: {
+      name: 'Phases',
+      categories: ['R-Phase', 'Y-Phase', 'B-Phase'],
+      data: [RP, YP, BP],
+      color: ['#f44336', '#ffc658', '#3f51b5'],
+    },
+  },
+  {
+    color: 'rgb(27, 94, 32)',
+    y: SP,
+    drilldown: {
+      name: 'Inverters',
+      categories: ['Inv 1', 'Inv 2', 'Inv 3'],
+      data: [I1, I2, I3],
+      color: ['#1b5e20', '#4c8c4a', '#387002'],
+    },
+  },
+];
+const pieEnergyData = [];
+const pieChannelData = [];
+let i;
+let j;
+const dataLen = data.length;
+let drillDataLen;
 
 for (i = 0; i < dataLen; i += 1) {
-    pieEnergyData.push({
-        name: categories[i],
-        y: data[i].y,
-        color: data[i].color
+  pieEnergyData.push({
+    name: categories[i],
+    y: data[i].y,
+    color: data[i].color,
+  });
+  drillDataLen = data[i].drilldown.data.length;
+  for (j = 0; j < drillDataLen; j += 1) {
+    pieChannelData.push({
+      name: data[i].drilldown.categories[j],
+      y: data[i].drilldown.data[j],
+      color: data[i].drilldown.color[j],
     });
-    drillDataLen = data[i].drilldown.data.length;
-    for (j = 0; j < drillDataLen; j += 1) {
-        brightness = 0.2 - (j / drillDataLen) / 5;
-        pieChannelData.push({
-            name: data[i].drilldown.categories[j],
-            y: data[i].drilldown.data[j],
-            color: data[i].drilldown.color[j]
-        });
-    }
+  }
 }
 
-// const barconfig = {
-//   chart: {
-//         plotBackgroundColor: null,
-//         plotBorderWidth: null,
-//         plotShadow: false,
-//         type: 'pie'
-//     },
-//     title: {
-//         text: ''
-//     },
-//     tooltip: {
-//         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-//     },
-//     plotOptions: {
-//         pie: {
-//             allowPointSelect: true,
-//             cursor: 'pointer',
-//             dataLabels: {
-//                 enabled: false
-//             },
-//             showInLegend: true
-//         }
-//     },
-//     series: [{
-//         name: 'Energy',
-//         colorByPoint: true,
-//         data: [{
-//             name: 'Load',
-//             y: 56.33
-//         }, {
-//             name: 'Solar',
-//             y: 24.03,
-//             sliced: true,
-//             selected: true
-//         }]
-//     }]
-// }
-
 const pieDrill = {
-    chart: {
-        type: 'pie'
-    },
+  chart: {
+    type: 'pie',
+  },
+  title: {
+    text: '<b>Generation vs Load</b>',
+  },
+  subtitle: {
+    text: null,
+  },
+  yAxis: {
     title: {
-        text: "<b>Generation vs Load</b>"
+      text: 'Energy',
     },
-    subtitle: {
-        text: null
+  },
+  plotOptions: {
+    pie: {
+      shadow: false,
+      center: ['50%', '50%'],
     },
-    yAxis: {
-        title: {
-            text: 'Energy'
-        }
+  },
+  tooltip: {
+    valueSuffix: '%',
+  },
+  series: [{
+    name: 'Energy',
+    data: pieEnergyData,
+    size: '60%',
+    dataLabels: {
+      formatter: () => (this.y > 5 ? this.point.name : null),
+      color: '#ffffff',
+      distance: -30,
     },
-    plotOptions: {
-        pie: {
-            shadow: false,
-            center: ['50%', '50%']
-        }
+  }, {
+    name: 'Energy',
+    data: pieChannelData,
+    size: '80%',
+    innerSize: '60%',
+    dataLabels: {
+      formatter: () => (this.y > 1 ? `<b>${this.point.name} : </b> ${this.y} %` : null),
     },
-    tooltip: {
-        valueSuffix: '%'
-    },
-    series: [{
-        name: 'Energy',
-        data: pieEnergyData,
-        size: '60%',
-        dataLabels: {
-            formatter: function () {
-                return this.y > 5 ? this.point.name : null;
-            },
-            color: '#ffffff',
-            distance: -30
-        }
-    }, {
-        name: 'Energy',
-        data: pieChannelData,
-        size: '80%',
-        innerSize: '60%',
-        dataLabels: {
-            formatter: function () {
-                // display only if larger than 1
-                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
-                    this.y + '%' : null;
-            }
-        },
-        id: 'versions'
+    id: 'versions',
+  }],
+  responsive: {
+    rules: [{
+      condition: {
+        maxWidth: 400,
+      },
+      chartOptions: {
+        series: [{
+          id: 'versions',
+          dataLabels: {
+            enabled: false,
+          },
+        }],
+      },
     }],
-    responsive: {
-        rules: [{
-            condition: {
-                maxWidth: 400
-            },
-            chartOptions: {
-                series: [{
-                    id: 'versions',
-                    dataLabels: {
-                        enabled: false
-                    }
-                }]
-            }
-        }]
-    }
+  },
 };
+
 class Overview extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      progessL: true,
       idToken: getIdToken() ? getIdToken().jwtToken : '',
-
-      lastupdated: moment(Date.now()).fromNow(),
-      todayEnergyL: 0,
-      weekEnergyL: 0,
-      weekEnergyRL: 0,
-      weekEnergyYL: 0,
-      weekEnergyBL: 0,
-      monthEnergyL: 0,
-      totalEnergyL: 0,
-      todayEnergyGenL: 0,
       gen: {
         todayEnergyGenL: 0,
         weekEnergyGenL: 0,
@@ -275,43 +222,257 @@ class Overview extends Component {
         monthEnergyL: 0,
         totalEnergyL: 0,
       },
-      energyDay: [],
-      energyMonth: [],
       date: moment().format('YYYY/MM/DD'),
       month: moment().format('YYYY/MM'),
-      startDate: moment(),
-      focused: false,
-      progess: true,
-      monthprogress: true,
-      dialogOpen: false,
-      selectedMonth: moment().format('MMMM'),
-
       value: 0,
-    }
+    };
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
+  componentDidMount() {
+    const { date, month } = this.state;
+    bkLog('Overview did mount.');
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    APIHEADERS.headers.Authorization = this.state.idToken;
+    const url = `${baseApiURL}h?dhr=${date}`;
+    const dayURL = `${baseApiURL}d?ddm=${month}`;
+    const weekURL = `${baseApiURL}we`;
+    const monthURL = `${baseApiURL}m`;
+    const self = this;
+
+    offlineFetch(url, APIHEADERS)
+      .then(response => response.json())
+      .then((response) => {
+        let de = response.energy;
+        if (!de) {
+          de = [];
+        }
+        const dayEnergyConsumption = { R: [], Y: [], B: [] };
+        const dayEnergyGeneration = { i1: [], i2: [], i3: [] };
+        de.map((e) => {
+          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
+          if (ap === 'l') {
+            dayEnergyConsumption.R.push(_.sum(e.c2));
+            dayEnergyConsumption.Y.push(_.sum(e.c4));
+            dayEnergyConsumption.B.push(_.sum(e.c6));
+            dayEnergyGeneration.i1.push(_.sum(e.c1));
+            dayEnergyGeneration.i2.push(_.sum(e.c3));
+            dayEnergyGeneration.i3.push(_.sum(e.c5));
+          } else {
+            dayEnergyConsumption.R.push(_.sum(e.c2));
+            dayEnergyConsumption.Y.push(_.sum(e.c4));
+            dayEnergyConsumption.B.push(_.sum(e.c6));
+            dayEnergyGeneration.i1.push(_.sum(e.c1));
+            dayEnergyGeneration.i2.push(_.sum(e.c3));
+            dayEnergyGeneration.i3.push(_.sum(e.c5));
+          }
+          return e;
+        });
+        const mec = _.map(dayEnergyConsumption, e => _.sum(e));
+        const meg = _.map(dayEnergyGeneration, e => _.sum(e));
+        const daytotalConsumption = _.sum(mec);
+        const daytotalGeneration = _.sum(meg);
+        self.setState(prevState => ({
+          gen: {
+            ...prevState.gen,
+            todayEnergyGenL: parseFloat(daytotalGeneration).toFixed(3),
+          },
+          load: {
+            ...prevState.load,
+            todayEnergyL: parseFloat(daytotalConsumption).toFixed(3),
+          },
+        }));
+        return response;
+      });
+
+    offlineFetch(dayURL, APIHEADERS)
+      .then(response => response.json())
+      .then((response) => {
+        let de;
+        if (response.energy) {
+          de = self.transformData(response.energy);
+        } else {
+          de = self.transformData([response]);
+        }
+        self.setState({
+          energyMonth: de,
+        });
+
+        const monthgroup = { R: [], Y: [], B: [] };
+        const monthgroupGen = { i1: [], i2: [], i3: [] };
+        de.map((e) => {
+          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
+          if (ap === 'l') {
+            monthgroup.R.push(e.c2);
+            monthgroup.Y.push(e.c4);
+            monthgroup.B.push(e.c6);
+            monthgroupGen.i1.push(e.c1);
+            monthgroupGen.i2.push(e.c3);
+            monthgroupGen.i3.push(e.c5);
+          } else {
+            monthgroup.R.push(e.c2);
+            monthgroup.Y.push(e.c4);
+            monthgroup.B.push(e.c6);
+            monthgroupGen.i1.push(e.c1);
+            monthgroupGen.i2.push(e.c3);
+            monthgroupGen.i3.push(e.c5);
+          }
+          return e;
+        });
+
+        const me = _.map(monthgroup, e => _.sum(e));
+        const meg = _.map(monthgroupGen, e => _.sum(e));
+
+        const metotal = _.sum(me);
+        const metotalGen = _.sum(meg);
+        self.setState(prevState => ({
+          progessL: false,
+          gen: {
+            ...prevState.gen,
+            monthEnergyGenL: parseFloat(metotalGen).toFixed(3),
+          },
+          load: {
+            ...prevState.load,
+            monthEnergyL: parseFloat(metotal).toFixed(3),
+          },
+        }));
+        return response;
+      }, (error) => {
+        bkLog('Day Fetch Error', error);
+      });
+
+    offlineFetch(weekURL, APIHEADERS)
+      .then(response => response.json())
+      .then((response) => {
+        let de = response.energy;
+        const dayEnergy = { R: [], Y: [], B: [] };
+        const dayEnergyGen = { i1: [], i2: [], i3: [] };
+        if (!de) {
+          bkLog('No Data: weekURL');
+          de = [];
+        }
+        de.map((e) => {
+          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
+          if (ap === 'l') {
+            dayEnergy.R.push(e.c2);
+            dayEnergy.Y.push(e.c4);
+            dayEnergy.B.push(e.c6);
+            dayEnergyGen.i1.push(e.c1);
+            dayEnergyGen.i2.push(e.c3);
+            dayEnergyGen.i3.push(e.c5);
+          } else {
+            dayEnergy.R.push(e.c2);
+            dayEnergy.Y.push(e.c4);
+            dayEnergy.B.push(e.c6);
+            dayEnergyGen.i1.push(e.c1);
+            dayEnergyGen.i2.push(e.c3);
+            dayEnergyGen.i3.push(e.c5);
+          }
+          return e;
+        });
+        const me = _.map(dayEnergy, e => _.sum(e));
+        const weektotal = _.sum(me);
+        const meg = _.map(dayEnergyGen, e => _.sum(e));
+        const weektotalGen = _.sum(meg);
+        self.setState(prevState => ({
+          gen: {
+            ...prevState.gen,
+            weekEnergyGenL: parseFloat(weektotalGen).toFixed(3),
+          },
+          load: {
+            ...prevState.load,
+            weekEnergyL: parseFloat(weektotal).toFixed(3),
+            weekEnergyRL: parseFloat(me[0]).toFixed(3),
+            weekEnergyYL: parseFloat(me[1]).toFixed(3),
+            weekEnergyBL: parseFloat(me[2]).toFixed(3),
+          },
+        }));
+        return response;
+      })
+      .catch((err) => {
+        bkLog('Week Fetch Error:', err);
+      });
+    APIHEADERS.offline.expires = 60 * 60 * 1000;
+
+    offlineFetch(monthURL, APIHEADERS)
+      .then(response => response.json())
+      .then((response) => {
+        let de = response;
+        bkLog('MONTHURL', response);
+        if (!Array.isArray(de)) {
+          de = [de];
+          bkLog('Not array', de);
+        }
+        const totalEnergy = { R: [], Y: [], B: [] };
+        const totalEnergyGen = { i1: [], i2: [], i3: [] };
+        de.map((e) => {
+          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
+          if (ap === 'l') {
+            totalEnergy.R.push(e.c2);
+            totalEnergy.Y.push(e.c4);
+            totalEnergy.B.push(e.c6);
+            totalEnergyGen.i1.push(e.c1);
+            totalEnergyGen.i2.push(e.c3);
+            totalEnergyGen.i3.push(e.c5);
+          } else {
+            totalEnergy.R.push(e.c2);
+            totalEnergy.Y.push(e.c4);
+            totalEnergy.B.push(e.c6);
+            totalEnergyGen.i1.push(e.c1);
+            totalEnergyGen.i2.push(e.c3);
+            totalEnergyGen.i3.push(e.c5);
+          }
+          return e;
+        });
+        const me = _.map(totalEnergy, e => _.sum(e));
+        const meg = _.map(totalEnergyGen, e => _.sum(e));
+        const yeartotal = _.sum(me);
+        const yeartotalGen = _.sum(meg);
+        bkLog(meg, me, 'MEG Total');
+        self.setState(prevState => ({
+          gen: {
+            ...prevState.gen,
+            totalEnergyGenL: parseFloat(yeartotalGen).toFixed(3),
+          },
+          load: {
+            ...prevState.load,
+            totalEnergyL: parseFloat(yeartotal).toFixed(3),
+          },
+        }));
+        return response;
+      })
+      .catch((err) => {
+        bkLog('Month Fetch Error:', err);
+      });
+  }
   handleChange = (event, value) => {
     this.setState({
-      value: value
+      value,
     });
   };
-  handleChangeIndex = index => {
+  handleChangeIndex = (index) => {
     this.setState({ value: index });
   };
-  transformData = (d) => {
-    if(d){
-      d.map((data, i) => {
-        data = channelMap(data);
-        if(data['dhr']){
-          data["dhr"] = data['dhr'].split('/').reverse()[0];
-          data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+  transformData = (tfd) => {
+    let d = tfd;
+    if (d) {
+      d.map((tod) => {
+        let tdata = tod;
+        tdata = channelMap(tdata);
+        let dtdhr = tdata.dhr;
+        if (dtdhr) {
+          dtdhr = dtdhr.split('/').reverse();
+          [dtdhr] = dtdhr;
+          tdata.day = `Hour ${Number(dtdhr)} - ${(Number(dtdhr) + 1)}`;
         }
-        if(data['ddt']){
-          data['month'] = moment(data['ddt']).format("MMM Do");
-          data["ddt"] = data['ddt'].split('/').reverse()[0];
+        let dtddt = tdata.ddt;
+        if (dtddt) {
+          tdata.month = moment(dtddt).format('MMM Do');
+          dtddt = dtddt.split('/').reverse();
+          [dtddt] = dtddt;
         }
         return d;
       });
@@ -320,257 +481,19 @@ class Overview extends Component {
     }
     return d;
   }
-  handleRequestClose = () => {
-    this.setState({ dialogOpen: false });
-  }
-  handleSelectMonth = name => event => {
+
+  handleSelectMonth = () => (event) => {
     this.changeMonthEnergy(event.target.value);
   };
 
-  componentDidMount(){
-    let { date, month } = this.state;
-    bkLog("Overview did mount");
-    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
-    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
-    APIHEADERS.headers.Authorization = this.state.idToken;
-    let url = baseApiURL+"h?dhr="+date;
-    let dayURL = baseApiURL+"d?ddm="+month;
-    let weekURL = baseApiURL+"we";
-    let monthURL = baseApiURL+"m";
-    let self = this;
-
-    offlineFetch(url,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      let de =  response.energy;
-      if(!de){
-        de = [];
-      }
-      let dayEnergyConsumption = {"R":[],"Y":[],"B":[]};
-      let dayEnergyGeneration = {"i1":[],"i2":[],"i3":[]};
-      de.map((e,i)=>{
-        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
-        if(ap === 'l'){
-          dayEnergyConsumption["R"].push(_.sum(e.c2));
-          dayEnergyConsumption["Y"].push(_.sum(e.c4));
-          dayEnergyConsumption["B"].push(_.sum(e.c6));
-          dayEnergyGeneration["i1"].push(_.sum(e.c1));
-          dayEnergyGeneration["i2"].push(_.sum(e.c3));
-          dayEnergyGeneration["i3"].push(_.sum(e.c5));
-        } else {
-          dayEnergyConsumption["R"].push(_.sum(e.c2));
-          dayEnergyConsumption["Y"].push(_.sum(e.c4));
-          dayEnergyConsumption["B"].push(_.sum(e.c6));
-          dayEnergyGeneration["i1"].push(_.sum(e.c1));
-          dayEnergyGeneration["i2"].push(_.sum(e.c3));
-          dayEnergyGeneration["i3"].push(_.sum(e.c5));
-        }
-        return e;
-      });
-      let mec = _.map(dayEnergyConsumption,(e,i)=>{
-        return _.sum(e);
-      });
-      let meg = _.map(dayEnergyGeneration,(e,i)=>{
-        return _.sum(e);
-      });
-      let daytotalConsumption = _.sum(mec);
-      let daytotalGeneration = _.sum(meg);
-      self.setState(prevState => ({
-        gen: {
-          ...prevState.gen,
-          todayEnergyGenL: parseFloat(daytotalGeneration).toFixed(3)
-        },
-        load: {
-          ...prevState.load,
-          todayEnergyL: parseFloat(daytotalConsumption).toFixed(3),
-        }
-      }));
-      return response;
-    });
-
-    offlineFetch(dayURL,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      let de;
-      if(response.energy){
-        de =  self.transformData(response.energy);
-      } else {
-        de =  self.transformData([response]);
-      }
-      self.setState({
-        energyMonth: de,
-      });
-
-      let monthgroup = {"R":[],"Y":[],"B":[]};
-      let monthgroupGen = {"i1":[],"i2":[],"i3":[]};
-      de.map((e,i) => {
-        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
-        if(ap === 'l'){
-          monthgroup["R"].push(e.c2);
-          monthgroup["Y"].push(e.c4);
-          monthgroup["B"].push(e.c6);
-          monthgroupGen["i1"].push(e.c1);
-          monthgroupGen["i2"].push(e.c3);
-          monthgroupGen["i3"].push(e.c5);
-        } else {
-          monthgroup["R"].push(e.c2);
-          monthgroup["Y"].push(e.c4);
-          monthgroup["B"].push(e.c6);
-          monthgroupGen["i1"].push(e.c1);
-          monthgroupGen["i2"].push(e.c3);
-          monthgroupGen["i3"].push(e.c5);
-        }
-        return e;
-      });
-      let me = _.map(monthgroup,(e,i)=>{
-        return _.sum(e);
-      });
-      let meg = _.map(monthgroupGen,(e,i)=>{
-        return _.sum(e);
-      });
-
-      let metotal = _.sum(me);
-      let metotalGen = _.sum(meg);
-      self.setState(prevState => ({
-        progessL: false,
-        gen: {
-          ...prevState.gen,
-          monthEnergyGenL: parseFloat(metotalGen).toFixed(3)
-        },
-        load: {
-          ...prevState.load,
-          monthEnergyL: parseFloat(metotal).toFixed(3),
-        }
-      }));
-      return response;
-    }, function(error) {
-      bkLog("Day Fetch Error",error);
-    });
-
-    offlineFetch(weekURL,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      let de =  response.energy;
-      let dayEnergy = {"R":[],"Y":[],"B":[]};
-      let dayEnergyGen = {"i1":[],"i2":[],"i3":[]};
-      if(!de) {
-        bkLog("No Data");
-        de = [];
-      }
-      de.map((e,i)=>{
-        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
-        if(ap === 'l'){
-          dayEnergy["R"].push(e.c2);
-          dayEnergy["Y"].push(e.c4);
-          dayEnergy["B"].push(e.c6);
-          dayEnergyGen["i1"].push(e.c1);
-          dayEnergyGen["i2"].push(e.c3);
-          dayEnergyGen["i3"].push(e.c5);
-        } else {
-          dayEnergy["R"].push(e.c2);
-          dayEnergy["Y"].push(e.c4);
-          dayEnergy["B"].push(e.c6);
-          dayEnergyGen["i1"].push(e.c1);
-          dayEnergyGen["i2"].push(e.c3);
-          dayEnergyGen["i3"].push(e.c5);
-        }
-        return e;
-      });
-      // bkLog("weekURL dayWise",de);
-      // bkLog("weekURL dayWise",dayEnergyGen);
-      let me = _.map(dayEnergy,(e,i)=>{
-        return _.sum(e);
-      });
-      let weektotal = _.sum(me);
-      let meg = _.map(dayEnergyGen,(e,i)=>{
-        return _.sum(e);
-      });
-      let weektotalGen = _.sum(meg);
-      bkLog(me,"MEMME")
-      self.setState(prevState => ({
-        gen: {
-          ...prevState.gen,
-          weekEnergyGenL: parseFloat(weektotalGen).toFixed(3)
-        },
-        load: {
-          ...prevState.load,
-          weekEnergyL: parseFloat(weektotal).toFixed(3),
-          weekEnergyRL: parseFloat(me[0]).toFixed(3),
-          weekEnergyYL: parseFloat(me[1]).toFixed(3),
-          weekEnergyBL: parseFloat(me[2]).toFixed(3),
-        }
-      }));
-      return response;
-    })
-    .catch((err)=>{
-      bkLog("Week Fetch Error:",err);
-    });
-    APIHEADERS.offline.expires = 60*60*1000;
-
-    offlineFetch(monthURL,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      let de =  response;
-      bkLog(response,"MONTHURL")
-      if(!Array.isArray(de)){
-        de = [de]
-        bkLog("Not array",de)
-      }
-      let totalEnergy = {"R":[],"Y":[],"B":[]};
-      let totalEnergyGen = {"i1":[],"i2":[],"i3":[]};
-      de.map((e,i)=>{
-
-        let ap = JSON.parse(window.localStorage.getItem('nuser')).p || "NA";
-        if(ap === 'l'){
-          totalEnergy["R"].push(e.c2);
-          totalEnergy["Y"].push(e.c4);
-          totalEnergy["B"].push(e.c6);
-          totalEnergyGen["i1"].push(e.c1);
-          totalEnergyGen["i2"].push(e.c3);
-          totalEnergyGen["i3"].push(e.c5);
-        } else {
-          totalEnergy["R"].push(e.c2);
-          totalEnergy["Y"].push(e.c4);
-          totalEnergy["B"].push(e.c6);
-          totalEnergyGen["i1"].push(e.c1);
-          totalEnergyGen["i2"].push(e.c3);
-          totalEnergyGen["i3"].push(e.c5);
-        }
-        return e;
-      });
-      let me = _.map(totalEnergy,(e,i)=>{
-        return _.sum(e);
-      });
-      let meg = _.map(totalEnergyGen,(e,i)=>{
-        return _.sum(e);
-      });
-      let yeartotal = _.sum(me);
-      let yeartotalGen = _.sum(meg);
-      bkLog(meg,me,"MEG Total");
-      self.setState(prevState => ({
-        gen: {
-          ...prevState.gen,
-          totalEnergyGenL: parseFloat(yeartotalGen).toFixed(3)
-        },
-        load: {
-          ...prevState.load,
-          totalEnergyL: parseFloat(yeartotal).toFixed(3)
-        }
-      }));
-      return response;
-    })
-    .catch((err)=>{
-      bkLog("Month Fetch Error:",err);
-    });
-
-  }
-
-  render(){
+  render() {
     const { classes } = this.props;
-    const pvsystem = (window.localStorage.nuser) ? JSON.parse(window.localStorage.nuser).plant : null;
+    const { nuser } = window.localStorage;
+    const pvsystem = (nuser) ? JSON.parse(nuser).plant : null;
+
     return (
       <div className={classes.root}>
-        <Typography type="title" style={{margin:16}}>
+        <Typography type="title" style={{ margin: 16 }}>
           PVSystem: {pvsystem}
         </Typography>
         <Grid container spacing={0}>
@@ -587,23 +510,23 @@ class Overview extends Component {
               <Tab label="Consumption" />
             </Tabs>
             <SwipeableViews
-              axis='x'
+              axis="x"
               index={this.state.value}
-              onChangeIndex={this.handleChangeIndex}>
+              onChangeIndex={this.handleChangeIndex}
+            >
               <OverGen data={this.state.gen} />
-              <OverCon data={this.state.load}/>
+              <OverCon data={this.state.load} />
             </SwipeableViews>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Grid container spacing={0}>
-              <ReactHighcharts config={pieDrill} ref="chart"></ReactHighcharts>
+              <ReactHighcharts config={pieDrill} ref={(chrt) => { this.piechart = chrt; }} />
             </Grid>
           </Grid>
         </Grid>
       </div>
     );
   }
-
 }
 
 Overview.propTypes = {
