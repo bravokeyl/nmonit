@@ -136,7 +136,24 @@ const highLineconfig = {
   },
   tooltip: {
     shared: true,
-    pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y} W</b><br/>',
+    /* eslint-disable object-shorthand */
+    formatter: function pformatter() {
+      let out = '';
+      const { points } = this;
+      if (points) {
+        let sum = 0;
+        points.forEach((e, i) => {
+          sum += Number(e.y);
+          if (i === 0) {
+            out += `<span style="font-size:10px;"><b>${moment(e.x).format('MMMM Do YYYY, HH:mm')}</b></span><br/>`;
+          }
+          out += `<span style="color:${e.color}">\u25CF</span> ${e.series.name}: <b>${e.y} W</b><br/>`;
+        });
+        out += `<b>Total Power: ${Number(parseFloat(sum).toFixed(2))} W</b>`;
+      }
+      return out;
+    },
+    /* eslint-disable object-shorthand */
   },
   series: [
     {
@@ -198,6 +215,7 @@ class DayGen extends Component {
       focused: false,
       dialogOpen: false,
       highPowerLine: highLineconfig,
+      solarPowerTotal: 0,
     };
 
     this.changeEnergy = this.changeEnergy.bind(this);
@@ -388,7 +406,7 @@ class DayGen extends Component {
           dtdhr = dtdhr.split('/').reverse();
           [dtdhr] = dtdhr;
           data.day =
-          `"Hour "${Number(dtdhr)}" - "${(Number(dtdhr) + 1)}`;
+          `Hour ${Number(dtdhr)} - ${(Number(dtdhr) + 1)}`;
         }
         let dtddt = data.ddt;
         if (dtddt) {
@@ -495,6 +513,7 @@ class DayGen extends Component {
                 <div className={classes.panelHeader}>
                   <Typography color="inherit" className={classes.panelTitle}>
                     Day Energy ( Hour wise ) - {moment(this.state.date).format('Do MMM YYYY')}
+                    : {this.state.solarPowerTotal}
                   </Typography>
                   <Button dense onClick={() => { this.changeChartType('spline'); }}>
                   Spline
