@@ -16,23 +16,23 @@ import moment from 'moment';
 import offlineFetch from '../common/fetch-cache';
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
-import {bkLog} from '../common/utils';
+import { bkLog } from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
   headers: {
-    "X-Api-Key": API_KEY,
+    'X-Api-Key': API_KEY,
   },
   method: 'GET',
   offline: {
-        storage: 'localStorage',
-        timeout: 5000,
-        expires: 10000,
-        debug: true,
-        renew: false,
-        retries: 3,
-        retryDelay: 1000,
-  }
+    storage: 'localStorage',
+    timeout: 5000,
+    expires: 10000,
+    debug: true,
+    renew: false,
+    retries: 3,
+    retryDelay: 1000,
+  },
 };
 
 const styles = theme => ({
@@ -50,14 +50,14 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 16,
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -67,7 +67,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f96f40",
+    fill: '#f96f40',
   },
   info: {
     marginBottom: 12,
@@ -75,177 +75,155 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   chart: {
-    height: 300
+    height: 300,
   },
   opacity: {
-    opacity: 0.5
-  }
+    opacity: 0.5,
+  },
 });
+
 const util = (d) => {
   let o = 0;
-  if(Array.isArray(d)) {
-    o = d.reduce((sum, value) => Number(parseFloat(sum ))+ Number(parseFloat(value)), 0);
-    o = Number(parseFloat(o).toFixed(2))
-  } else{
+  if (Array.isArray(d)) {
+    o = d.reduce((sum, value) => Number(parseFloat(sum)) + Number(parseFloat(value)), 0);
+    o = Number(parseFloat(o).toFixed(2));
+  } else {
     o = Number(parseFloat(d).toFixed(2));
   }
   return o;
-}
+};
+
 class Dashboard extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       progessL: true,
-      idToken: (getIdToken() ? getIdToken().jwtToken: '') || '',
-
-      lastupdated: moment(Date.now()).fromNow(),
-      todayEnergyL: 0,
-      weekEnergyL: 0,
-      weekEnergyRL: 0,
-      weekEnergyYL: 0,
-      weekEnergyBL: 0,
-      monthEnergyL: 0,
-      totalEnergyL: 0,
-      energyDay: [],
-      energyMonth: [],
-      date: moment().format('YYYY/MM/DD'),
-      month: moment().format('YYYY/MM'),
-      startDate: moment(),
-      focused: false,
-      progess: true,
-      monthprogress: true,
-      dialogOpen: false,
-      selectedMonth: moment().format('MMMM'),
-
+      idToken: (getIdToken() ? getIdToken().jwtToken : '') || '',
       intervalId: 0,
       liveTimestampId: 0,
-      c2Voltage: 0,
-      c3Voltage: 0,
-      c4Voltage: 0,
       c1Voltage: 0,
       c5Voltage: 0,
       c6Voltage: 0,
-      c2Current: 0,
-      c3Current: 0,
-      c4Current: 0,
       c1Current: 0,
       c5Current: 0,
       c6Current: 0,
-      c2Power: 0,
-      c3Power: 0,
-      c4Power: 0,
       c1Power: 0,
       c5Power: 0,
       c6Power: 0,
       liveTimestamp: false,
       relativeTimestamp: 0,
       isLive: false,
-    }
+    };
     this.transformData = this.transformData.bind(this);
     this.getLive = this.getLive.bind(this);
     this.getLiveData = this.getLiveData.bind(this);
     this.updateliveTimestamp = this.updateliveTimestamp.bind(this);
   }
+  componentDidMount() {
+    bkLog('Dashboard component did mount', this.props.apiPath);
+    const self = this;
+    const intervalId = setInterval(self.updateliveTimestamp, 10 * 1000);
+    self.setState({ liveTimestampId: intervalId });
+    this.getLiveData();
+  }
 
-  transformData = (d) => {
-    d.map((data, i) => {
-      data["c2"] = util(data["c2"]);
-      data["c3"] = util(data["c3"]);
-      data["c4"] = util(data["c4"]);
-      if(data["c2"] < 0) data["c2"] = 0;
-      if(data["c3"] < 0) data["c3"] = 0;
-      if(data["c4"] < 0) data["c4"] = 0;
-      if(data['dhr']){
-        data["dhr"] = data['dhr'].split('/').reverse()[0];
-        data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
-      }
-      if(data['ddt']){
-        data['month'] = moment(data['ddt']).format("MMM Do");
-        data["ddt"] = data['ddt'].split('/').reverse()[0];
-      }
-      return d;
-    });
-    return d
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId);
+    clearInterval(this.state.liveTimestampId);
   }
-  handleRequestClose = () => {
-    this.setState({ dialogOpen: false });
-  }
-  handleChange = name => (event, checked) => {
-   this.setState({ isLive: checked });
-   let self = this;
-   self.getLiveData();
-   let intervalId = setInterval(self.getLive, 10*1000);
-   self.setState({intervalId: intervalId});
-  };
-  getLiveData = () => {
-    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
-    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
-    APIHEADERS.headers.Authorization = this.state.idToken;
-    for(let i=1;i<7;i++){
-      let url = baseApiURL+"l?c="+i;
-      let self = this;
-      offlineFetch(url,APIHEADERS)
-      .then(response => response.json())
-      .then(function(response) {
-        let voltage = "c"+i+"Voltage";
-        self.setState({
-          [voltage]: response.voltage,
-          ["c"+i+"Current"]: response.current,
-          ["c"+i+"Power"]: response.power,
-        });
-        if(i===4){
-          self.setState({
-            progessL: false,
-            liveTimestamp: response.timestamp,
-            relativeTimestamp: moment(response.timestamp).fromNow()
-          });
-        }
-        return response;
-      });
+
+  getLive = () => {
+    if (this.state.isLive) {
+      this.getLiveData();
+    } else {
+      clearInterval(this.state.intervalId);
     }
+  };
+
+  getLiveData = () => {
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    APIHEADERS.headers.Authorization = this.state.idToken;
+    for (let i = 1; i < 7; i += 1) {
+      let url = `${baseApiURL}l?c=${i}`;
+      const self = this;
+      offlineFetch(url,APIHEADERS)
+        .then(response => response.json())
+        .then((response) => {
+          let voltage = `c${i}Voltage`;
+          self.setState({
+            [voltage]: response.voltage,
+            [`c${i}Current`]: response.current,
+            [`c${i}Power`]: response.power,
+          });
+          if (i === 4) {
+            self.setState({
+              progessL: false,
+              liveTimestamp: response.timestamp,
+              relativeTimestamp: moment(response.timestamp).fromNow(),
+            });
+          }
+          return response;
+        });
+    }
+  };
+  handleChange = () => (event, checked) => {
+    this.setState({ isLive: checked });
+    const self = this;
+    self.getLiveData();
+    const intervalId = setInterval(self.getLive, 10 * 1000);
+    self.setState({ intervalId });
   };
   updateliveTimestamp = () => {
     this.setState({
       relativeTimestamp: moment(this.state.liveTimestamp).fromNow(),
     });
   }
-  getLive = () => {
-    if(this.state.isLive){
-      this.getLiveData();
-    } else {
-      clearInterval(this.state.intervalId);
-    }
-  };
-  componentDidMount(){
-    bkLog("Dashboard component did mount",this.props.apiPath);
-    let self = this;
-    let intervalId = setInterval(self.updateliveTimestamp, 10*1000);
-    self.setState({liveTimestampId: intervalId});
-    this.getLiveData();
+  transformData = (d) => {
+    d.map((mdata) => {
+      const data = mdata;
+      data.c2 = util(data.c2);
+      data.c3 = util(data.c3);
+      data.c4 = util(data.c4);
+      if (data.c2 < 0) data.c2 = 0;
+      if (data.c3 < 0) data.c3 = 0;
+      if (data.c4 < 0) data.c4 = 0;
+      let mdhr = data.dhr;
+      if (mdhr) {
+        mdhr = mdhr.split('/').reverse();
+        [mdhr] = mdhr;
+        data.day = `Hour ${Number(mdhr)} - ${(Number(mdhr) + 1)}`;
+      }
+      let mddt = data.ddt;
+      if (mddt) {
+        data.month = moment(mddt).format('MMM Do');
+        mddt = mddt.split('/').reverse();
+        [mddt] = mddt;
+      }
+      return d;
+    });
+    return d;
   }
-  componentWillUnmount() {
-   clearInterval(this.state.intervalId);
-   clearInterval(this.state.liveTimestampId);
-  }
-  render(){
+  render() {
     const { classes } = this.props;
-    const pvsystem = (window.localStorage.nuser) ? JSON.parse(window.localStorage.nuser).plant : null;
+    const { nuser } = window.localStorage;
+    const pvsystem = nuser ? JSON.parse(nuser).plant : null;
     return (
       <div className={classes.root}>
-        <Typography type="title" style={{margin:16}}>
+        <Typography type="title" style={{ margin: 16 }}>
           PVSystem: {pvsystem}
         </Typography>
         <Grid container spacing={0}>
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 1: Voltage
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c1Voltage} V
+                    {this.state.progessL ? <CircularProgress size={24} /> : this.state.c1Voltage} V
                   </Typography>
                 </CardContent>
               </div>
@@ -257,13 +235,16 @@ class Dashboard extends Component {
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 1: Current
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c1Current} Amps
+                    {
+                      this.state.progessL ?
+                        <CircularProgress size={24} /> : this.state.c1Current
+                    } Amps
                   </Typography>
                 </CardContent>
               </div>
@@ -275,13 +256,13 @@ class Dashboard extends Component {
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 1: Power
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.c1Power} W
+                    {this.state.progessL ? <CircularProgress size={24} /> : this.state.c1Power} W
                   </Typography>
                 </CardContent>
               </div>
@@ -291,18 +272,19 @@ class Dashboard extends Component {
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
+            {}
           </Grid>
 
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 2: Voltage
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c5Voltage} V
+                    {this.state.progessL ? <CircularProgress size={24} /> : this.state.c5Voltage} V
                   </Typography>
                 </CardContent>
               </div>
@@ -314,13 +296,14 @@ class Dashboard extends Component {
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 2: Current
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c5Current} Amps
+                    {this.state.progessL ?
+                      <CircularProgress size={24} /> : this.state.c5Current} Amps
                   </Typography>
                 </CardContent>
               </div>
@@ -332,13 +315,13 @@ class Dashboard extends Component {
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 2: Power
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.c5Power} W
+                    {this.state.progessL ? <CircularProgress size={24} /> : this.state.c5Power} W
                   </Typography>
                 </CardContent>
               </div>
@@ -348,18 +331,19 @@ class Dashboard extends Component {
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
+            {}
           </Grid>
 
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 3: Voltage
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c6Voltage} V
+                    {this.state.progessL ? <CircularProgress size={24} /> : this.state.c6Voltage} V
                   </Typography>
                 </CardContent>
               </div>
@@ -371,13 +355,14 @@ class Dashboard extends Component {
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 3: Current
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />: this.state.c6Current} Amps
+                    {this.state.progessL ?
+                      <CircularProgress size={24} /> : this.state.c6Current} Amps
                   </Typography>
                 </CardContent>
               </div>
@@ -389,13 +374,13 @@ class Dashboard extends Component {
           <Grid item xs={6} sm={3}>
             <Card className={classes.card}>
               <div className={classes.details}>
-                <ChromeReaderModeIcon className={classes.icon}/>
+                <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
                   <Typography type="body1" className={classes.title}>
                     Inv 3: Power
                   </Typography>
                   <Typography type="headline" component="h2">
-                    {this.state.progessL?<CircularProgress size={24} />:this.state.c6Power} W
+                    {this.state.progessL ? <CircularProgress size={24} /> : this.state.c6Power} W
                   </Typography>
                 </CardContent>
               </div>
@@ -405,9 +390,16 @@ class Dashboard extends Component {
             </Card>
           </Grid>
           <Grid item xs={6} sm={3}>
+            {}
           </Grid>
         </Grid>
-        <div style={{position: 'fixed', bottom:50, right: 50, zIndex: 101}}>
+        <div style={{
+            position: 'fixed',
+            bottom: 50,
+            right: 50,
+            zIndex: 101,
+          }}
+        >
           <Switch
             checked={this.state.isLive}
             onChange={this.handleChange('checkedA')}
@@ -417,9 +409,7 @@ class Dashboard extends Component {
       </div>
     );
   }
-
 }
-
 
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
