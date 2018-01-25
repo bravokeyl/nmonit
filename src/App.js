@@ -72,7 +72,7 @@ class App extends Component {
   render() {
     const newProps = {...this.props, apiPath: this.state.apiPath }
     return (
-      <div className="App">
+      <div className="nmonit">
         <Router>
             <MuiThemeProvider theme={theme}>
               {

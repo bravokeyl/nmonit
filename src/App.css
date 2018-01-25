@@ -2,7 +2,10 @@ a {
   text-decoration: none;
 }
 a.nm-active button {
-  background: rgba(255,255,255,0.3)
+  background: rgba(255,255,255,0.3);
+}
+.nmonit header button span {
+  color: #ffffff;
 }
 .highcharts-credits {
   visibility: hidden;
