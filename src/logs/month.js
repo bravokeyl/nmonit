@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -33,18 +34,18 @@ import { channelMap, bkLog } from '../common/utils';
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
   headers: {
-    "X-Api-Key": API_KEY,
+    'X-Api-Key': API_KEY,
   },
   method: 'GET',
   offline: {
-        storage: 'localStorage',
-        timeout: 5000,
-        expires: 300000,
-        debug: true,
-        renew: false,
-        retries: 3,
-        retryDelay: 1000,
-  }
+    storage: 'localStorage',
+    timeout: 5000,
+    expires: 300000,
+    debug: true,
+    renew: false,
+    retries: 3,
+    retryDelay: 1000,
+  },
 };
 
 const styles = theme => ({
@@ -67,14 +68,14 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 16,
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -84,7 +85,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f96f40",
+    fill: '#f96f40',
   },
   info: {
     marginBottom: 12,
@@ -92,63 +93,91 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   chart: {
-    height: 300
+    height: 300,
   },
   opacity: {
-    opacity: 0.5
-  }
+    opacity: 0.5,
+  },
 });
 
 const months = moment.months();
 
 class MonthGen extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      progessL: true,
       idToken: getIdToken().jwtToken || '',
-
-      lastupdated: moment(Date.now()).fromNow(),
-      todayEnergyL: 0,
-      weekEnergyL: 0,
-      weekEnergyRL: 0,
-      weekEnergyYL: 0,
-      weekEnergyBL: 0,
-      monthEnergyL: 0,
-      totalEnergyL: 0,
-      energyDay: [],
       energyMonth: [],
       month: moment().format('YYYY/MM'),
-      startDate: moment(),
-      focused: false,
-      progess: true,
       monthprogress: true,
       dialogOpen: false,
       selectedMonth: moment().format('MMMM'),
-      selectedYear: moment().format('YYYY')
-    }
+      selectedYear: moment().format('YYYY'),
+    };
     this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
     this.transformData = this.transformData.bind(this);
     this.handleSelectMonth = this.handleSelectMonth.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
-  transformData = (d) => {
-    if(d){
-      d.map((data, i) => {
+  componentDidMount() {
+    bkLog('MonthGen component did mount', this.props.apiPath);
+    const { month } = this.state;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    APIHEADERS.headers.Authorization = this.state.idToken;
+    const dayURL = `${baseApiURL}d?ddm=${month}`;
+    const self = this;
+
+    offlineFetch(dayURL, APIHEADERS)
+      .then(response => response.json())
+      .then((response) => {
+        let de;
+        if (response.energy) {
+          de = self.transformData(response.energy, apiPath);
+        } else {
+          de = self.transformData([response], apiPath);
+        }
+        self.setState({
+          energyMonth: de,
+          monthprogress: false,
+        });
+        bkLog('TME:', self.state.energyMonth);
+        return response;
+      });
+  }
+  componentWillReceiveProps(n) {
+    if (n.month) {
+      const nd = moment(n.month, 'YYYY/MM').format('YYYY/MM');
+      bkLog('PROPS Month', n.month, nd);
+      this.setState({
+        selectedYear: moment(nd).format('YYYY'),
+      });
+      this.changeMonthEnergy(nd, false);
+    }
+  }
+
+  transformData = (tdd) => {
+    let d = tdd;
+    if (d) {
+      d.map((dmdata) => {
+        let data = dmdata;
         data = channelMap(data);
-        // console.log("CMAP DATA:",data)
-        if(data['dhr']){
-          data["dhr"] = data['dhr'].split('/').reverse()[0];
-          data['day'] = "Hour "+Number(data['dhr']) +" - "+(Number(data['dhr'])+1);
+        let dtdhr = data.dhr;
+        if (dtdhr) {
+          dtdhr = dtdhr.split('/').reverse();
+          [dtdhr] = dtdhr;
+          data.day = `Hour ${Number(dtdhr)} - ${(Number(dtdhr) + 1)}`;
         }
-        if(data['ddt']){
-          data['month'] = moment(data['ddt']).format("MMM Do YYYY");
-          data['xm'] = moment(data['ddt']).format("MMM Do");
-          data["ddt"] = data['ddt'].split('/').reverse()[0];
+        let dtddt = data.ddt;
+        if (dtddt) {
+          data.month = moment(dtddt).format('MMM Do YYYY');
+          data.xm = moment(dtddt).format('MMM Do');
+          dtddt = dtddt.split('/').reverse();
+          [dtddt] = dtddt;
         }
-        data['ltotal'] = Number(parseFloat(data["c1"]+data["c2"]+data["c3"]).toFixed(2));
-        data['stotal'] = Number(parseFloat(data["c4"]+data["c5"]+data["c6"]).toFixed(2));
+        data.ltotal = Number(parseFloat(data.c1 + data.c2 + data.c3).toFixed(2));
+        data.stotal = Number(parseFloat(data.c4 + data.c5 + data.c6).toFixed(2));
         return d;
       });
     } else {
@@ -156,111 +185,69 @@ class MonthGen extends Component {
     }
     return d;
   }
-  changeMonthEnergy = (month,y) => {
-    bkLog("Month",month);
-    if(moment(month,"MMMM").isValid()){
-      // month =
-    }
-    let monthdiff = moment().diff(moment(month,'YYYY/MM'),'days');
-    bkLog("Month Diff",monthdiff)
-    let monthApiHeaders = APIHEADERS;
-    if(monthdiff >= 1) {
-      monthApiHeaders.offline.expires = 1000*60*60*24*28;
+  changeMonthEnergy = (mnth, y) => {
+    let month = mnth;
+    bkLog('Month', month);
+    const monthdiff = moment().diff(moment(month, 'YYYY/MM'), 'days');
+    bkLog('Month Diff', monthdiff);
+    const monthApiHeaders = APIHEADERS;
+    if (monthdiff >= 1) {
+      monthApiHeaders.offline.expires = 1000 * 60 * 60 * 24 * 28;
     } else {
-      monthApiHeaders.offline.expires = 1000*60*5;
+      monthApiHeaders.offline.expires = 1000 * 60 * 5;
     }
-    let ddm = moment(month).format("YYYY/MM");
-    if(y){
-      let monthYear = this.state.selectedYear+"/"+month;
-      month = this.state.selectedYear+"/"+month;
-      ddm = moment(monthYear,'YYYY/MMMM').format("YYYY/MM");
+    let ddm = moment(month).format('YYYY/MM');
+    if (y) {
+      const monthYear = `${this.state.selectedYear}/${month}`;
+      month = `${this.state.selectedYear}/${month}`;
+      ddm = moment(monthYear, 'YYYY/MMMM').format('YYYY/MM');
     }
-    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
-    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
-    let url = baseApiURL+"d?ddm="+ddm;
-    let self = this;
-    let prevMonth = this.state.selectedMonth;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    const url = `${baseApiURL}d?ddm=${ddm}`;
+    const self = this;
+    const prevMonth = this.state.selectedMonth;
     self.setState({
       monthprogress: true,
-      "selectedMonth": moment(ddm,'YYYY/MM').format('MMMM')
-    })
-    offlineFetch(url,monthApiHeaders)
-    .then(response => response.json())
-    .then(function(response) {
-      if(response.energy) {
-        let de =  self.transformData(response.energy);
-        self.setState({
-          energyMonth: de,
-          monthprogress: false,
-        });
-      } else {
-        self.setState({
-          monthprogress: false,
-          dialogOpen: true,
-          selectedMonth: prevMonth,
-        })
-      }
-      return response;
+      selectedMonth: moment(ddm, 'YYYY/MM').format('MMMM'),
     });
-
+    offlineFetch(url, monthApiHeaders)
+      .then(response => response.json())
+      .then((response) => {
+        if (response.energy) {
+          const de = self.transformData(response.energy);
+          self.setState({
+            energyMonth: de,
+            monthprogress: false,
+          });
+        } else {
+          self.setState({
+            monthprogress: false,
+            dialogOpen: true,
+            selectedMonth: prevMonth,
+          });
+        }
+        return response;
+      });
   }
   handleRequestClose = () => {
     this.setState({ dialogOpen: false });
   }
-  handleSelectMonth = name => event => {
-    bkLog(event.target.value,"EVENT")
-    this.changeMonthEnergy(event.target.value,true);
+  handleSelectMonth = () => (event) => {
+    bkLog('EVENT', event.target.value);
+    this.changeMonthEnergy(event.target.value, true);
   };
-  handleChange = () => {
 
-  }
-  handleClick(data,e) {
-    if(data){
-      bkLog("Month active label",data)
-      this.props.indexV(e,0,moment(data.activeLabel,'MMM Do YYYY'));
+  handleClick(data, e) {
+    if (data) {
+      bkLog('Month active label', data);
+      this.props.indexV(e, 0, moment(data.activeLabel, 'MMM Do YYYY'));
     } else {
-      bkLog("Clicked outside of the bars");
-    }
-  };
-  componentWillReceiveProps(n,o) {
-    if(n.month){
-      let nd = moment(n.month,'YYYY/MM').format("YYYY/MM");
-      bkLog("PROPS Month",n.month,nd);
-      this.setState({
-        selectedYear: moment(nd).format('YYYY')
-      })
-      this.changeMonthEnergy(nd,false);
+      bkLog('Clicked outside of the bars');
     }
   }
-  componentDidMount(){
-    bkLog("MonthGen component did mount",this.props.apiPath);
-    let { month } = this.state;
-    let apiPath =  JSON.parse(window.localStorage.getItem('nuser')).p;
-    let baseApiURL = "https://api.blufieldsenergy.com/"+apiPath+"/";
-    APIHEADERS.headers.Authorization = this.state.idToken;
-    let dayURL = baseApiURL+"d?ddm="+month;
-    let self = this;
 
-    offlineFetch(dayURL,APIHEADERS)
-    .then(response => response.json())
-    .then(function(response) {
-      let de;
-      if(response.energy){
-        de =  self.transformData(response.energy,apiPath);
-      } else {
-        de =  self.transformData([response],apiPath);
-      }
-
-      self.setState({
-        energyMonth: de,
-        monthprogress: false,
-      });
-      bkLog("TME:",self.state.energyMonth);
-      return response;
-    });
-
-  }
-  render(){
+  render() {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
@@ -281,31 +268,37 @@ class MonthGen extends Component {
                       input={<Input id="en-month" />}
                     >
                       {
-                        months.map((e,i)=>{
-                          return (<MenuItem key={e} value={e}>{e}</MenuItem>)
-                        })
+                        months.map(e => (
+                          <MenuItem key={e} value={e}>{e}</MenuItem>))
                       }
                     </Select>
                   </FormControl>
                 </form>
               </div>
-              { this.state.monthprogress ? <LinearProgress />: ""}
-              <ResponsiveContainer height={350} className={ this.state.monthprogress?classes.opacity:"bk-default"}>
-                <BarChart data={_.sortBy(this.state.energyMonth,['ddt'])}
-                      maxBarSize={30} unit="kWh"
-                      margin={{top: 20, right: 30, left: 20, bottom: 40}}
-                      onClick={this.handleClick}>
-                   <XAxis dataKey="xm" angle={-45} textAnchor="end" interval={0}/>
-                   <YAxis/>
-                   <CartesianGrid strokeDasharray="2 3"/>
-                   <Tooltip />
-                   <Bar cursor="pointer" dataKey="R" stackId="a" fill={Colors.RPhaseColor} />
-                   <Bar cursor="pointer" dataKey="Y" stackId="a" fill={Colors.YPhaseColor} />
-                   <Bar cursor="pointer" dataKey="B" stackId="a" fill={Colors.BPhaseColor} />
+              { this.state.monthprogress ? <LinearProgress /> : ''}
+              <ResponsiveContainer height={350} className={this.state.monthprogress ? classes.opacity : 'bk-default'}>
+                <BarChart
+                  data={_.sortBy(this.state.energyMonth, ['ddt'])}
+                  maxBarSize={30}
+                  unit="kWh"
+                  margin={
+                    {
+                      top: 20, right: 30, left: 20, bottom: 40,
+                    }
+                  }
+                  onClick={this.handleClick}
+                >
+                  <XAxis dataKey="xm" angle={-45} textAnchor="end" interval={0} />
+                  <YAxis />
+                  <CartesianGrid strokeDasharray="2 3" />
+                  <Tooltip />
+                  <Bar cursor="pointer" dataKey="R" stackId="a" fill={Colors.RPhaseColor} />
+                  <Bar cursor="pointer" dataKey="Y" stackId="a" fill={Colors.YPhaseColor} />
+                  <Bar cursor="pointer" dataKey="B" stackId="a" fill={Colors.BPhaseColor} />
 
-                   <Bar cursor="pointer" dataKey="i1" stackId="b" fill={Colors.I1Color} />
-                   <Bar cursor="pointer" dataKey="i2" stackId="b" fill={Colors.I2Color} />
-                   <Bar cursor="pointer" dataKey="i3" stackId="b" fill={Colors.I3Color} />
+                  <Bar cursor="pointer" dataKey="i1" stackId="b" fill={Colors.I1Color} />
+                  <Bar cursor="pointer" dataKey="i2" stackId="b" fill={Colors.I2Color} />
+                  <Bar cursor="pointer" dataKey="i3" stackId="b" fill={Colors.I3Color} />
                 </BarChart>
               </ResponsiveContainer>
             </Paper>
@@ -315,19 +308,40 @@ class MonthGen extends Component {
               title="Day Wise Energy"
               tdata={this.state.energyMonth}
               thead={[
-                {label:"Date",numeric:false,disablePadding:false,id:"ddt"},
-                {label:"Load",numeric:true,disablePadding:false,id:"ltotal"},
-                {label:"Solar",numeric:true,disablePadding:false,id:"stotal"},
-                {label:"R-Load",numeric:true,disablePadding:false,id:"R"},
-                {label:"Y-Load",numeric:true,disablePadding:false,id:"Y"},
-                {label:"B-Load",numeric:true,disablePadding:false,id:"B"},
-                {label:"Inv 1",numeric:true,disablePadding:false,id:"i1"},
-                {label:"Inv 2",numeric:true,disablePadding:false,id:"i2"},
-                {label:"Inv 3",numeric:true,disablePadding:false,id:"i3"},
-              ]}/>
+                {
+                  label: 'Date', numeric: false, disablePadding: false, id: 'ddt',
+                },
+                {
+                  label: 'Load', numeric: true, disablePadding: false, id: 'ltotal',
+                },
+                {
+                  label: 'Solar', numeric: true, disablePadding: false, id: 'stotal',
+                },
+                {
+                  label: 'R-Load', numeric: true, disablePadding: false, id: 'R',
+                },
+                {
+                  label: 'Y-Load', numeric: true, disablePadding: false, id: 'Y',
+                },
+                {
+                  label: 'B-Load', numeric: true, disablePadding: false, id: 'B',
+                },
+                {
+                  label: 'Inv 1', numeric: true, disablePadding: false, id: 'i1',
+                },
+                {
+                  label: 'Inv 2', numeric: true, disablePadding: false, id: 'i2',
+                },
+                {
+                  label: 'Inv 3', numeric: true, disablePadding: false, id: 'i3',
+                },
+              ]}
+            />
             <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>
-              <DialogContent>If you think this is an issue, please contact NuevoMonit support engineer.</DialogContent>
+              <DialogContent>
+              If you think this is an issue, please contact NuevoMonit support engineer.
+              </DialogContent>
               <DialogActions>
                 <Button onClick={this.handleRequestClose} color="primary">
                   Okay
@@ -339,12 +353,12 @@ class MonthGen extends Component {
       </div>
     );
   }
-
 }
 
 MonthGen.propTypes = {
   classes: PropTypes.object.isRequired,
-  width: PropTypes.string.isRequired,
+  indexV: PropTypes.func.isRequired,
+  apiPath: PropTypes.string.isRequired,
 };
 
 export default compose(withStyles(styles), withWidth())(withRouter(MonthGen));

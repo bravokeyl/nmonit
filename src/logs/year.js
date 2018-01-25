@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -121,7 +122,7 @@ class YearGen extends Component {
     const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
-    const yearURL = `${baseApiURL}mddm=${year}`;
+    const yearURL = `${baseApiURL}m?ddm=${year}`;
     const self = this;
 
     offlineFetch(yearURL, APIHEADERS)

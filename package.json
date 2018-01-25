@@ -16,7 +16,8 @@
     "react-highcharts": "^15.0.0",
     "react-router-dom": "^4.2.2",
     "react-swipeable-views": "^0.12.8",
-    "recharts": "^1.0.0-apha.5"
+    "recharts": "^1.0.0-apha.5",
+    "recompose": "^0.26.0"
   },
   "devDependencies": {
     "eslint": "^4.9.0",
