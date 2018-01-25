@@ -11,7 +11,7 @@ import Hidden from 'material-ui/Hidden';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     width: '100%',
   },
@@ -23,8 +23,8 @@ const styles = theme => ({
     marginRight: 20,
   },
   header: {
-    background: "linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)"
-  }
+    background: 'linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)',
+  },
 });
 
 function ButtonAppBar(props) {
@@ -44,33 +44,27 @@ function ButtonAppBar(props) {
           <Hidden smDown>
             <ul className={classes.flex}>
               <NavLink to="/" exact activeClassName="nm-active">
-                <Button color="contrast">
+                <Button color="default">
                   Overview
                 </Button>
               </NavLink>
               <NavLink to="/d" activeClassName="nm-active">
-                <Button color="contrast">Dashboard</Button>
+                <Button color="default">Dashboard</Button>
               </NavLink>
               <NavLink to="/l" activeClassName="nm-active">
-                <Button color="contrast">
+                <Button color="default">
                   Logs
                 </Button>
               </NavLink>
               {
-              // <Link to="/g">
-              //   <Button color="contrast">
-              //     Generation
-              //   </Button>
-              // </Link>
-
-              <NavLink to="/e" activeClassName="nm-active">
-                <Button color="contrast">
-                  Events
-                </Button>
-              </NavLink>
+                <NavLink to="/e" activeClassName="nm-active">
+                  <Button color="default">
+                    Events
+                  </Button>
+                </NavLink>
               }
               <NavLink to="/p" activeClassName="nm-active">
-                <Button  color="contrast">
+                <Button color="default">
                   Profile
                 </Button>
               </NavLink>
@@ -84,7 +78,6 @@ function ButtonAppBar(props) {
 
 ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  // linkButton: PropTypes.boolean
 };
 
 export default withStyles(styles)(ButtonAppBar);
