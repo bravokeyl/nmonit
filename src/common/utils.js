@@ -9,7 +9,7 @@ const clearAPICache = () => {
       localStorage.removeItem(keys[i]);
     }
   }
-  console.warn('AFTER:', Object.keys(localStorage));
+  console.log('AFTER:', Object.keys(localStorage));
 };
 
 const util = (d) => {
