@@ -27,15 +27,15 @@ class EnhancedTableHead extends React.Component {
     onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
   };
 
-  createSortHandler = property => event => {
+  createSortHandler = property => (event) => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const { order, orderBy,thead } = this.props;
+    const { order, orderBy, thead } = this.props;
     return (
       <TableHead>
         <TableRow>
@@ -75,25 +75,25 @@ const toolbarStyles = theme => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: "#fff",//theme.palette.secondary.A700,
-          backgroundColor: "#3f51b5", //theme.palette.secondary.A100,
-        }
+        color: '#fff', // theme.palette.secondary.A700,
+        backgroundColor: '#3f51b5', // theme.palette.secondary.A100,
+      }
       : {
-          color: "#fff",//theme.palette.secondary.A100,
-          backgroundColor: "#3f51b5",//theme.palette.secondary.A700,
-        },
+        color: '#fff', // theme.palette.secondary.A100,
+        backgroundColor: '#3f51b5', // theme.palette.secondary.A700,
+      },
   spacer: {
     flex: '1 1 100%',
   },
   actions: {
-    color: "#fff",//theme.palette.text.secondary,
+    color: '#fff', // theme.palette.text.secondary,
   },
   title: {
     flex: '0 0 auto',
   },
 });
 
-let EnhancedTableToolbar = props => {
+let EnhancedTableToolbar = (props) => {
   const { numSelected, classes, title } = props;
   return (
     <Toolbar
@@ -132,7 +132,7 @@ EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   props: PropTypes.object,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -147,7 +147,7 @@ const styles = theme => ({
     [theme.breakpoints.up('sm')]: {
       padding: 16,
       margin: 16,
-    }
+    },
   },
   table: {
   },
@@ -186,7 +186,7 @@ class EnhancedTable extends React.Component {
   };
 
   handleSelectAllClick = (event, checked) => {
-    console.log(this.state.data,"SELECT ALL")
+    console.log(this.state.data, 'SELECT ALL')
     if (checked) {
       console.log(this.state.data)
       this.setState({ selected: this.state.data.map(n => n.ddt) });
@@ -313,7 +313,7 @@ EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
   // tdata: PropTypes.Array.isRequired,
   // thead: PropTypes.object.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(EnhancedTable);

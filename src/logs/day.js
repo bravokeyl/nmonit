@@ -372,12 +372,12 @@ class DayGen extends Component {
               const chr = dmh.format('HH');
               if (chan === 'i1' || chan === 'i2' || chan === 'i3') {
                 if (chr >= 6 && chr <= 18) {
-                  pow[chan].push([Number(dm), obj[keys[k]].appPower]);
+                  pow[chan].push([Number(dm), obj[keys[k]].power]);
                 } else {
                   pow[chan].push([Number(dm), 0]);
                 }
               } else {
-                pow[chan].push([Number(dm), obj[keys[k]].appPower]);
+                pow[chan].push([Number(dm), obj[keys[k]].power]);
               }
             }
           } else {

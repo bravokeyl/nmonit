@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 
@@ -8,6 +8,14 @@ import Card, { CardContent } from 'material-ui/Card';
 import { CircularProgress } from 'material-ui/Progress';
 import ChromeReaderModeIcon from 'material-ui-icons/ChromeReaderMode';
 import AssessmentIcon from 'material-ui-icons/Assessment';
+
+const defaultProps = {
+  title: 'No title',
+  footer: '',
+  info: false,
+  color: '',
+  icon: false,
+};
 
 const styles = theme => ({
   root: {
@@ -24,15 +32,15 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 16,
-    position: 'relative'
+    position: 'relative',
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -42,7 +50,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f06267",
+    fill: '#f06267',
   },
   footer: {
     marginBottom: 12,
@@ -50,10 +58,10 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   chart: {
-    height: 300
+    height: 300,
   },
   opacity: {
-    opacity: 0.5
+    opacity: 0.5,
   },
   info: {
     position: 'absolute',
@@ -64,7 +72,7 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: "rgba(244,244,244,0.8)",
+    background: 'rgba(244,244,244,0.8)',
     cursor: 'pointer',
   },
 });
@@ -73,39 +81,50 @@ const styles = theme => ({
 class BKPanel extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
   }
-  render(){
-    const { classes,data,title,footer,color,icon,info } = this.props;
+  render() {
+    const {
+      classes, data, title, footer, color, icon, info,
+    } = this.props;
     return (
-    <Grid item xs={12} sm={6}>
-      <Card className={classes.card}>
-        <div className={classes.details}>
-          {
-            icon ? <AssessmentIcon className={classes.icon} style={{fill:color}}/> :
-            <ChromeReaderModeIcon className={classes.icon} style={{fill:color}}/>
-          }
-          <CardContent className={classes.content}>
-            <Typography type="body1" className={classes.title}>
-              {title || "No Title"}
-            </Typography>
-            <Typography type="headline" component="h2">
-              {this.state.progessL?<CircularProgress size={24} />: data}
-            </Typography>
-          </CardContent>
-        </div>
-        <Typography type="body1" className={classes.footer}>
-          {footer || ""}
-        </Typography>
-        { info ? <div className={classes.info}>i</div>: '' }
-      </Card>
-    </Grid>
-    )
+      <Grid item xs={12} sm={6}>
+        <Card className={classes.card}>
+          <div className={classes.details}>
+            {
+              icon ? <AssessmentIcon className={classes.icon} style={{ fill: color }} /> :
+              <ChromeReaderModeIcon className={classes.icon} style={{ fill: color }} />
+            }
+            <CardContent className={classes.content}>
+              <Typography type="body1" className={classes.title}>
+                {title || 'No Title'}
+              </Typography>
+              <Typography type="headline" component="h2">
+                {this.state.progessL ? <CircularProgress size={24} /> : data}
+              </Typography>
+            </CardContent>
+          </div>
+          <Typography type="body1" className={classes.footer}>
+            {footer || ''}
+          </Typography>
+          { info ? <div className={classes.info}>i</div> : '' }
+        </Card>
+      </Grid>
+    );
   }
 }
 
 BKPanel.propTypes = {
   classes: PropTypes.object.isRequired,
+  data: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  title: PropTypes.string,
+  footer: PropTypes.string,
+  info: PropTypes.bool,
+  color: PropTypes.string,
+  icon: PropTypes.bool,
 };
-
+BKPanel.defaultProps = defaultProps;
 export default withStyles(styles)(BKPanel);

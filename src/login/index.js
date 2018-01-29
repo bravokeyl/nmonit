@@ -68,6 +68,7 @@ class Login extends Component {
     this.setState({ loading: true });
     authenticateUser(this.state.email, this.state.password, (err, result) => {
       if (err) {
+        // eslint-disable-next-line
         console.error('Authenictation error:', err);
         this.setState({ loading: false });
         return;
