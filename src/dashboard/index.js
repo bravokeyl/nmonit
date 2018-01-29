@@ -145,12 +145,12 @@ class Dashboard extends Component {
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
     for (let i = 1; i < 7; i += 1) {
-      let url = `${baseApiURL}l?c=${i}`;
+      const url = `${baseApiURL}l?c=${i}`;
       const self = this;
-      offlineFetch(url,APIHEADERS)
+      offlineFetch(url, APIHEADERS)
         .then(response => response.json())
         .then((response) => {
-          let voltage = `c${i}Voltage`;
+          const voltage = `c${i}Voltage`;
           self.setState({
             [voltage]: response.voltage,
             [`c${i}Current`]: response.current,
