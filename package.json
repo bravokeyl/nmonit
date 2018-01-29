@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "amazon-cognito-identity-js": "^1.21.0",
+    "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "material-ui": "next",
     "material-ui-icons": "^1.0.0-beta.15",
@@ -14,6 +15,7 @@
     "react-dates": "^13.0.6",
     "react-dom": "^16.2.0",
     "react-highcharts": "^15.0.0",
+    "react-moment-proptypes": "^1.5.0",
     "react-router-dom": "^4.2.2",
     "react-swipeable-views": "^0.12.8",
     "recharts": "^1.0.0-apha.5",
