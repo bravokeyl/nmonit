@@ -17,6 +17,8 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import ReactHighcharts from 'react-highcharts';
+import HighchartsMore from 'highcharts-more';
+import HighchartsExporting from 'highcharts-exporting';
 import { Line, ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import 'react-dates/lib/css/_datepicker.css';
 
@@ -26,6 +28,9 @@ import { Colors } from '../common/constants';
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
 import { channelMap, bkLog } from '../common/utils';
+
+HighchartsMore(ReactHighcharts.Highcharts);
+HighchartsExporting(ReactHighcharts.Highcharts);
 
 const API_KEY = config.LocalAPIKey;
 const APIHEADERS = {
@@ -372,12 +377,12 @@ class DayGen extends Component {
               const chr = dmh.format('HH');
               if (chan === 'i1' || chan === 'i2' || chan === 'i3') {
                 if (chr >= 6 && chr <= 18) {
-                  pow[chan].push([Number(dm), obj[keys[k]].power]);
+                  pow[chan].push([Number(dm), obj[keys[k]].appPower]);
                 } else {
                   pow[chan].push([Number(dm), 0]);
                 }
               } else {
-                pow[chan].push([Number(dm), obj[keys[k]].power]);
+                pow[chan].push([Number(dm), obj[keys[k]].appPower]);
               }
             }
           } else {
