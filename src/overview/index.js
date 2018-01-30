@@ -294,22 +294,12 @@ class Overview extends Component {
         const monthgroup = { R: [], Y: [], B: [] };
         const monthgroupGen = { i1: [], i2: [], i3: [] };
         de.map((e) => {
-          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
-          if (ap === 'l') {
-            monthgroup.R.push(e.c2);
-            monthgroup.Y.push(e.c4);
-            monthgroup.B.push(e.c6);
-            monthgroupGen.i1.push(e.c1);
-            monthgroupGen.i2.push(e.c3);
-            monthgroupGen.i3.push(e.c5);
-          } else {
-            monthgroup.R.push(e.c2);
-            monthgroup.Y.push(e.c4);
-            monthgroup.B.push(e.c6);
-            monthgroupGen.i1.push(e.c1);
-            monthgroupGen.i2.push(e.c3);
-            monthgroupGen.i3.push(e.c5);
-          }
+          monthgroup.R.push(e.R);
+          monthgroup.Y.push(e.Y);
+          monthgroup.B.push(e.B);
+          monthgroupGen.i1.push(e.i1);
+          monthgroupGen.i2.push(e.i2);
+          monthgroupGen.i3.push(e.i3);
           return e;
         });
 
@@ -345,22 +335,12 @@ class Overview extends Component {
           de = [];
         }
         de.map((e) => {
-          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
-          if (ap === 'l') {
-            dayEnergy.R.push(e.c2);
-            dayEnergy.Y.push(e.c4);
-            dayEnergy.B.push(e.c6);
-            dayEnergyGen.i1.push(e.c1);
-            dayEnergyGen.i2.push(e.c3);
-            dayEnergyGen.i3.push(e.c5);
-          } else {
-            dayEnergy.R.push(e.c2);
-            dayEnergy.Y.push(e.c4);
-            dayEnergy.B.push(e.c6);
-            dayEnergyGen.i1.push(e.c1);
-            dayEnergyGen.i2.push(e.c3);
-            dayEnergyGen.i3.push(e.c5);
-          }
+          dayEnergy.R.push(e.R);
+          dayEnergy.Y.push(e.Y);
+          dayEnergy.B.push(e.B);
+          dayEnergyGen.i1.push(e.i1);
+          dayEnergyGen.i2.push(e.i2);
+          dayEnergyGen.i3.push(e.i3);
           return e;
         });
         const me = _.map(dayEnergy, e => _.sum(e));
@@ -399,22 +379,12 @@ class Overview extends Component {
         const totalEnergy = { R: [], Y: [], B: [] };
         const totalEnergyGen = { i1: [], i2: [], i3: [] };
         de.map((e) => {
-          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
-          if (ap === 'l') {
-            totalEnergy.R.push(e.c2);
-            totalEnergy.Y.push(e.c4);
-            totalEnergy.B.push(e.c6);
-            totalEnergyGen.i1.push(e.c1);
-            totalEnergyGen.i2.push(e.c3);
-            totalEnergyGen.i3.push(e.c5);
-          } else {
-            totalEnergy.R.push(e.c2);
-            totalEnergy.Y.push(e.c4);
-            totalEnergy.B.push(e.c6);
-            totalEnergyGen.i1.push(e.c1);
-            totalEnergyGen.i2.push(e.c3);
-            totalEnergyGen.i3.push(e.c5);
-          }
+          totalEnergy.R.push(e.R);
+          totalEnergy.Y.push(e.Y);
+          totalEnergy.B.push(e.B);
+          totalEnergyGen.i1.push(e.i1);
+          totalEnergyGen.i2.push(e.i2);
+          totalEnergyGen.i3.push(e.i3);
           return e;
         });
         const me = _.map(totalEnergy, e => _.sum(e));
