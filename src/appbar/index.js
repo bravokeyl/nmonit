@@ -34,7 +34,7 @@ const styles = () => ({
 
 function ButtonAppBar(props) {
   const {
-    classes, open, handleMenu, handleMenuClose, logOut,
+    classes, isMenuOpen, handleMenu, handleMenuClose, logOut,
   } = props;
   return (
     <div className={classes.root}>
@@ -72,11 +72,11 @@ function ButtonAppBar(props) {
                     {
                       e.hasChildren ?
                         <ClickAwayListener onClickAway={handleMenuClose}>
-                          <Grow in={open} id="menu-list">
+                          <Grow in={isMenuOpen} id="menu-list">
                             <MenuList
                               id="menu-appbar"
                               className="header__right-menu-click"
-                              open={open}
+                              open={isMenuOpen}
                               onClose={handleMenuClose}
                             >
                               {
@@ -106,7 +106,7 @@ function ButtonAppBar(props) {
 
 ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  open: PropTypes.bool,
+  isMenuOpen: PropTypes.bool,
   handleMenu: PropTypes.func.isRequired,
   handleMenuClose: PropTypes.func.isRequired,
   logOut: PropTypes.func.isRequired,

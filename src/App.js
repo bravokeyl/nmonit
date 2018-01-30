@@ -35,7 +35,7 @@ class App extends Component {
     this.state = {
       isLoggedin: false,
       apiPath: 'demo',
-      open: false,
+      isMenuOpen: false,
     };
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -72,7 +72,7 @@ class App extends Component {
     if (r) {
       r.push('/');
     } else {
-      window.location.reload();
+      // window.location.reload();
     }
   }
   render() {
@@ -97,16 +97,16 @@ class App extends Component {
                   <ButtonAppBar
                     classes={{}}
                     handleMenu={() => {
-                      this.setState({ open: true });
+                      this.setState({ isMenuOpen: true });
                       bkLog('Menu button clicked.');
                     }}
                     logOut={() => {
                       bkLog('logout invoked.');
                       this.logOut();
                     }}
-                    open={this.state.open}
+                    isMenuOpen={this.state.isMenuOpen}
                     handleMenuClose={() => {
-                      this.setState({ open: false });
+                      this.setState({ isMenuOpen: false });
                       bkLog('Menu close/outside clicked.');
                     }}
                   />
