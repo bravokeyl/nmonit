@@ -41,10 +41,11 @@ a.nm-active button {
   border-radius: 50%;
 }
 #menu-list {
+  width: 130px;
   transform-origin: 0 0 0;
   position: absolute;
   z-index: 11111;
-  left: -65px;
+  left: -80px;
   background: #f6f9fc;
   top: 52px;
 }

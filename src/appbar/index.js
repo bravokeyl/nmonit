@@ -67,7 +67,7 @@ function ButtonAppBar(props) {
                 menuObj.rightMenu.map(e => (
                   <li key={e.key} className={e.classes}>
                     <NavLink to={e.link} exact activeClassName="nm-active" onClick={handleMenu}>
-                      <img width="30" height="30" src="https://s3.amazonaws.com/assets.materialup.com/users/pictures/000/117/222/thumb/?1507709155" alt="" />
+                      <img width="30" height="30" src="https://s3.amazonaws.com/nuevo-data/avatars/bravokeyl.jpeg" alt="User Avatar" />
                     </NavLink>
                     {
                       e.hasChildren ?
@@ -81,16 +81,13 @@ function ButtonAppBar(props) {
                             >
                               {
                                 e.children.map(c => (
-                                  <MenuItem key={c.key} onClick={handleMenuClose}>
-                                    <NavLink to={c.link}>
+                                  <MenuItem key={c.key} onClick={c.lo ? logOut : handleMenuClose}>
+                                    <NavLink to={c.link} >
                                       {c.name}
                                     </NavLink>
                                   </MenuItem>
                                 ))
                               }
-                              <Button onClick={logOut}>
-                                logOut
-                              </Button>
                             </MenuList>
                           </Grow>
                         </ClickAwayListener>

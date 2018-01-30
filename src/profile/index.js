@@ -12,7 +12,7 @@ import Card from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
 import config from '../aws';
-import { signOut, getCurrentUserName } from '../aws/cognito';
+import { getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import { bkLog } from '../common/utils';
 
@@ -148,7 +148,6 @@ class Profile extends Component {
   }
 
   handleSignOut = () => {
-    signOut();
     this.props.authHandler(this.props.history);
   };
 

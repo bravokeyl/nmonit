@@ -7,7 +7,7 @@ import { deepOrange, indigo } from 'material-ui/colors';
 import red from 'material-ui/colors/red';
 import Grid from 'material-ui/Grid';
 
-import { getCurrentUser } from './aws/cognito';
+import { signOut, getCurrentUser } from './aws/cognito';
 
 import ErrorBoundary from './common/errorBoundary';
 import ButtonAppBar from './appbar';
@@ -64,11 +64,16 @@ class App extends Component {
   logOut = (r) => {
     bkLog('Logout authHandler');
     window.localStorage.removeItem('nuser');
+    signOut();
     this.setState({
       isLoggedin: false,
       apiPath: 'demo',
     });
-    r.push('/');
+    if (r) {
+      r.push('/');
+    } else {
+      window.location.reload();
+    }
   }
   render() {
     const newProps = { ...this.props, apiPath: this.state.apiPath };
@@ -96,6 +101,7 @@ class App extends Component {
                       bkLog('Menu button clicked.');
                     }}
                     logOut={() => {
+                      bkLog('logout invoked.');
                       this.logOut();
                     }}
                     open={this.state.open}
