@@ -95,10 +95,13 @@ class App extends Component {
                       this.setState({ open: true });
                       bkLog('Menu button clicked.');
                     }}
+                    logOut={() => {
+                      this.logOut();
+                    }}
                     open={this.state.open}
                     handleMenuClose={() => {
                       this.setState({ open: false });
-                      bkLog('Menu close button clicked.');
+                      bkLog('Menu close/outside clicked.');
                     }}
                   />
                   <Grid container spacing={0}>

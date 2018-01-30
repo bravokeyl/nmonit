@@ -34,16 +34,25 @@ const menuObject = {
       classes: 'header__menu-item header__menu-item--profile',
       children: [
         {
-          name: 'Profile',
+          name: 'My Profile',
           link: '/p',
           hasChildren: true,
           key: 'p',
+          classes: 'header__menu-item header__menu-item--profile',
         },
         {
           name: 'Account',
-          link: '/p',
+          link: '/a',
           hasChildren: true,
-          key: 'p',
+          key: 'a',
+          classes: 'header__menu-item header__menu-item--account',
+        },
+        {
+          name: 'Log out',
+          link: '/',
+          hasChildren: true,
+          key: 'lo',
+          classes: 'header__menu-item header__menu-item--account',
         },
       ],
     },

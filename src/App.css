@@ -40,3 +40,14 @@ a.nm-active button {
 .header__menu-item--profile img {
   border-radius: 50%;
 }
+#menu-list {
+  transform-origin: 0 0 0;
+  position: absolute;
+  z-index: 11111;
+  left: -65px;
+  background: #f6f9fc;
+  top: 52px;
+}
+#menu-list a {
+  color: rgba(0, 0, 0, 0.87);
+}
