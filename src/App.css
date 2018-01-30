@@ -19,3 +19,24 @@ a.nm-active button {
 .DateInput_displayText {
   padding: 0px 4px;
 }
+
+/* Header */
+.header__menu-items {
+  flex: 1;
+  list-style: none;
+}
+.header__menu-item {
+  display: inline-block;
+  list-style: none;
+  position: relative;
+  padding: 0;
+}
+.header__menu-item--overview {
+
+}
+.header__right-menu {
+
+}
+.header__menu-item--profile img {
+  border-radius: 50%;
+}

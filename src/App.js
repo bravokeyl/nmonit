@@ -35,6 +35,7 @@ class App extends Component {
     this.state = {
       isLoggedin: false,
       apiPath: 'demo',
+      open: false,
     };
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -88,7 +89,18 @@ class App extends Component {
               :
               (
                 <div>
-                  <ButtonAppBar classes={{}} />
+                  <ButtonAppBar
+                    classes={{}}
+                    handleMenu={() => {
+                      this.setState({ open: true });
+                      bkLog('Menu button clicked.');
+                    }}
+                    open={this.state.open}
+                    handleMenuClose={() => {
+                      this.setState({ open: false });
+                      bkLog('Menu close button clicked.');
+                    }}
+                  />
                   <Grid container spacing={0}>
                     <Grid item xs={12}>
                       <ErrorBoundary>
