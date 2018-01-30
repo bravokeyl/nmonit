@@ -15,6 +15,8 @@ import Grow from 'material-ui/transitions/Grow';
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener';
 
 import menuObj from './menuConstants';
+import logoW from './logow.png';
+import mlogoW from './mlogow.png';
 
 const styles = () => ({
   root: {
@@ -45,9 +47,10 @@ function ButtonAppBar(props) {
               <MenuIcon />
             </IconButton>
           </Hidden>
-          <Typography type="title" color="inherit" className={classes.flex}>
-            Nuevo Monit
-          </Typography>
+          <div className={classes.flex}>
+            <img src={logoW} height="64" alt="Nuevosol Company Logo" />
+            <img src={mlogoW} style={{ display: 'none' }} height="64" alt="Nuevo Monit Product Logo" />
+          </div>
           <Hidden smDown>
             <ul className="header__menu-items">
               {
