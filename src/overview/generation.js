@@ -19,8 +19,19 @@ const getCurrentWeekString = () => {
   return `${weekStart}-${weekEnd}`;
 };
 
+const defaultProps = {
+  data: {
+    todayEnergyGenL: 0,
+    weekEnergyGenL: 0,
+    monthEnergyGenL: 0,
+    totalEnergyGenL: 0,
+  },
+};
+
 const OverCon = (props) => {
-  const { data } = props;
+  const {
+    todayEnergyGenL, weekEnergyGenL, monthEnergyGenL, totalEnergyGenL,
+  } = props.data;
   return (
     <div className="nm-generation">
       <Grid container spacing={0}>
@@ -28,45 +39,45 @@ const OverCon = (props) => {
           color="green"
           icon
           info
-          data={`${data.todayEnergyGenL} kWh`}
+          data={`${Number(todayEnergyGenL)} kWh`}
           title="Energy - Today"
           footer="Last updated:"
         />
         <BKPanel
           color="green"
           icon
-          data={`${data.weekEnergyGenL} kWh`}
+          data={`${weekEnergyGenL} kWh`}
           title="Energy - This Week"
           footer={getCurrentWeekString()}
         />
         <BKPanel
           color="green"
           icon
-          data={`${data.monthEnergyGenL} kWh`}
+          data={`${monthEnergyGenL} kWh`}
           title="Energy - This Month"
           footer="Units generated"
         />
         <BKPanel
           color="green"
           icon
-          data={`${data.totalEnergyGenL} kWh`}
+          data={`${totalEnergyGenL} kWh`}
           title="Energy - Year"
           footer="Units generated"
         />
         <BKPanel
-          data={Number(parseFloat(data.todayEnergyGenL * 9.5).toFixed(3))}
+          data={Number(parseFloat(todayEnergyGenL * 9.5).toFixed(3))}
           title="Revenue - Today"
         />
         <BKPanel
-          data={Number(parseFloat(data.weekEnergyGenL * 9.5).toFixed(3))}
+          data={Number(parseFloat(weekEnergyGenL * 9.5).toFixed(3))}
           title="Revenue - This Week"
         />
         <BKPanel
-          data={Number(parseFloat(data.monthEnergyGenL * 9.5).toFixed(3))}
+          data={Number(parseFloat(monthEnergyGenL * 9.5).toFixed(3))}
           title="Revenue - This Month"
         />
         <BKPanel
-          data={Number(parseFloat(data.totalEnergyGenL * 9.5).toFixed(3))}
+          data={Number(parseFloat(totalEnergyGenL * 9.5).toFixed(3))}
           title="Revenue - This Year"
         />
       </Grid>
@@ -75,7 +86,25 @@ const OverCon = (props) => {
 };
 
 OverCon.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.shape({
+    todayEnergyGenL: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    weekEnergyGenL: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    monthEnergyGenL: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    totalEnergyGenL: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+  }),
 };
 
+OverCon.defaultProps = defaultProps;
 export default withStyles(styles)(OverCon);

@@ -253,22 +253,12 @@ class Overview extends Component {
         const dayEnergyConsumption = { R: [], Y: [], B: [] };
         const dayEnergyGeneration = { i1: [], i2: [], i3: [] };
         de.map((e) => {
-          const ap = JSON.parse(window.localStorage.getItem('nuser')).p || 'NA';
-          if (ap === 'l') {
-            dayEnergyConsumption.R.push(_.sum(e.c2));
-            dayEnergyConsumption.Y.push(_.sum(e.c4));
-            dayEnergyConsumption.B.push(_.sum(e.c6));
-            dayEnergyGeneration.i1.push(_.sum(e.c1));
-            dayEnergyGeneration.i2.push(_.sum(e.c3));
-            dayEnergyGeneration.i3.push(_.sum(e.c5));
-          } else {
-            dayEnergyConsumption.R.push(_.sum(e.c2));
-            dayEnergyConsumption.Y.push(_.sum(e.c4));
-            dayEnergyConsumption.B.push(_.sum(e.c6));
-            dayEnergyGeneration.i1.push(_.sum(e.c1));
-            dayEnergyGeneration.i2.push(_.sum(e.c3));
-            dayEnergyGeneration.i3.push(_.sum(e.c5));
-          }
+          dayEnergyConsumption.R.push(e.R);
+          dayEnergyConsumption.Y.push(e.Y);
+          dayEnergyConsumption.B.push(e.B);
+          dayEnergyGeneration.i1.push(e.i1);
+          dayEnergyGeneration.i2.push(e.i2);
+          dayEnergyGeneration.i3.push(e.i3);
           return e;
         });
         const mec = _.map(dayEnergyConsumption, e => _.sum(e));
