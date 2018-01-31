@@ -47,11 +47,19 @@ a.nm-active button {
   width: 130px;
   transform-origin: 0 0 0;
   position: absolute;
-  z-index: 11111;
-  left: -80px;
+  z-index: 1011;
+  left: -45px;
   background: #f6f9fc;
   top: 52px;
 }
-#menu-list a {
+#menu-list li {
+  padding-left: 0;
+  padding-right: 0;
+}
+#menu-list a,
+.header__right-menu--logout  {
+  font-size: 14px;
+  width: 100%;
   color: rgba(0, 0, 0, 0.87);
+  padding: 8px 16px;
 }

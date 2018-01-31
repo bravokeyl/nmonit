@@ -10,7 +10,7 @@ import Grid from 'material-ui/Grid';
 import { signOut, getCurrentUser } from './aws/cognito';
 
 import ErrorBoundary from './common/errorBoundary';
-import ButtonAppBar from './appbar';
+import NuevoAppBar from './appbar';
 import Overview from './overview';
 import Dashboard from './dashboard';
 import Login from './login';
@@ -35,7 +35,6 @@ class App extends Component {
     this.state = {
       isLoggedin: false,
       apiPath: 'demo',
-      isMenuOpen: false,
     };
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -94,21 +93,7 @@ class App extends Component {
               :
               (
                 <div className="nmonit-container">
-                  <ButtonAppBar
-                    handleMenu={() => {
-                      this.setState({ isMenuOpen: true });
-                      bkLog('Menu button clicked.');
-                    }}
-                    logOut={() => {
-                      bkLog('logout invoked.');
-                      this.logOut();
-                    }}
-                    isMenuOpen={this.state.isMenuOpen}
-                    handleMenuClose={() => {
-                      this.setState({ isMenuOpen: false });
-                      bkLog('Menu close/outside clicked.');
-                    }}
-                  />
+                  <NuevoAppBar logOut={() => this.logOut()} />
                   <Grid container spacing={0}>
                     <Grid item xs={12}>
                       <ErrorBoundary>

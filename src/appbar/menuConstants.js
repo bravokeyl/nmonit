@@ -28,7 +28,7 @@ const menuObject = {
   rightMenu: [
     {
       name: 'Profile',
-      link: '#',
+      link: false,
       hasChildren: true,
       key: 'pc',
       classes: 'header__menu-item header__menu-item--profile',
@@ -49,7 +49,7 @@ const menuObject = {
         },
         {
           name: 'Log out',
-          link: '#',
+          link: false,
           hasChildren: false,
           lo: true,
           key: 'lo',
