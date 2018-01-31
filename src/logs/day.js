@@ -209,7 +209,7 @@ const highLineconfig = {
   ],
 };
 
-class DayGen extends Component {
+class NuevoDay extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -239,7 +239,7 @@ class DayGen extends Component {
   }
 
   componentDidMount() {
-    bkLog('DayGen component did mount', this.props.apiPath);
+    bkLog('NuevoDay component did mount', this.props.apiPath);
     const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const { date } = this.state;
@@ -647,9 +647,9 @@ class DayGen extends Component {
   }
 }
 
-DayGen.propTypes = {
+NuevoDay.propTypes = {
   classes: PropTypes.object.isRequired,
   apiPath: PropTypes.string.isRequired,
 };
 
-export default withStyles(styles)(DayGen);
+export default withStyles(styles)(NuevoDay);

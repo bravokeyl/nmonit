@@ -20,7 +20,7 @@ const styles = () => ({
   },
 });
 
-class Contacts extends Component {
+class NuevoContacts extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,8 +43,8 @@ class Contacts extends Component {
 }
 
 
-Contacts.propTypes = {
+NuevoContacts.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Contacts);
+export default withStyles(styles)(NuevoContacts);

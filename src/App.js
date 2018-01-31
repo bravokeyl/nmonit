@@ -11,11 +11,11 @@ import { signOut, getCurrentUser } from './aws/cognito';
 
 import ErrorBoundary from './common/errorBoundary';
 import NuevoAppBar from './appbar';
-import Overview from './overview';
-import Dashboard from './dashboard';
-import Login from './login';
-import NL from './logs';
-import Profile from './profile';
+import NuevoOverview from './overview';
+import NuevoDashboard from './dashboard';
+import NuevoLogin from './login';
+import NuevoLogWrapper from './logs';
+import NuevoProfile from './profile';
 import Bad404 from './404';
 import { bkLog } from './common/utils';
 
@@ -29,7 +29,7 @@ const theme = createMuiTheme({
   },
 });
 
-class App extends Component {
+class NuevoMonit extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -86,7 +86,7 @@ class App extends Component {
                   <Route
                     path="/"
                     render={
-                      props => (<Login {...props} authHandler={(e, f) => this.logIn(e, f)} />)
+                      props => (<NuevoLogin {...props} authHandler={(e, f) => this.logIn(e, f)} />)
                     }
                   />
                 </ErrorBoundary>
@@ -101,18 +101,20 @@ class App extends Component {
                           <Route
                             exact
                             path="/"
-                            render={routeProps => (<Overview {...newProps} {...routeProps} />)}
+                            render={routeProps => (<NuevoOverview {...newProps} {...routeProps} />)}
                           />
 
                           <Route
                             exact
                             path="/d"
-                            render={routeProps => (<Dashboard {...newProps} {...routeProps} />)}
+                            render={
+                              routeProps => (<NuevoDashboard {...newProps} {...routeProps} />)}
                           />
 
                           <Route
                             path="/l"
-                            render={routeProps => (<NL {...newProps} {...routeProps} />)}
+                            render={
+                              routeProps => (<NuevoLogWrapper {...newProps} {...routeProps} />)}
                           />
 
                           <Route
@@ -120,7 +122,7 @@ class App extends Component {
                             path="/p"
                             render={routeProps =>
                               (
-                                <Profile
+                                <NuevoProfile
                                   {...newProps}
                                   {...routeProps}
                                   authHandler={(e, f) => this.logOut(e, f)}
@@ -143,4 +145,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default NuevoMonit;

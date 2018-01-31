@@ -14,8 +14,8 @@ import _ from 'lodash';
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
-import OverGen from './generation';
-import OverCon from './consumption';
+import NuevoOverGen from './generation';
+import NuevoOverCon from './consumption';
 import { channelMap, bkLog } from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
@@ -205,7 +205,7 @@ const pieDrill = {
   },
 };
 
-class Overview extends Component {
+class NuevoOverview extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -474,8 +474,8 @@ class Overview extends Component {
               index={this.state.value}
               onChangeIndex={this.handleChangeIndex}
             >
-              <OverGen data={this.state.gen} />
-              <OverCon data={this.state.load} />
+              <NuevoOverGen data={this.state.gen} />
+              <NuevoOverCon data={this.state.load} />
             </SwipeableViews>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -489,8 +489,8 @@ class Overview extends Component {
   }
 }
 
-Overview.propTypes = {
+NuevoOverview.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Overview);
+export default withStyles(styles)(NuevoOverview);

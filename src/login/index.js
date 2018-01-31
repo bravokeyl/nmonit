@@ -47,7 +47,7 @@ const styles = theme => ({
   },
 });
 
-class Login extends Component {
+class NuevoLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -135,8 +135,8 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
+NuevoLogin.propTypes = {
   classes: PropTypes.object.isRequired,
   authHandler: PropTypes.func.isRequired,
 };
-export default withStyles(styles)(Login);
+export default withStyles(styles)(NuevoLogin);

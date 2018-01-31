@@ -19,7 +19,7 @@ const getCurrentWeekString = () => {
   return `${weekStart}-${weekEnd}`;
 };
 
-const OverCon = (props) => {
+const NuevoOverCon = (props) => {
   const { data } = props;
   return (
     <div className="nm-generation">
@@ -53,8 +53,8 @@ const OverCon = (props) => {
   );
 };
 
-OverCon.propTypes = {
+NuevoOverCon.propTypes = {
   data: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(OverCon);
+export default withStyles(styles)(NuevoOverCon);

@@ -93,7 +93,7 @@ const util = (d) => {
   return o;
 };
 
-class Dashboard extends Component {
+class NuevoDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -411,8 +411,8 @@ class Dashboard extends Component {
   }
 }
 
-Dashboard.propTypes = {
+NuevoDashboard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(NuevoDashboard);

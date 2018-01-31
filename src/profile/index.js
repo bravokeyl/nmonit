@@ -17,10 +17,10 @@ import offlineFetch from '../common/fetch-cache';
 import { bkLog } from '../common/utils';
 
 import avatar from './avatar200.png';
-import Contacts from './contacts';
-import System from './system';
-import SystemImage from './image';
-import Notifications from './notifications';
+import NuevoContacts from './contacts';
+import NuevoSystem from './system';
+import NuevoSystemImage from './image';
+import NuevoNotifications from './notifications';
 
 const styles = theme => ({
   root: {
@@ -100,7 +100,7 @@ const APIHEADERS = {
   },
 };
 
-class Profile extends Component {
+class NuevoProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -201,10 +201,10 @@ class Profile extends Component {
                 index={value}
                 onChangeIndex={this.handleChangeIndex}
               >
-                <System />
-                <SystemImage />
-                <Contacts />
-                <Notifications />
+                <NuevoSystem />
+                <NuevoSystemImage />
+                <NuevoContacts />
+                <NuevoNotifications />
               </SwipeableViews>
             </Card>
           </Grid>
@@ -214,9 +214,9 @@ class Profile extends Component {
   }
 }
 
-Profile.propTypes = {
+NuevoProfile.propTypes = {
   classes: PropTypes.object.isRequired,
   authHandler: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(Profile);
+export default withStyles(styles)(NuevoProfile);

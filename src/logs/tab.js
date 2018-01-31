@@ -8,9 +8,9 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 
 import moment from 'moment';
 
-import DayGen from './day';
-import MonthGen from './month';
-import YearGen from './year';
+import NuevoDay from './day';
+import NuevoMonth from './month';
+import NuevoYear from './year';
 import { bkLog } from '../common/utils';
 
 const styles = theme => ({
@@ -67,7 +67,7 @@ const styles = theme => ({
   },
 });
 
-class Logs extends Component {
+class NuevoLogs extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -137,9 +137,9 @@ class Logs extends Component {
             index={this.state.value}
             onChangeIndex={this.handleChangeIndex}
           >
-            <DayGen date={this.state.date} apiPath={apiPath} />
-            <MonthGen month={this.state.month} indexV={this.handleDayChange} apiPath={apiPath} />
-            <YearGen indexV={this.handleMonthChange} apiPath={apiPath} />
+            <NuevoDay date={this.state.date} apiPath={apiPath} />
+            <NuevoMonth month={this.state.month} indexV={this.handleDayChange} apiPath={apiPath} />
+            <NuevoYear indexV={this.handleMonthChange} apiPath={apiPath} />
           </SwipeableViews>
         </Grid>
       </div>
@@ -147,9 +147,9 @@ class Logs extends Component {
   }
 }
 
-Logs.propTypes = {
+NuevoLogs.propTypes = {
   classes: PropTypes.object.isRequired,
   apiPath: PropTypes.string.isRequired,
 };
 
-export default withStyles(styles)(Logs);
+export default withStyles(styles)(NuevoLogs);
