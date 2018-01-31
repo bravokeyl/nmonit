@@ -117,7 +117,7 @@ class Login extends Component {
                       disabled={this.state.loading}
                       color="primary"
                       onClick={this.handleSubmit}
-                      tabIndex="-1"
+                      tabIndex="0"
                     >
                       Login
                     </Button>
