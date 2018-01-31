@@ -95,7 +95,6 @@ class App extends Component {
               (
                 <div>
                   <ButtonAppBar
-                    classes={{}}
                     handleMenu={() => {
                       this.setState({ isMenuOpen: true });
                       bkLog('Menu button clicked.');
