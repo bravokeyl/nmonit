@@ -10,6 +10,7 @@ import { authenticateUser } from '../aws/cognito';
 import { bkLog } from '../common/utils';
 
 import bg from './bg.jpg';
+import MLogo from '../appbar/logoc.png';
 
 const styles = theme => ({
   root: {
@@ -20,12 +21,13 @@ const styles = theme => ({
   flex: {
     display: 'flex',
     flex: 1,
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: '100vh',
   },
   container: {
-    padding: '60px 50px',
+    padding: '30px 30px',
     background: '#fff',
     borderRadius: 8,
   },
@@ -84,6 +86,7 @@ class Login extends Component {
         <Grid container spacing={0}>
           <Grid item xs={12} sm={12}>
             <div className={classes.flex}>
+              <img src={MLogo} alt="" style={{ maxWidth: 240 }} />
               {
                 (
                   <form className={classes.container} noValidate >
