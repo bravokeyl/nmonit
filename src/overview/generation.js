@@ -39,28 +39,28 @@ const OverCon = (props) => {
           color="green"
           icon
           info
-          data={`${Number(todayEnergyGenL)} kWh`}
+          data={`${Number(todayEnergyGenL) || 'NA'} kWh`}
           title="Energy - Today"
           footer="Last updated:"
         />
         <BKPanel
           color="green"
           icon
-          data={`${weekEnergyGenL} kWh`}
+          data={`${weekEnergyGenL || 'NA'} kWh`}
           title="Energy - This Week"
           footer={getCurrentWeekString()}
         />
         <BKPanel
           color="green"
           icon
-          data={`${monthEnergyGenL} kWh`}
+          data={`${monthEnergyGenL || 'NA'} kWh`}
           title="Energy - This Month"
           footer="Units generated"
         />
         <BKPanel
           color="green"
           icon
-          data={`${totalEnergyGenL} kWh`}
+          data={`${totalEnergyGenL || 'NA'} kWh`}
           title="Energy - Year"
           footer="Units generated"
         />

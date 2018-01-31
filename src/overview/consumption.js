@@ -26,25 +26,25 @@ const OverCon = (props) => {
       <Grid container spacing={0}>
         <BKPanel
           color="#f96f40"
-          data={`${data.todayEnergyL} kWh`}
+          data={`${data.todayEnergyL || 'NA'} kWh`}
           title="Load - Today"
           footer="Last updated:"
         />
         <BKPanel
           color="#f96f40"
-          data={`${data.weekEnergyL} kWh`}
+          data={`${data.weekEnergyL || 'NA'} kWh`}
           title="Load - This Week"
           footer={getCurrentWeekString()}
         />
         <BKPanel
           color="#f96f40"
-          data={`${data.monthEnergyL} kWh`}
+          data={`${data.monthEnergyL || 'NA'} kWh`}
           title="Load - This Month"
           footer="Units consumed"
         />
         <BKPanel
           color="#f96f40"
-          data={`${data.totalEnergyL} kWh`}
+          data={`${data.totalEnergyL || 'NA'} kWh`}
           title="Load - This Year"
           footer="Units consumed"
         />

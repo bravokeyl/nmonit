@@ -268,11 +268,11 @@ class Overview extends Component {
         self.setState(prevState => ({
           gen: {
             ...prevState.gen,
-            todayEnergyGenL: parseFloat(daytotalGeneration).toFixed(3),
+            todayEnergyGenL: Number(parseFloat(daytotalGeneration).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            todayEnergyL: parseFloat(daytotalConsumption).toFixed(3),
+            todayEnergyL: Number(parseFloat(daytotalConsumption).toFixed(3)),
           },
         }));
         return response;
@@ -312,11 +312,11 @@ class Overview extends Component {
           progessL: false,
           gen: {
             ...prevState.gen,
-            monthEnergyGenL: parseFloat(metotalGen).toFixed(3),
+            monthEnergyGenL: Number(parseFloat(metotalGen).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            monthEnergyL: parseFloat(metotal).toFixed(3),
+            monthEnergyL: Number(parseFloat(metotal).toFixed(3)),
           },
         }));
         return response;
@@ -350,14 +350,14 @@ class Overview extends Component {
         self.setState(prevState => ({
           gen: {
             ...prevState.gen,
-            weekEnergyGenL: parseFloat(weektotalGen).toFixed(3),
+            weekEnergyGenL: Number(parseFloat(weektotalGen).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            weekEnergyL: parseFloat(weektotal).toFixed(3),
-            weekEnergyRL: parseFloat(me[0]).toFixed(3),
-            weekEnergyYL: parseFloat(me[1]).toFixed(3),
-            weekEnergyBL: parseFloat(me[2]).toFixed(3),
+            weekEnergyL: Number(parseFloat(weektotal).toFixed(3)),
+            weekEnergyRL: Number(parseFloat(me[0]).toFixed(3)),
+            weekEnergyYL: Number(parseFloat(me[1]).toFixed(3)),
+            weekEnergyBL: Number(parseFloat(me[2]).toFixed(3)),
           },
         }));
         return response;
@@ -395,11 +395,11 @@ class Overview extends Component {
         self.setState(prevState => ({
           gen: {
             ...prevState.gen,
-            totalEnergyGenL: parseFloat(yeartotalGen).toFixed(3),
+            totalEnergyGenL: Number(parseFloat(yeartotalGen).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            totalEnergyL: parseFloat(yeartotal).toFixed(3),
+            totalEnergyL: Number(parseFloat(yeartotal).toFixed(3)),
           },
         }));
         return response;
