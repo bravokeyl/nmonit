@@ -111,11 +111,13 @@ class Login extends Component {
                     />
                     <br />
                     <Button
+                      type="submit"
                       raised
                       className={classes.button}
                       disabled={this.state.loading}
                       color="primary"
                       onClick={this.handleSubmit}
+                      tabIndex="-1"
                     >
                       Login
                     </Button>
