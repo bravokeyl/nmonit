@@ -100,7 +100,7 @@ class BKPanel extends Component {
                 {title || 'No Title'}
               </Typography>
               <Typography type="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : data}
+                {this.state.progessL ? <CircularProgress size={24} /> : data || 'NA'}
               </Typography>
             </CardContent>
           </div>

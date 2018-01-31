@@ -102,7 +102,7 @@ const styles = theme => ({
 
 const months = moment.months();
 
-class MonthGen extends Component {
+class NuevoMonth extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -121,7 +121,7 @@ class MonthGen extends Component {
   }
 
   componentDidMount() {
-    bkLog('MonthGen component did mount', this.props.apiPath);
+    bkLog('NuevoMonth component did mount', this.props.apiPath);
     const { month } = this.state;
     const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
@@ -355,10 +355,10 @@ class MonthGen extends Component {
   }
 }
 
-MonthGen.propTypes = {
+NuevoMonth.propTypes = {
   classes: PropTypes.object.isRequired,
   indexV: PropTypes.func.isRequired,
   apiPath: PropTypes.string.isRequired,
 };
 
-export default compose(withStyles(styles), withWidth())(withRouter(MonthGen));
+export default compose(withStyles(styles), withWidth())(withRouter(NuevoMonth));

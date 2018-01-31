@@ -1,3 +1,6 @@
+.nmonit-container {
+  padding-top: 68px;
+}
 a {
   text-decoration: none;
 }
@@ -18,4 +21,45 @@ a.nm-active button {
 }
 .DateInput_displayText {
   padding: 0px 4px;
+}
+
+/* Header */
+.header__menu-items {
+  flex: 1;
+  list-style: none;
+}
+.header__menu-item {
+  display: inline-block;
+  list-style: none;
+  position: relative;
+  padding: 0;
+}
+.header__menu-item--overview {
+
+}
+.header__right-menu {
+
+}
+.header__menu-item--profile img {
+  border-radius: 50%;
+}
+#menu-list {
+  width: 130px;
+  transform-origin: 0 0 0;
+  position: absolute;
+  z-index: 1011;
+  left: -45px;
+  background: #f6f9fc;
+  top: 52px;
+}
+#menu-list li {
+  padding-left: 0;
+  padding-right: 0;
+}
+#menu-list a,
+.header__right-menu--logout  {
+  font-size: 14px;
+  width: 100%;
+  color: rgba(0, 0, 0, 0.87);
+  padding: 8px 16px;
 }

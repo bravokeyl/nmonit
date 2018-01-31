@@ -10,6 +10,7 @@ import { authenticateUser } from '../aws/cognito';
 import { bkLog } from '../common/utils';
 
 import bg from './bg.jpg';
+import MLogo from '../appbar/logoc.png';
 
 const styles = theme => ({
   root: {
@@ -20,12 +21,13 @@ const styles = theme => ({
   flex: {
     display: 'flex',
     flex: 1,
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: '100vh',
   },
   container: {
-    padding: '60px 50px',
+    padding: '30px 30px',
     background: '#fff',
     borderRadius: 8,
   },
@@ -45,7 +47,7 @@ const styles = theme => ({
   },
 });
 
-class Login extends Component {
+class NuevoLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -84,6 +86,7 @@ class Login extends Component {
         <Grid container spacing={0}>
           <Grid item xs={12} sm={12}>
             <div className={classes.flex}>
+              <img src={MLogo} alt="" style={{ maxWidth: 240 }} />
               {
                 (
                   <form className={classes.container} noValidate >
@@ -111,11 +114,13 @@ class Login extends Component {
                     />
                     <br />
                     <Button
+                      type="submit"
                       raised
                       className={classes.button}
                       disabled={this.state.loading}
                       color="primary"
                       onClick={this.handleSubmit}
+                      tabIndex="0"
                     >
                       Login
                     </Button>
@@ -130,8 +135,8 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
+NuevoLogin.propTypes = {
   classes: PropTypes.object.isRequired,
   authHandler: PropTypes.func.isRequired,
 };
-export default withStyles(styles)(Login);
+export default withStyles(styles)(NuevoLogin);

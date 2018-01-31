@@ -19,32 +19,32 @@ const getCurrentWeekString = () => {
   return `${weekStart}-${weekEnd}`;
 };
 
-const OverCon = (props) => {
+const NuevoOverCon = (props) => {
   const { data } = props;
   return (
     <div className="nm-generation">
       <Grid container spacing={0}>
         <BKPanel
           color="#f96f40"
-          data={`${data.todayEnergyL} kWh`}
+          data={`${data.todayEnergyL || 'NA'} kWh`}
           title="Load - Today"
           footer="Last updated:"
         />
         <BKPanel
           color="#f96f40"
-          data={`${data.weekEnergyL} kWh`}
+          data={`${data.weekEnergyL || 'NA'} kWh`}
           title="Load - This Week"
           footer={getCurrentWeekString()}
         />
         <BKPanel
           color="#f96f40"
-          data={`${data.monthEnergyL} kWh`}
+          data={`${data.monthEnergyL || 'NA'} kWh`}
           title="Load - This Month"
           footer="Units consumed"
         />
         <BKPanel
           color="#f96f40"
-          data={`${data.totalEnergyL} kWh`}
+          data={`${data.totalEnergyL || 'NA'} kWh`}
           title="Load - This Year"
           footer="Units consumed"
         />
@@ -53,8 +53,8 @@ const OverCon = (props) => {
   );
 };
 
-OverCon.propTypes = {
+NuevoOverCon.propTypes = {
   data: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(OverCon);
+export default withStyles(styles)(NuevoOverCon);

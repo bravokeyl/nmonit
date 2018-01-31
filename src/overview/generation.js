@@ -28,7 +28,7 @@ const defaultProps = {
   },
 };
 
-const OverCon = (props) => {
+const NuevoOverGen = (props) => {
   const {
     todayEnergyGenL, weekEnergyGenL, monthEnergyGenL, totalEnergyGenL,
   } = props.data;
@@ -39,28 +39,28 @@ const OverCon = (props) => {
           color="green"
           icon
           info
-          data={`${Number(todayEnergyGenL)} kWh`}
+          data={`${Number(todayEnergyGenL) || 'NA'} kWh`}
           title="Energy - Today"
           footer="Last updated:"
         />
         <BKPanel
           color="green"
           icon
-          data={`${weekEnergyGenL} kWh`}
+          data={`${weekEnergyGenL || 'NA'} kWh`}
           title="Energy - This Week"
           footer={getCurrentWeekString()}
         />
         <BKPanel
           color="green"
           icon
-          data={`${monthEnergyGenL} kWh`}
+          data={`${monthEnergyGenL || 'NA'} kWh`}
           title="Energy - This Month"
           footer="Units generated"
         />
         <BKPanel
           color="green"
           icon
-          data={`${totalEnergyGenL} kWh`}
+          data={`${totalEnergyGenL || 'NA'} kWh`}
           title="Energy - Year"
           footer="Units generated"
         />
@@ -85,7 +85,7 @@ const OverCon = (props) => {
   );
 };
 
-OverCon.propTypes = {
+NuevoOverGen.propTypes = {
   data: PropTypes.shape({
     todayEnergyGenL: PropTypes.oneOfType([
       PropTypes.string,
@@ -106,5 +106,5 @@ OverCon.propTypes = {
   }),
 };
 
-OverCon.defaultProps = defaultProps;
-export default withStyles(styles)(OverCon);
+NuevoOverGen.defaultProps = defaultProps;
+export default withStyles(styles)(NuevoOverGen);

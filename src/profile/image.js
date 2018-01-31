@@ -20,7 +20,7 @@ const styles = () => ({
   },
 });
 
-class SystemImage extends Component {
+class NuevoSystemImage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,8 +42,8 @@ class SystemImage extends Component {
   }
 }
 
-SystemImage.propTypes = {
+NuevoSystemImage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SystemImage);
+export default withStyles(styles)(NuevoSystemImage);

@@ -1,15 +1,15 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import Logs from './tab';
+import NuevoLogs from './tab';
 
-const NL = props => (
+const NuevoLogWrapper = props => (
   <div>
     <Route
       exact
       path={`${props.match.url}`}
-      render={() => (<Logs {...props} />)}
+      render={() => (<NuevoLogs {...props} />)}
     />
   </div>
 );
-export default NL;
+export default NuevoLogWrapper;

@@ -20,7 +20,7 @@ const styles = () => ({
   },
 });
 
-class Notifications extends Component {
+class NuevoNotifications extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,8 +42,8 @@ class Notifications extends Component {
   }
 }
 
-Notifications.propTypes = {
+NuevoNotifications.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Notifications);
+export default withStyles(styles)(NuevoNotifications);

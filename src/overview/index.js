@@ -14,8 +14,8 @@ import _ from 'lodash';
 import config from '../aws';
 import { getIdToken } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
-import OverGen from './generation';
-import OverCon from './consumption';
+import NuevoOverGen from './generation';
+import NuevoOverCon from './consumption';
 import { channelMap, bkLog } from '../common/utils';
 
 const API_KEY = config.LocalAPIKey;
@@ -205,7 +205,7 @@ const pieDrill = {
   },
 };
 
-class Overview extends Component {
+class NuevoOverview extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -268,11 +268,11 @@ class Overview extends Component {
         self.setState(prevState => ({
           gen: {
             ...prevState.gen,
-            todayEnergyGenL: parseFloat(daytotalGeneration).toFixed(3),
+            todayEnergyGenL: Number(parseFloat(daytotalGeneration).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            todayEnergyL: parseFloat(daytotalConsumption).toFixed(3),
+            todayEnergyL: Number(parseFloat(daytotalConsumption).toFixed(3)),
           },
         }));
         return response;
@@ -312,11 +312,11 @@ class Overview extends Component {
           progessL: false,
           gen: {
             ...prevState.gen,
-            monthEnergyGenL: parseFloat(metotalGen).toFixed(3),
+            monthEnergyGenL: Number(parseFloat(metotalGen).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            monthEnergyL: parseFloat(metotal).toFixed(3),
+            monthEnergyL: Number(parseFloat(metotal).toFixed(3)),
           },
         }));
         return response;
@@ -350,14 +350,14 @@ class Overview extends Component {
         self.setState(prevState => ({
           gen: {
             ...prevState.gen,
-            weekEnergyGenL: parseFloat(weektotalGen).toFixed(3),
+            weekEnergyGenL: Number(parseFloat(weektotalGen).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            weekEnergyL: parseFloat(weektotal).toFixed(3),
-            weekEnergyRL: parseFloat(me[0]).toFixed(3),
-            weekEnergyYL: parseFloat(me[1]).toFixed(3),
-            weekEnergyBL: parseFloat(me[2]).toFixed(3),
+            weekEnergyL: Number(parseFloat(weektotal).toFixed(3)),
+            weekEnergyRL: Number(parseFloat(me[0]).toFixed(3)),
+            weekEnergyYL: Number(parseFloat(me[1]).toFixed(3)),
+            weekEnergyBL: Number(parseFloat(me[2]).toFixed(3)),
           },
         }));
         return response;
@@ -395,11 +395,11 @@ class Overview extends Component {
         self.setState(prevState => ({
           gen: {
             ...prevState.gen,
-            totalEnergyGenL: parseFloat(yeartotalGen).toFixed(3),
+            totalEnergyGenL: Number(parseFloat(yeartotalGen).toFixed(3)),
           },
           load: {
             ...prevState.load,
-            totalEnergyL: parseFloat(yeartotal).toFixed(3),
+            totalEnergyL: Number(parseFloat(yeartotal).toFixed(3)),
           },
         }));
         return response;
@@ -474,8 +474,8 @@ class Overview extends Component {
               index={this.state.value}
               onChangeIndex={this.handleChangeIndex}
             >
-              <OverGen data={this.state.gen} />
-              <OverCon data={this.state.load} />
+              <NuevoOverGen data={this.state.gen} />
+              <NuevoOverCon data={this.state.load} />
             </SwipeableViews>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -489,8 +489,8 @@ class Overview extends Component {
   }
 }
 
-Overview.propTypes = {
+NuevoOverview.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Overview);
+export default withStyles(styles)(NuevoOverview);

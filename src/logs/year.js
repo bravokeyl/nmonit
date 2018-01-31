@@ -100,7 +100,7 @@ const styles = theme => ({
 });
 
 const years = ['2016', '2017', '2018'];
-class YearGen extends Component {
+class NuevoYear extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -117,7 +117,7 @@ class YearGen extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
-    bkLog('YearGen component did mount', this.props.apiPath);
+    bkLog('NuevoYear component did mount', this.props.apiPath);
     const { year } = this.state;
     const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
@@ -359,10 +359,10 @@ class YearGen extends Component {
   }
 }
 
-YearGen.propTypes = {
+NuevoYear.propTypes = {
   classes: PropTypes.object.isRequired,
   apiPath: PropTypes.string.isRequired,
   indexV: PropTypes.func.isRequired,
 };
 
-export default compose(withStyles(styles), withWidth())(withRouter(YearGen));
+export default compose(withStyles(styles), withWidth())(withRouter(NuevoYear));
