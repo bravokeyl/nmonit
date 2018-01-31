@@ -93,7 +93,7 @@ class App extends Component {
                 </ErrorBoundary>
               :
               (
-                <div>
+                <div className="nmonit-container">
                   <ButtonAppBar
                     handleMenu={() => {
                       this.setState({ isMenuOpen: true });
