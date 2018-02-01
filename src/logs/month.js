@@ -337,7 +337,7 @@ class NuevoMonth extends Component {
                 },
               ]}
             />
-            <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
+            <Dialog onClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>
               <DialogContent>
               If you think this is an issue, please contact NuevoMonit support engineer.
