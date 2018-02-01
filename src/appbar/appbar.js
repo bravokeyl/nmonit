@@ -46,6 +46,9 @@ const styles = () => ({
   pvchooser: {
     width: '100%',
     maxWidth: 250,
+    borderLeft: '1px solid rgba(238,238,238,0.3)',
+    borderRight: '1px solid rgba(238,238,238,0.3)',
+    background: 'rgba(187, 187, 187, 0.04)',
   },
 });
 
