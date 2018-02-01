@@ -10,13 +10,32 @@ class NuevoAppBar extends Component {
     super(props);
     this.state = {
       isMenuOpen: false,
+      isDialogOpen: false,
+      selectedPVSystem: { name: 'Shyamala Hospital', location: 'Wyra Road, Khammam' },
     };
   }
+  handleDialogClose = (selectedPVSystem) => {
+    this.setState(() => {
+      if (!selectedPVSystem.name) {
+        return { isDialogOpen: false };
+      }
+      return { selectedPVSystem, isDialogOpen: false };
+    });
+  }
+  handleClickOpen = () => {
+    this.setState({
+      isDialogOpen: true,
+    });
+  };
   render() {
     const { logOut } = this.props;
     return (
       <div>
         <ButtonAppBar
+          isDialogOpen={this.state.isDialogOpen}
+          selectedPVSystem={this.state.selectedPVSystem}
+          handleDialogClick={() => this.handleClickOpen()}
+          handleDialogClose={c => this.handleDialogClose(c)}
           handleMenu={() => {
             this.setState({ isMenuOpen: true });
             bkLog('Menu button clicked.');
