@@ -457,7 +457,7 @@ class NuevoOverview extends Component {
           PVSystem: {pvsystem}
         </Typography>
         <Grid container spacing={0}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} md={6}>
             <Tabs
               value={this.state.value}
               onChange={this.handleChange}
@@ -478,7 +478,7 @@ class NuevoOverview extends Component {
               <NuevoOverCon data={this.state.load} />
             </SwipeableViews>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} md={6}>
             <Grid container spacing={0}>
               <ReactHighcharts config={pieDrill} ref={(chrt) => { this.piechart = chrt; }} />
             </Grid>
