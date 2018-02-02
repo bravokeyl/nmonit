@@ -11,16 +11,14 @@ class NuevoAppBar extends Component {
     this.state = {
       isMenuOpen: false,
       isDialogOpen: false,
-      selectedPVSystem: { name: 'Shyamala Hospital', location: 'Wyra Road, Khammam' },
     };
   }
-  handleDialogClose = (selectedPVSystem) => {
-    this.setState(() => {
-      if (!selectedPVSystem.name) {
-        return { isDialogOpen: false };
-      }
-      return { selectedPVSystem, isDialogOpen: false };
-    });
+  handleDialogClose = (selectedPVSystem, changeUser) => {
+    bkLog('Before State:', JSON.parse(localStorage.nuser).p);
+    this.setState(() => ({ isDialogOpen: false }));
+    localStorage.setItem('nuser', JSON.stringify(Object.assign({}, JSON.parse(localStorage.nuser), { p: selectedPVSystem.key })));
+    bkLog('After State:', JSON.parse(localStorage.nuser).p);
+    changeUser(selectedPVSystem);
   }
   handleClickOpen = () => {
     this.setState({
@@ -28,14 +26,15 @@ class NuevoAppBar extends Component {
     });
   };
   render() {
-    const { logOut } = this.props;
+    bkLog('App bar Re-render');
+    const { logOut, changeUser, selectedPVSystem } = this.props;
     return (
       <div>
         <ButtonAppBar
           isDialogOpen={this.state.isDialogOpen}
-          selectedPVSystem={this.state.selectedPVSystem}
+          selectedPVSystem={selectedPVSystem}
           handleDialogClick={() => this.handleClickOpen()}
-          handleDialogClose={c => this.handleDialogClose(c)}
+          handleDialogClose={c => this.handleDialogClose(c, changeUser)}
           handleMenu={() => {
             this.setState({ isMenuOpen: true });
             bkLog('Menu button clicked.');
@@ -57,6 +56,11 @@ class NuevoAppBar extends Component {
 
 NuevoAppBar.propTypes = {
   logOut: PropTypes.func.isRequired,
+  selectedPVSystem: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  }).isRequired,
+  changeUser: PropTypes.func.isRequired,
 };
 
 export default NuevoAppBar;

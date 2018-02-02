@@ -157,7 +157,7 @@ class NuevoProfile extends Component {
   handleChangeIndex = index => this.setState({ value: index });
 
   render() {
-    const { classes } = this.props;
+    const { classes, selectedPVSystem } = this.props;
     const { value } = this.state;
     return (
       <div className={classes.root}>
@@ -202,7 +202,7 @@ class NuevoProfile extends Component {
                 index={value}
                 onChangeIndex={this.handleChangeIndex}
               >
-                <NuevoSystem />
+                <NuevoSystem selectedPVSystem={selectedPVSystem} />
                 <NuevoSystemImage />
                 <NuevoContacts />
                 <NuevoNotifications />
@@ -218,6 +218,10 @@ class NuevoProfile extends Component {
 NuevoProfile.propTypes = {
   classes: PropTypes.object.isRequired,
   authHandler: PropTypes.func.isRequired,
+  selectedPVSystem: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default withStyles(styles)(NuevoProfile);

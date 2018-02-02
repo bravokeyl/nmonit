@@ -205,13 +205,11 @@ class NuevoDashboard extends Component {
     return d;
   }
   render() {
-    const { classes } = this.props;
-    const { nuser } = window.localStorage;
-    const pvsystem = nuser ? JSON.parse(nuser).plant : null;
+    const { classes, selectedPVSystem } = this.props;
     return (
       <div className={classes.root}>
         <Typography type="title" style={{ margin: 16 }}>
-          PVSystem: {pvsystem}
+          PVSystem: {selectedPVSystem.name}
         </Typography>
         <Grid container spacing={0}>
           <Grid item xs={6} sm={3}>
@@ -413,6 +411,10 @@ class NuevoDashboard extends Component {
 
 NuevoDashboard.propTypes = {
   classes: PropTypes.object.isRequired,
+  selectedPVSystem: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default withStyles(styles)(NuevoDashboard);

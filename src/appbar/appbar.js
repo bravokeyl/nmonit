@@ -84,6 +84,8 @@ function ButtonAppBar(props) {
                   ))
               }
             </ul>
+          </Hidden>
+          <Hidden xsDown>
             <List component="nav" disablePadding className={classes.pvchooser}>
               <ListItem
                 button
@@ -105,7 +107,7 @@ function ButtonAppBar(props) {
               <div>
                 <List>
                   {Plants.map(pvs => (
-                    <Fragment key={pvs.name}>
+                    <Fragment key={pvs.key}>
                       <ListItem button onClick={() => handleDialogClose(pvs)} >
                         <ListItemText primary={pvs.name} secondary={pvs.location} />
                       </ListItem>

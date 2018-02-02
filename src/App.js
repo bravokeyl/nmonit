@@ -35,6 +35,7 @@ class NuevoMonit extends Component {
     this.state = {
       isLoggedin: false,
       apiPath: 'demo',
+      selectedPVSystem: { key: 'v1', name: 'Shyamala Hospital', location: 'Wyra Road, Khammam' },
     };
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -74,8 +75,21 @@ class NuevoMonit extends Component {
       // window.location.reload();
     }
   }
+  changeUser = (r = null) => {
+    if (r && r.key) {
+      bkLog('Changing user with state:', r);
+      this.setState({
+        apiPath: r.key,
+        selectedPVSystem: r,
+      });
+    }
+  }
   render() {
-    const newProps = { ...this.props, apiPath: this.state.apiPath };
+    const newProps = {
+      ...this.props,
+      apiPath: this.state.apiPath,
+      selectedPVSystem: this.state.selectedPVSystem,
+    };
     return (
       <div className="nmonit">
         <Router>
@@ -93,7 +107,11 @@ class NuevoMonit extends Component {
               :
               (
                 <div className="nmonit-container">
-                  <NuevoAppBar logOut={() => this.logOut()} />
+                  <NuevoAppBar
+                    logOut={() => this.logOut()}
+                    changeUser={r => this.changeUser(r)}
+                    selectedPVSystem={this.state.selectedPVSystem}
+                  />
                   <Grid container spacing={0}>
                     <Grid item xs={12}>
                       <ErrorBoundary>
