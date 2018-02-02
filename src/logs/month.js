@@ -147,6 +147,7 @@ class NuevoMonth extends Component {
       });
   }
   componentWillReceiveProps(n) {
+    bkLog('NuevoMonth receiving new props:', n, this.props);
     if (n.month) {
       const nd = moment(n.month, 'YYYY/MM').format('YYYY/MM');
       bkLog('PROPS Month', n.month, nd);

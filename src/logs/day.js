@@ -272,6 +272,7 @@ class NuevoDay extends Component {
   }
 
   componentWillReceiveProps(n) {
+    bkLog('NuevoDay receiving new props:', n, this.props);
     if (n.date) {
       const nd = moment(n.date, 'YYYY/MM/DD');
       bkLog('Day PROPS', nd.format('YYYY/MM/DD'));
@@ -539,8 +540,15 @@ class NuevoDay extends Component {
                     date={this.state.startDate}
                     displayFormat="DD/MM/YYYY"
                     onDateChange={(date) => {
-                    bkLog('Date Changed'); this.changeEnergy(date);
-                    this.handlePower(date);
+                    const prevDate = this.state.date;
+                    const nextDate = moment(date).format('YYYY/MM/DD');
+                    bkLog('Date Selected', nextDate, prevDate);
+                    if (prevDate !== nextDate) {
+                      this.changeEnergy(date);
+                      this.handlePower(date);
+                    } else {
+                      bkLog('Date not changed, so no calls to data');
+                    }
                     }}
                     focused={this.state.focused}
                     numberOfMonths={1}

@@ -120,11 +120,25 @@ class NuevoYear extends Component {
     bkLog('NuevoYear component did mount', this.props.apiPath);
     const { year } = this.state;
     const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    this.getYearData(year, apiPath);
+  }
+  componentWillReceiveProps(np) {
+    bkLog('NuevoYear receiving new props:', np, this.props);
+    try {
+      if (np.selectedPVSystem && np.selectedPVSystem.key) {
+        const { year } = this.state;
+        const apiPath = np.selectedPVSystem.key;
+        this.getYearData(year, apiPath);
+      }
+    } catch (error) {
+      bkLog('NuevoYear Props Error:', error);
+    }
+  }
+  getYearData = (year, apiPath) => {
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
     const yearURL = `${baseApiURL}m?ddm=${year}`;
     const self = this;
-
     offlineFetch(yearURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -142,7 +156,6 @@ class NuevoYear extends Component {
         return response;
       });
   }
-
   transformData = (d) => {
     let cdarr = [];
     const chartData = [

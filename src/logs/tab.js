@@ -116,7 +116,7 @@ class NuevoLogs extends Component {
     this.setState({ value: index });
   };
   render() {
-    const { classes, apiPath } = this.props;
+    const { classes, apiPath, selectedPVSystem } = this.props;
     return (
       <div className={classes.root}>
         <Grid item xs={12} sm={12}>
@@ -137,9 +137,22 @@ class NuevoLogs extends Component {
             index={this.state.value}
             onChangeIndex={this.handleChangeIndex}
           >
-            <NuevoDay date={this.state.date} apiPath={apiPath} />
-            <NuevoMonth month={this.state.month} indexV={this.handleDayChange} apiPath={apiPath} />
-            <NuevoYear indexV={this.handleMonthChange} apiPath={apiPath} />
+            <NuevoDay
+              date={this.state.date}
+              apiPath={apiPath}
+              selectedPVSystem={selectedPVSystem}
+            />
+            <NuevoMonth
+              month={this.state.month}
+              indexV={this.handleDayChange}
+              apiPath={apiPath}
+              selectedPVSystem={selectedPVSystem}
+            />
+            <NuevoYear
+              indexV={this.handleMonthChange}
+              apiPath={apiPath}
+              selectedPVSystem={selectedPVSystem}
+            />
           </SwipeableViews>
         </Grid>
       </div>
