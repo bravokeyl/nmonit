@@ -226,10 +226,6 @@ class NuevoOverview extends Component {
       month: moment().format('YYYY/MM'),
       value: 0,
     };
-    this.transformData = this.transformData.bind(this);
-    this.handleSelectMonth = this.handleSelectMonth.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
   componentDidMount() {
     const { date, month } = this.state;
