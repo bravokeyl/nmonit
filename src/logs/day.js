@@ -222,15 +222,6 @@ class NuevoDay extends Component {
       highPowerLine: highLineconfig,
       solarPowerTotal: 0,
     };
-
-    this.changeEnergy = this.changeEnergy.bind(this);
-    this.handlePower = this.handlePower.bind(this);
-    this.transformData = this.transformData.bind(this);
-    this.tranformPower = this.tranformPower.bind(this);
-    this.changeChartType = this.changeChartType.bind(this);
-    this.changeChartGroup = this.changeChartGroup.bind(this);
-    this.updatePowerCharts = this.updatePowerCharts.bind(this);
-
     ReactHighcharts.Highcharts.setOptions({
       global: {
         useUTC: false,

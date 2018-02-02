@@ -111,10 +111,6 @@ class NuevoYear extends Component {
       dialogOpen: false,
       selectedYear: moment().format('YYYY'),
     };
-    this.changeYearEnergy = this.changeYearEnergy.bind(this);
-    this.transformData = this.transformData.bind(this);
-    this.handleSelectYear = this.handleSelectYear.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
     bkLog('NuevoYear component did mount', this.props.apiPath);

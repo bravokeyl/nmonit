@@ -114,10 +114,6 @@ class NuevoMonth extends Component {
       selectedMonth: moment().format('MMMM'),
       selectedYear: moment().format('YYYY'),
     };
-    this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
-    this.transformData = this.transformData.bind(this);
-    this.handleSelectMonth = this.handleSelectMonth.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {

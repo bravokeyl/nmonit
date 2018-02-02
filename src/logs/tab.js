@@ -75,11 +75,6 @@ class NuevoLogs extends Component {
       month: moment().format('YYYY/MM'),
       value: 1,
     };
-    this.handleChangeIndex = this.handleChangeIndex.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDayChange = this.handleDayChange.bind(this);
-    this.handleDate = this.handleDate.bind(this);
-    this.handleMonthChange = this.handleMonthChange.bind(this);
   }
 
   handleChange = (event, value) => {
