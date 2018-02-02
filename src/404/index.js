@@ -56,21 +56,17 @@ const styles = theme => ({
   },
 });
 
-const Bad404 = () => {
-  const { classes } = this.props;
-  return (
-    <div className={classes.root}>
-      <Grid container spacing={0}>
-        <Card className={classes.card}>
-          <a href="/">
-            <Button color="primary" >Nothing Found</Button>
-          </a>
-        </Card>
-      </Grid>
-
-    </div>
-  );
-};
+const Bad404 = ({ classes }) => (
+  <div className={classes.root}>
+    <Grid container spacing={0}>
+      <Card className={classes.card}>
+        <a href="/">
+          <Button color="primary" >Nothing Found</Button>
+        </a>
+      </Card>
+    </Grid>
+  </div>
+);
 
 Bad404.propTypes = {
   classes: PropTypes.object.isRequired,
