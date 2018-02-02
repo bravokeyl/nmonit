@@ -115,9 +115,6 @@ class NuevoProfile extends Component {
         avatar,
       },
     };
-    this.handleSignOut = this.handleSignOut.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
 
   componentDidMount() {
