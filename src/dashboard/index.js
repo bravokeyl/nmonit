@@ -114,10 +114,6 @@ class NuevoDashboard extends Component {
       relativeTimestamp: 0,
       isLive: false,
     };
-    this.transformData = this.transformData.bind(this);
-    this.getLive = this.getLive.bind(this);
-    this.getLiveData = this.getLiveData.bind(this);
-    this.updateliveTimestamp = this.updateliveTimestamp.bind(this);
   }
   componentDidMount() {
     bkLog('Dashboard component did mount', this.props.apiPath);
@@ -411,6 +407,7 @@ class NuevoDashboard extends Component {
 
 NuevoDashboard.propTypes = {
   classes: PropTypes.object.isRequired,
+  apiPath: PropTypes.string.isRequired,
   selectedPVSystem: PropTypes.shape({
     name: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
