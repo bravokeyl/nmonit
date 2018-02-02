@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -22,16 +22,16 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    display: "flex",
+    display: 'flex',
     flexDirection: 'column',
     margin: 16,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   details: {
     display: 'flex',
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -41,7 +41,7 @@ const styles = theme => ({
     width: 48,
     height: 48,
     paddingLeft: 16,
-    fill: "#f96f40",
+    fill: '#f96f40',
   },
   info: {
     marginBottom: 12,
@@ -49,39 +49,28 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   chart: {
-    height: 300
+    height: 300,
   },
   opacity: {
-    opacity: 0.5
-  }
+    opacity: 0.5,
+  },
 });
 
-class Bad404 extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      progessL: true
-    }
-  }
+const Bad404 = () => {
+  const { classes } = this.props;
+  return (
+    <div className={classes.root}>
+      <Grid container spacing={0}>
+        <Card className={classes.card}>
+          <a href="/">
+            <Button color="primary" >Nothing Found</Button>
+          </a>
+        </Card>
+      </Grid>
 
-  render(){
-    const { classes } = this.props;
-    return (
-      <div className={classes.root}>
-        <Grid container spacing={0}>
-          <Card className={classes.card}>
-            <a href="/">
-              <Button color="primary" >Nothing Found</Button>
-            </a>
-          </Card>
-        </Grid>
-
-      </div>
-    );
-  }
-
-}
-
+    </div>
+  );
+};
 
 Bad404.propTypes = {
   classes: PropTypes.object.isRequired,
