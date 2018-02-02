@@ -67,7 +67,8 @@ const styles = theme => ({
   },
   avatar: {
     width: 140,
-    height: 140,
+    height: 'auto',
+    maxWidth: '100%',
     borderRadius: '50%',
   },
   uid: {
