@@ -235,14 +235,33 @@ class NuevoOverview extends Component {
     const { date, month } = this.state;
     bkLog('Overview did mount.');
     const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
-    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
+    this.getHourData(date, apiPath);
+    this.getDayData(month, apiPath);
+    this.getWeekData(apiPath);
+    this.getMonthData(apiPath);
+  }
+  componentWillReceiveProps(np) {
+    bkLog('Overview container receiving props', np, this.props);
+    try {
+      if (np.selectedPVSystem && np.selectedPVSystem.key) {
+        const { date, month } = this.state;
+        const apiPath = np.selectedPVSystem.key;
+        APIHEADERS.headers.Authorization = this.state.idToken;
+        this.getHourData(date, apiPath);
+        this.getDayData(month, apiPath);
+        this.getWeekData(apiPath);
+        this.getMonthData(apiPath);
+      }
+    } catch (error) {
+      bkLog('Overview Props Error:', error);
+    }
+  }
+  /* HourWise Data */
+  getHourData = (date, apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}h?dhr=${date}`;
-    const dayURL = `${baseApiURL}d?ddm=${month}`;
-    const weekURL = `${baseApiURL}we`;
-    const monthURL = `${baseApiURL}m`;
     const self = this;
-
     offlineFetch(url, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -277,7 +296,12 @@ class NuevoOverview extends Component {
         }));
         return response;
       });
-
+  }
+  /* Daywise Data */
+  getDayData = (month, apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    const dayURL = `${baseApiURL}d?ddm=${month}`;
+    const self = this;
     offlineFetch(dayURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -323,7 +347,12 @@ class NuevoOverview extends Component {
       }, (error) => {
         bkLog('Day Fetch Error', error);
       });
-
+  }
+  /* Week Data */
+  getWeekData = (apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    const weekURL = `${baseApiURL}we`;
+    const self = this;
     offlineFetch(weekURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -365,8 +394,14 @@ class NuevoOverview extends Component {
       .catch((err) => {
         bkLog('Week Fetch Error:', err);
       });
-    APIHEADERS.offline.expires = 60 * 60 * 1000;
+  }
+  /* Month Data */
+  getMonthData = (apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
 
+    APIHEADERS.offline.expires = 60 * 60 * 1000;
+    const monthURL = `${baseApiURL}m`;
+    const self = this;
     offlineFetch(monthURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -408,6 +443,7 @@ class NuevoOverview extends Component {
         bkLog('Month Fetch Error:', err);
       });
   }
+
   handleChange = (event, value) => {
     this.setState({
       value,
