@@ -235,7 +235,7 @@ class NuevoMonth extends Component {
     this.changeMonthEnergy(event.target.value, true);
   };
 
-  handleClick(data, e) {
+  handleClick = (data, e) => {
     if (data) {
       bkLog('Month active label', data);
       this.props.indexV(e, 0, moment(data.activeLabel, 'MMM Do YYYY'));

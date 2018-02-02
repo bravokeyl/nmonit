@@ -244,7 +244,7 @@ class NuevoYear extends Component {
   handleSelectYear = () => (event) => {
     this.changeYearEnergy(event.target.value);
   };
-  handleClick(data, e) {
+  handleClick = (data, e) => {
     bkLog(data, e.target);
     if (data) {
       const cm = moment();
