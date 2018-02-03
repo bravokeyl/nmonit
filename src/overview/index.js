@@ -473,11 +473,6 @@ class NuevoOverview extends Component {
     }
     return d;
   }
-
-  handleSelectMonth = () => (event) => {
-    this.changeMonthEnergy(event.target.value);
-  };
-
   render() {
     const { classes, selectedPVSystem } = this.props;
 
