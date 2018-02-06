@@ -57,206 +57,211 @@ const styles = theme => ({
   },
 });
 
-const NuevoDashboardComp = ({ classes, selectedPVSystem }) => (
-  <div className={classes.root}>
-    <Typography type="title" style={{ margin: 16 }}>
-      PVSystem: {selectedPVSystem.name}
-    </Typography>
-    <Grid container spacing={0}>
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 1: Voltage
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : this.state.c1Voltage} V
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Last updated: {this.state.relativeTimestamp}
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 1: Current
-              </Typography>
-              <Typography type="headline" component="h2">
-                {
-                  this.state.progessL ?
-                    <CircularProgress size={24} /> : this.state.c1Current
-                } Amps
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Last updated: {this.state.relativeTimestamp}
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 1: Power
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : this.state.c1Power} W
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Energy - Total
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        {}
-      </Grid>
+const NuevoDashboardComp = ({
+  classes, selectedPVSystem, handleChange, state,
+}) => {
+  console.log(selectedPVSystem);
+  return (
+    <div className={classes.root}>
+      <Typography variant="title" style={{ margin: 16 }}>
+        PVSystem: {selectedPVSystem.name}
+      </Typography>
+      <Grid container spacing={0}>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 1: Voltage
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ? <CircularProgress size={24} /> : state.c1Voltage} V
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Last updated: {state.relativeTimestamp}
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 1: Current
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {
+                    state.progessL ?
+                      <CircularProgress size={24} /> : state.c1Current
+                  } Amps
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Last updated: {state.relativeTimestamp}
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 1: Power
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ? <CircularProgress size={24} /> : state.c1Power} W
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Energy - Total
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          {}
+        </Grid>
 
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 2: Voltage
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : this.state.c5Voltage} V
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Last updated: {this.state.relativeTimestamp}
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 2: Current
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ?
-                  <CircularProgress size={24} /> : this.state.c5Current} Amps
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Last updated: {this.state.relativeTimestamp}
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 2: Power
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : this.state.c5Power} W
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Energy - Total
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        {}
-      </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 2: Voltage
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ? <CircularProgress size={24} /> : state.c5Voltage} V
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Last updated: {state.relativeTimestamp}
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 2: Current
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ?
+                    <CircularProgress size={24} /> : state.c5Current} Amps
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Last updated: {state.relativeTimestamp}
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 2: Power
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ? <CircularProgress size={24} /> : state.c5Power} W
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Energy - Total
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          {}
+        </Grid>
 
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 3: Voltage
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : this.state.c6Voltage} V
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Last updated: {this.state.relativeTimestamp}
-          </Typography>
-        </Card>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 3: Voltage
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ? <CircularProgress size={24} /> : state.c6Voltage} V
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Last updated: {state.relativeTimestamp}
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 3: Current
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ?
+                    <CircularProgress size={24} /> : state.c6Current} Amps
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Last updated: {state.relativeTimestamp}
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <ChromeReaderModeIcon className={classes.icon} />
+              <CardContent className={classes.content}>
+                <Typography variant="body1" className={classes.title}>
+                  Inv 3: Power
+                </Typography>
+                <Typography variant="headline" component="h2">
+                  {state.progessL ? <CircularProgress size={24} /> : state.c6Power} W
+                </Typography>
+              </CardContent>
+            </div>
+            <Typography variant="body1" className={classes.info}>
+              Energy - Total
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          {}
+        </Grid>
       </Grid>
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 3: Current
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ?
-                  <CircularProgress size={24} /> : this.state.c6Current} Amps
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Last updated: {this.state.relativeTimestamp}
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            <ChromeReaderModeIcon className={classes.icon} />
-            <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
-                Inv 3: Power
-              </Typography>
-              <Typography type="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : this.state.c6Power} W
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography type="body1" className={classes.info}>
-            Energy - Total
-          </Typography>
-        </Card>
-      </Grid>
-      <Grid item xs={6} sm={3}>
-        {}
-      </Grid>
-    </Grid>
-    <div style={{
-        position: 'fixed',
-        bottom: 50,
-        right: 50,
-        zIndex: 101,
-      }}
-    >
-      <Switch
-        checked={this.state.isLive}
-        onChange={this.handleChange('checkedA')}
-        aria-label="checkedA"
-      />
+      <div style={{
+          position: 'fixed',
+          bottom: 50,
+          right: 50,
+          zIndex: 101,
+        }}
+      >
+        <Switch
+          checked={state.isLive}
+          onChange={handleChange('checkedA')}
+          aria-label="checkedA"
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 NuevoDashboardComp.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -264,6 +269,7 @@ NuevoDashboardComp.propTypes = {
     name: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
   }).isRequired,
+  handleChange: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(NuevoDashboardComp);
