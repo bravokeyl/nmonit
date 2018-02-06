@@ -57,6 +57,7 @@ function ButtonAppBar(props) {
     classes, isMenuOpen, handleMenu, handleMenuClose, logOut,
     handleDialogClose, isDialogOpen, handleDialogClick, selectedPVSystem,
   } = props;
+  const avatar = selectedPVSystem.avatar || '';
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.header}>
@@ -123,7 +124,7 @@ function ButtonAppBar(props) {
               menuObj.rightMenu.map(e => (
                 <li key={e.key} className={e.classes}>
                   <Button className={classes.button} dense onClick={handleMenu}>
-                    <img width="30" height="30" src="https://s3.amazonaws.com/nuevo-data/avatars/bravokeyl.jpeg" alt="User Avatar" />
+                    <img width="30" height="30" src={avatar} alt="User Avatar" />
                   </Button>
                   {
                     e.hasChildren && isMenuOpen ?
