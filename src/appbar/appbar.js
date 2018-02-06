@@ -99,7 +99,7 @@ function ButtonAppBar(props) {
                 <ListItemText
                   disableTypography
                   secondary={<Typography noWrap style={{ color: '#fff' }}>{selectedPVSystem.location}</Typography>}
-                  primary={<Typography type="title" style={{ color: '#fff' }}>{selectedPVSystem.name}</Typography>}
+                  primary={<Typography variant="title" style={{ color: '#fff' }}>{selectedPVSystem.name}</Typography>}
                 />
               </ListItem>
             </List>

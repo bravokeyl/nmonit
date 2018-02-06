@@ -204,7 +204,7 @@ class NuevoDashboard extends Component {
     const { classes, selectedPVSystem } = this.props;
     return (
       <div className={classes.root}>
-        <Typography type="title" style={{ margin: 16 }}>
+        <Typography variant="title" style={{ margin: 16 }}>
           PVSystem: {selectedPVSystem.name}
         </Typography>
         <Grid container spacing={0}>
@@ -213,15 +213,15 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 1: Voltage
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {this.state.progessL ? <CircularProgress size={24} /> : this.state.c1Voltage} V
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
@@ -231,10 +231,10 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 1: Current
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {
                       this.state.progessL ?
                         <CircularProgress size={24} /> : this.state.c1Current
@@ -242,7 +242,7 @@ class NuevoDashboard extends Component {
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
@@ -252,15 +252,15 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 1: Power
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {this.state.progessL ? <CircularProgress size={24} /> : this.state.c1Power} W
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Energy - Total
               </Typography>
             </Card>
@@ -274,15 +274,15 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 2: Voltage
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {this.state.progessL ? <CircularProgress size={24} /> : this.state.c5Voltage} V
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
@@ -292,16 +292,16 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 2: Current
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {this.state.progessL ?
                       <CircularProgress size={24} /> : this.state.c5Current} Amps
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
@@ -311,7 +311,7 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 2: Power
                   </Typography>
                   <Typography type="headline" component="h2">
@@ -319,7 +319,7 @@ class NuevoDashboard extends Component {
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Energy - Total
               </Typography>
             </Card>
@@ -333,15 +333,15 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 3: Voltage
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {this.state.progessL ? <CircularProgress size={24} /> : this.state.c6Voltage} V
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
@@ -351,16 +351,16 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 3: Current
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {this.state.progessL ?
                       <CircularProgress size={24} /> : this.state.c6Current} Amps
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Last updated: {this.state.relativeTimestamp}
               </Typography>
             </Card>
@@ -370,15 +370,15 @@ class NuevoDashboard extends Component {
               <div className={classes.details}>
                 <ChromeReaderModeIcon className={classes.icon} />
                 <CardContent className={classes.content}>
-                  <Typography type="body1" className={classes.title}>
+                  <Typography variant="body1" className={classes.title}>
                     Inv 3: Power
                   </Typography>
-                  <Typography type="headline" component="h2">
+                  <Typography variant="headline" component="h2">
                     {this.state.progessL ? <CircularProgress size={24} /> : this.state.c6Power} W
                   </Typography>
                 </CardContent>
               </div>
-              <Typography type="body1" className={classes.info}>
+              <Typography variant="body1" className={classes.info}>
                 Energy - Total
               </Typography>
             </Card>

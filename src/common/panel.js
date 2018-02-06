@@ -96,15 +96,15 @@ class BKPanel extends Component {
               <ChromeReaderModeIcon className={classes.icon} style={{ fill: color }} />
             }
             <CardContent className={classes.content}>
-              <Typography type="body1" className={classes.title}>
+              <Typography variant="body1" className={classes.title}>
                 {title || 'No Title'}
               </Typography>
-              <Typography type="headline" component="h2">
+              <Typography variant="headline" component="h2">
                 {this.state.progessL ? <CircularProgress size={24} /> : data || 'NA'}
               </Typography>
             </CardContent>
           </div>
-          <Typography type="body1" className={classes.footer}>
+          <Typography variant="body1" className={classes.footer}>
             {footer || ''}
           </Typography>
           { info ? <div className={classes.info}>i</div> : '' }

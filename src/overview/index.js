@@ -478,7 +478,7 @@ class NuevoOverview extends Component {
 
     return (
       <div className={classes.root}>
-        <Typography type="title" style={{ margin: 16 }}>
+        <Typography variant="title" style={{ margin: 16 }}>
           PVSystem: {selectedPVSystem.name}
         </Typography>
         <Grid container spacing={0}>

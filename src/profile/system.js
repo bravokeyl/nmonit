@@ -52,7 +52,7 @@ class NuevoSystem extends Component {
                 Currency: INR
               </ListItem>
             </List>
-            <Typography type="subheading">Address:</Typography>
+            <Typography variant="subheading">Address:</Typography>
           </Grid>
           <Grid item sm={12}>
             <Button onClick={clearAPICache}>

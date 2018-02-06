@@ -164,7 +164,7 @@ class NuevoProfile extends Component {
               <div className={classes.avatarWrap}>
                 <img src={this.state.user.avatar} className={classes.avatar} alt="Profile Avatar" title={this.state.user.name} />
               </div>
-              <Typography type="title" gutterBottom align="center">
+              <Typography variant="title" gutterBottom align="center">
                 {this.state.user.displayName}
                 <small className={classes.uid}> #{this.state.user.uid}</small>
               </Typography>
