@@ -1,15 +1,15 @@
-import {Config, CognitoIdentityCredentials} from "aws-sdk";
+import { Config, CognitoIdentityCredentials } from 'aws-sdk';
 import {
   CognitoUserPool,
   CognitoUserAttribute,
   CognitoUser,
   AuthenticationDetails,
-} from 'amazon-cognito-identity-js'
-import poolData from './'
+} from 'amazon-cognito-identity-js';
+import poolData from './';
 
 Config.region = poolData.region;
 Config.credentials = new CognitoIdentityCredentials({
-  IdentityPoolId: poolData.IdentityPoolId
+  IdentityPoolId: poolData.IdentityPoolId,
 });
 
 const userPool = new CognitoUserPool(poolData);
@@ -20,84 +20,59 @@ export const createUser = (username, email, password, callback) => {
       Name: 'email',
       Value: email,
     }),
-  ]
+  ];
 
-  userPool.signUp(username, password, attributeList, null, callback)
-}
+  userPool.signUp(username, password, attributeList, null, callback);
+};
 
 
 export const verifyUser = (username, verifyCode, callback) => {
   const userData = {
     Username: username,
     Pool: userPool,
-  }
-  const cognitoUser = new CognitoUser(userData)
-  cognitoUser.confirmRegistration(verifyCode, true, callback)
-}
+  };
+  const cognitoUser = new CognitoUser(userData);
+  cognitoUser.confirmRegistration(verifyCode, true, callback);
+};
 
-export const authenticateUser = (email, password, callback) => {
-  const authData = {
-    Username: email,
-    Password: password,
-  }
-  const authDetails = new AuthenticationDetails(authData)
-  const userData = {
-    Username: email,
-    Pool: userPool,
-  }
-  const cognitoUser = new CognitoUser(userData)
-  cognitoUser.authenticateUser(authDetails, {
-    onSuccess: (result) => {
-      getCurrentUserData().then((r)=>{
-        callback(null, r);
-      })
-    },
-    onFailure: err => {
-      console.error("Auth error",err);
-      callback(err);
-    }
-  })
-}
 
 export const signOut = () => {
-  const cognitoUser = userPool.getCurrentUser()
-  if (!cognitoUser){
-    return;
-  } else {
-    userPool.getCurrentUser().signOut()
+  const cognitoUser = userPool.getCurrentUser();
+  if (cognitoUser) {
+    userPool.getCurrentUser().signOut();
   }
-}
+};
 
-export const getIdToken = (callback) => {
+export const getIdToken = () => {
   const cognitoUser = userPool.getCurrentUser();
   if (!cognitoUser) return false;
   if (cognitoUser !== null) {
     return cognitoUser.getSession((err, session) => {
       if (err) {
-        console.log("Cognito Session Err",err);
+        console.log('Cognito Session Err', err);
         return false;
       }
-      if(session){
-        if(session.isValid()){
+      if (session) {
+        if (session.isValid()) {
           return session.getIdToken();
         }
       }
       return false;
-    })
+    });
   }
-}
+};
 
-export const getCurrentUser = (callback) => {
+export const getCurrentUser = () => {
   const cognitoUser = userPool.getCurrentUser();
   if (!cognitoUser) return false;
   if (cognitoUser !== null) {
     return cognitoUser.getSession((err, session) => {
       if (err) {
-        console.error("Cognito Session Err",err);
+        console.error('Cognito Session Err', err);
         return false;
       }
-      if(session){
-        if(session.isValid()){
+      if (session) {
+        if (session.isValid()) {
           return true;
         }
       }
@@ -106,53 +81,61 @@ export const getCurrentUser = (callback) => {
       //   if (err) return console.log(err);
       //   callback(attributes)
       // });
-    })
+    });
   }
-}
+};
 
-export const getCurrentUserName = (callback) => {
+export const getCurrentUserName = () => {
   const cognitoUser = userPool.getCurrentUser();
   if (!cognitoUser) return false;
   if (cognitoUser !== null) {
-    let user = cognitoUser.getUsername();
+    const user = cognitoUser.getUsername();
     return user;
   }
-}
+};
 
-export const getCurrentUserData = (callback) => {
-  let uname = getCurrentUserName();
-  let url = "https://api.blufieldsenergy.com/v1/me?un="+uname;
+export const getCurrentUserData = () => {
+  const uname = getCurrentUserName();
+  const url = `https://api.blufieldsenergy.com/v1/me?un=${uname}`;
   const API_KEY = poolData.LocalAPIKey;
   const APIHEADERS = {
     headers: {
-      "X-Api-Key": API_KEY,
+      'X-Api-Key': API_KEY,
     },
-    method: 'GET'
+    method: 'GET',
   };
-  return fetch(url,APIHEADERS)
+  return fetch(url, APIHEADERS)
     .then(response => response.json())
-    .then(function(response) {
-      window.localStorage.setItem('nuser',JSON.stringify(response.user[0]));
+    .then((response) => {
+      window.localStorage.setItem('nuser', JSON.stringify(response.user[0]));
       return true;
     })
-    .catch((err)=>{
-      console.error("APP Fetch Error:",err);
+    .catch((err) => {
+      console.error('APP Fetch Error:', err);
       return false;
     });
-}
+};
 
-export const signinCallback = (googleUser) => {
-  // if (authResult['status']['signed_in']) {
-    console.log("SignIn Call back");
-     Config.credentials = new CognitoIdentityCredentials({
-        IdentityPoolId: poolData.IdentityPoolId,
-        Logins: {
-           'accounts.google.com': googleUser.getAuthResponse().id_token
-        }
-     });
-
-     Config.credentials.get(function(){
-
-     });
-  // }
-}
+export const authenticateUser = (email, password, callback) => {
+  const authData = {
+    Username: email,
+    Password: password,
+  };
+  const authDetails = new AuthenticationDetails(authData);
+  const userData = {
+    Username: email,
+    Pool: userPool,
+  };
+  const cognitoUser = new CognitoUser(userData);
+  cognitoUser.authenticateUser(authDetails, {
+    onSuccess: () => {
+      getCurrentUserData().then((r) => {
+        callback(null, r);
+      });
+    },
+    onFailure: (err) => {
+      console.error('Auth error', err);
+      callback(err);
+    },
+  });
+};
