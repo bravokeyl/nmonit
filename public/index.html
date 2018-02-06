@@ -17,11 +17,16 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
     <title>Nuevo Monit | A way to monitor Solar & Grid</title>
+    <script src="https://cdn.ravenjs.com/3.22.1/raven.min.js"
+    crossorigin="anonymous"></script>
   </head>
   <body>
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
+    <script>
+    Raven.config('https://6127d5699a884b2d84bd7c10d28ff1d6@sentry.io/283727').install();
+    </script>
   </body>
 </html>

@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "amazon-cognito-identity-js": "^1.21.0",
-    "aws-sdk": "^2.189.0",
     "classnames": "^2.2.5",
     "highcharts-exporting": "^0.1.7",
     "highcharts-more": "^0.1.7",

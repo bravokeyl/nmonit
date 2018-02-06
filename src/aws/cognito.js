@@ -50,6 +50,7 @@ export const getIdToken = () => {
     return cognitoUser.getSession((err, session) => {
       if (err) {
         console.log('Cognito Session Err', err);
+        // throw new Error('Hola Pithre!!!');
         return false;
       }
       if (session) {

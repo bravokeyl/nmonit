@@ -124,7 +124,7 @@ function ButtonAppBar(props) {
             {
               menuObj.rightMenu.map(e => (
                 <li key={e.key} className={e.classes}>
-                  <Button className={classes.button} dense onClick={handleMenu}>
+                  <Button className={classes.button} size="small" onClick={handleMenu}>
                     <img width="30" height="30" src={avatar} alt="User Avatar" />
                   </Button>
                   {
@@ -142,7 +142,7 @@ function ButtonAppBar(props) {
                                 <MenuItem
                                   key={c.key}
                                   onClick={c.lo ? logOut : handleMenuClose}
-                                  dense
+                                  size="small"
                                 >
                                   {
                                     c.link ? (

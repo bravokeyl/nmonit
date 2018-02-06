@@ -514,19 +514,19 @@ class NuevoDay extends Component {
                     Day Energy ( Hour wise ) - {moment(this.state.date).format('Do MMM YYYY')}
                     : {this.state.solarPowerTotal}
                   </Typography>
-                  <Button dense onClick={this.changeChartType('spline')}>
+                  <Button size="small" onClick={this.changeChartType('spline')}>
                   Spline
                   </Button>
-                  <Button dense onClick={this.changeChartType('bar')}>
+                  <Button size="small" onClick={this.changeChartType('bar')}>
                   Bar
                   </Button>
-                  <Button dense onClick={this.changeChartGroup('solar')}>
+                  <Button size="small" onClick={this.changeChartGroup('solar')}>
                   Solar
                   </Button>
-                  <Button dense onClick={this.changeChartGroup('grid')}>
+                  <Button size="small" onClick={this.changeChartGroup('grid')}>
                   Grid
                   </Button>
-                  <Button dense onClick={this.changeChartGroup('both')}>
+                  <Button size="small" onClick={this.changeChartGroup('both')}>
                   Both
                   </Button>
                   <SingleDatePicker

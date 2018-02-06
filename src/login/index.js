@@ -144,7 +144,7 @@ class NuevoLogin extends Component {
                       <br />
                       <Button
                         type="submit"
-                        raised
+                        variant="raised"
                         className={classes.button}
                         disabled={this.state.loading}
                         color="primary"
