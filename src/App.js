@@ -45,8 +45,16 @@ class NuevoMonit extends Component {
     const self = this;
     const isLoggedIn = getCurrentUser();
     if (isLoggedIn) {
+      let nuser = {};
+      if (localStorage.nuser) {
+        nuser = JSON.parse(localStorage.nuser);
+        bkLog('initialPVSystem ', nuser);
+      } else {
+        bkLog('No user saved, but still logged in... :D');
+      }
       self.setState({
         isLoggedin: true,
+        selectedPVSystem: nuser,
       });
     }
     bkLog('APP component will mount, isUserLoggedIn:', isLoggedIn);

@@ -15,11 +15,11 @@ class NuevoAppBar extends Component {
   }
   handleDialogClose = (selectedPVSystem, changeUser) => {
     const nuser = JSON.parse(localStorage.nuser);
-    bkLog('Before State:', nuser.p, selectedPVSystem.key);
+    bkLog('Before State:', nuser.key, selectedPVSystem.key);
     this.setState(() => ({ isDialogOpen: false }));
-    if (selectedPVSystem.key && (selectedPVSystem.key !== nuser.p)) {
-      localStorage.setItem('nuser', JSON.stringify(Object.assign({}, nuser, { p: selectedPVSystem.key })));
-      bkLog('After State:', nuser.p, selectedPVSystem.key);
+    if (selectedPVSystem.key && (selectedPVSystem.key !== nuser.key)) {
+      localStorage.setItem('nuser', JSON.stringify(Object.assign({}, nuser, selectedPVSystem)));
+      bkLog('After State:', nuser.key, selectedPVSystem.key);
       changeUser(selectedPVSystem);
     }
   }
