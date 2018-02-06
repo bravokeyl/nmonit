@@ -115,7 +115,7 @@ class NuevoYear extends Component {
   componentDidMount() {
     bkLog('NuevoYear component did mount', this.props.apiPath);
     const { year } = this.state;
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     this.getYearData(year, apiPath);
   }
   componentWillReceiveProps(np) {
@@ -204,7 +204,7 @@ class NuevoYear extends Component {
   changeYearEnergy = (year) => {
     const yearApiHeaders = APIHEADERS;
     yearApiHeaders.offline.expires = 1000 * 60 * 60;
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}m?ddm=${year}`;
     const self = this;

@@ -119,7 +119,7 @@ class NuevoMonth extends Component {
   componentDidMount() {
     bkLog('NuevoMonth component did mount', this.props.apiPath);
     const { month } = this.state;
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
     const dayURL = `${baseApiURL}d?ddm=${month}`;
@@ -199,7 +199,7 @@ class NuevoMonth extends Component {
       month = `${this.state.selectedYear}/${month}`;
       ddm = moment(monthYear, 'YYYY/MMMM').format('YYYY/MM');
     }
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}d?ddm=${ddm}`;
     const self = this;

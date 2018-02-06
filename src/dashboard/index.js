@@ -137,7 +137,7 @@ class NuevoDashboard extends Component {
   };
 
   getLiveData = () => {
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
     for (let i = 1; i < 7; i += 1) {

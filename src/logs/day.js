@@ -231,7 +231,7 @@ class NuevoDay extends Component {
 
   componentDidMount() {
     bkLog('NuevoDay component did mount', this.props.apiPath);
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const { date } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
@@ -427,7 +427,7 @@ class NuevoDay extends Component {
       dateApiHeaders.offline.expires = 1000 * 60 * 5;
     }
     const dhr = moment(date).format('YYYY/MM/DD');
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}h?dhr=${dhr}`;
     const self = this;
@@ -461,7 +461,7 @@ class NuevoDay extends Component {
   handlePower = (date) => {
     const cdate = moment(date).format('YYYY/MM/DD');
     bkLog('Change Power:', cdate);
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}power?date=${cdate}`;
     const self = this;
@@ -478,25 +478,27 @@ class NuevoDay extends Component {
   }
   updatePowerCharts = (pow) => {
     const self = this;
-    const chart = self.chart.getChart();
-    chart.series[0].update({
-      data: _.sortBy(pow.i1, [o => o[0]]),
-    }, true);
-    chart.series[1].update({
-      data: _.sortBy(pow.i2, [o => o[0]]),
-    }, true);
-    chart.series[2].update({
-      data: _.sortBy(pow.i3, [o => o[0]]),
-    }, true);
-    chart.series[3].update({
-      data: _.sortBy(pow.R, [o => o[0]]),
-    }, true);
-    chart.series[4].update({
-      data: _.sortBy(pow.Y, [o => o[0]]),
-    }, true);
-    chart.series[5].update({
-      data: _.sortBy(pow.B, [o => o[0]]),
-    }, true);
+    if (self.chart) {
+      const chart = self.chart.getChart();
+      chart.series[0].update({
+        data: _.sortBy(pow.i1, [o => o[0]]),
+      }, true);
+      chart.series[1].update({
+        data: _.sortBy(pow.i2, [o => o[0]]),
+      }, true);
+      chart.series[2].update({
+        data: _.sortBy(pow.i3, [o => o[0]]),
+      }, true);
+      chart.series[3].update({
+        data: _.sortBy(pow.R, [o => o[0]]),
+      }, true);
+      chart.series[4].update({
+        data: _.sortBy(pow.Y, [o => o[0]]),
+      }, true);
+      chart.series[5].update({
+        data: _.sortBy(pow.B, [o => o[0]]),
+      }, true);
+    }
   }
 
   render() {

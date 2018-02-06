@@ -32,10 +32,13 @@ const theme = createMuiTheme({
 class NuevoMonit extends Component {
   constructor(props) {
     super(props);
+    const nuser = JSON.parse(localStorage.nuser);
+    const d = { key: 'v1', name: 'Shyamala Hospital', location: 'Wyra Road, Khammam' };
+    const initialPVSystem = { ...d, ...nuser };
     this.state = {
       isLoggedin: false,
       apiPath: 'demo',
-      selectedPVSystem: { key: 'v1', name: 'Shyamala Hospital', location: 'Wyra Road, Khammam' },
+      selectedPVSystem: initialPVSystem,
     };
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);

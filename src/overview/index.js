@@ -230,7 +230,7 @@ class NuevoOverview extends Component {
   componentDidMount() {
     const { date, month } = this.state;
     bkLog('Overview did mount.');
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     APIHEADERS.headers.Authorization = this.state.idToken;
     this.getHourData(date, apiPath);
     this.getDayData(month, apiPath);
