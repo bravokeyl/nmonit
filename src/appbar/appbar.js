@@ -21,6 +21,7 @@ import menuObj from './menuConstants';
 import Plants from '../common/plants';
 import logoW from './logow.png';
 import mlogoW from './mlogow.png';
+import pavatar from '../common/avatar200.png';
 
 const styles = () => ({
   root: {
@@ -57,7 +58,7 @@ function ButtonAppBar(props) {
     classes, isMenuOpen, handleMenu, handleMenuClose, logOut,
     handleDialogClose, isDialogOpen, handleDialogClick, selectedPVSystem,
   } = props;
-  const avatar = selectedPVSystem.avatar || '';
+  const avatar = selectedPVSystem.avatar || pavatar;
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.header}>

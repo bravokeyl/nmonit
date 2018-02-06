@@ -16,7 +16,7 @@ import { getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import { bkLog } from '../common/utils';
 
-import avatar from './avatar200.png';
+import avatar from '../common/avatar200.png';
 import NuevoContacts from './contacts';
 import NuevoSystem from './system';
 import NuevoSystemImage from './image';
