@@ -67,7 +67,6 @@ class NuevoLogin extends Component {
       loading: false,
       currentQuotesIndex: 0,
     };
-    this.startQuotes();
   }
   componentDidMount() {
     bkLog('Login component Did mount');
@@ -88,6 +87,7 @@ class NuevoLogin extends Component {
   };
   handleSubmit = () => {
     this.setState({ loading: true });
+    this.startQuotes();
     authenticateUser(this.state.email, this.state.password, (err, result) => {
       if (err) {
         // eslint-disable-next-line
@@ -100,7 +100,7 @@ class NuevoLogin extends Component {
   }
   startQuotes = () => {
     const quotes = NuevoQuotes;
-    const speedInMilliseconds = 2 * 1000;
+    const speedInMilliseconds = 3 * 1000;
     this.quotesInterval = setInterval(() => {
       this.setState({
         currentQuotesIndex: this.getNextQuote(quotes),
