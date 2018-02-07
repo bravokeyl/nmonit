@@ -15,6 +15,7 @@ const defaultProps = {
   info: false,
   color: '',
   icon: false,
+  cols: 2,
 };
 
 const styles = theme => ({
@@ -85,10 +86,10 @@ class BKPanel extends Component {
   }
   render() {
     const {
-      classes, data, title, footer, color, icon, info,
+      classes, data, title, footer, color, icon, info, cols = '2',
     } = this.props;
     return (
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={12/cols}>
         <Card className={classes.card}>
           <div className={classes.details}>
             {
@@ -125,6 +126,10 @@ BKPanel.propTypes = {
   info: PropTypes.bool,
   color: PropTypes.string,
   icon: PropTypes.bool,
+  cols: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
 };
 BKPanel.defaultProps = defaultProps;
 export default withStyles(styles)(BKPanel);

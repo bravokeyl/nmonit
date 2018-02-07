@@ -109,7 +109,7 @@ class NuevoDashboard extends Component {
   componentDidMount() {
     bkLog('Dashboard component did mount', this.props.apiPath);
     const self = this;
-    const intervalId = setInterval(self.updateliveTimestamp, 10 * 1000);
+    const intervalId = setInterval(self.updateliveTimestamp, 60 * 1000);
     self.setState({ liveTimestampId: intervalId });
     this.getLiveData();
   }
@@ -159,6 +159,7 @@ class NuevoDashboard extends Component {
     self.setState({ intervalId });
   };
   updateliveTimestamp = () => {
+    bkLog('%c Updating timestamp', 'color: #fff;background: black;');
     this.setState({
       relativeTimestamp: moment(this.state.liveTimestamp).fromNow(),
     });
