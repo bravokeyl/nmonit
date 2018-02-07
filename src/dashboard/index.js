@@ -88,19 +88,13 @@ class NuevoDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      progessL: true,
+      inProgress: true,
       idToken: (getIdToken() ? getIdToken().jwtToken : '') || '',
       intervalId: 0,
       liveTimestampId: 0,
-      c1Voltage: 0,
-      c5Voltage: 0,
-      c6Voltage: 0,
-      c1Current: 0,
-      c5Current: 0,
-      c6Current: 0,
-      c1Power: 0,
-      c5Power: 0,
-      c6Power: 0,
+      i1: {},
+      i2: {},
+      i3: {},
       liveTimestamp: false,
       relativeTimestamp: 0,
       isLive: false,
@@ -128,28 +122,21 @@ class NuevoDashboard extends Component {
     const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
-    for (let i = 1; i < 7; i += 1) {
-      const url = `${baseApiURL}l?c=${i}`;
-      const self = this;
-      offlineFetch(url, APIHEADERS)
-        .then(response => response.json())
-        .then((response) => {
-          const voltage = `c${i}Voltage`;
-          self.setState({
-            [voltage]: response.voltage,
-            [`c${i}Current`]: response.current,
-            [`c${i}Power`]: response.power,
-          });
-          if (i === 4) {
-            self.setState({
-              progessL: false,
-              liveTimestamp: response.timestamp,
-              relativeTimestamp: moment(response.timestamp).fromNow(),
-            });
-          }
-          return response;
+    const url = `${baseApiURL}l`;
+    const self = this;
+    offlineFetch(url, APIHEADERS)
+      .then(response => response.json())
+      .then((response) => {
+        self.setState({
+          i1: response.i1,
+          i2: response.i2,
+          i3: response.i3,
+          inProgress: false,
+          liveTimestamp: response.i1.timestamp,
+          relativeTimestamp: moment(response.i1.timestamp).fromNow(),
         });
-    }
+        return response;
+      });
   };
   handleChange = () => (event, checked) => {
     this.setState({ isLive: checked });

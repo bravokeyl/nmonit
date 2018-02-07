@@ -15,7 +15,8 @@ const defaultProps = {
   info: false,
   color: '',
   icon: false,
-  cols: 2,
+  cols: 6,
+  inProgress: false,
 };
 
 const styles = theme => ({
@@ -79,41 +80,35 @@ const styles = theme => ({
 });
 
 
-class BKPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-  render() {
-    const {
-      classes, data, title, footer, color, icon, info, cols = '2',
-    } = this.props;
-    return (
-      <Grid item xs={12} sm={12/cols}>
-        <Card className={classes.card}>
-          <div className={classes.details}>
-            {
-              icon ? <AssessmentIcon className={classes.icon} style={{ fill: color }} /> :
-              <ChromeReaderModeIcon className={classes.icon} style={{ fill: color }} />
-            }
-            <CardContent className={classes.content}>
-              <Typography variant="body1" className={classes.title}>
-                {title || 'No Title'}
-              </Typography>
-              <Typography variant="headline" component="h2">
-                {this.state.progessL ? <CircularProgress size={24} /> : data || 'NA'}
-              </Typography>
-            </CardContent>
-          </div>
-          <Typography variant="body1" className={classes.footer}>
-            {footer || ''}
-          </Typography>
-          { info ? <div className={classes.info}>i</div> : '' }
-        </Card>
-      </Grid>
-    );
-  }
-}
+const BKPanel = (props) => {
+  const {
+    classes, data, title, footer, color, icon, info, cols, inProgress,
+  } = props;
+  return (
+    <Grid item xs={12} sm={cols}>
+      <Card className={classes.card}>
+        <div className={classes.details}>
+          {
+            icon ? <AssessmentIcon className={classes.icon} style={{ fill: color }} /> :
+            <ChromeReaderModeIcon className={classes.icon} style={{ fill: color }} />
+          }
+          <CardContent className={classes.content}>
+            <Typography variant="body1" className={classes.title}>
+              {title || 'No Title'}
+            </Typography>
+            <Typography variant="headline" component="h2">
+              {inProgress ? <CircularProgress size={24} /> : data || 'NA'}
+            </Typography>
+          </CardContent>
+        </div>
+        <Typography variant="body1" className={classes.footer}>
+          {footer || ''}
+        </Typography>
+        { info ? <div className={classes.info}>i</div> : '' }
+      </Card>
+    </Grid>
+  );
+};
 
 BKPanel.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -126,6 +121,7 @@ BKPanel.propTypes = {
   info: PropTypes.bool,
   color: PropTypes.string,
   icon: PropTypes.bool,
+  inProgress: PropTypes.bool,
   cols: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,

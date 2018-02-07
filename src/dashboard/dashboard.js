@@ -58,7 +58,7 @@ const styles = theme => ({
 const NuevoDashboardComp = ({
   classes, selectedPVSystem, handleChange, state,
 }) => {
-  console.log('Rendering...', selectedPVSystem);
+  console.log('Rendering...', state.inProgress);
   return (
     <div className={classes.root}>
       <Typography variant="title" style={{ margin: 16 }}>
@@ -67,58 +67,67 @@ const NuevoDashboardComp = ({
       <Grid container spacing={0}>
         <BKPanel
           title="Inv 1: Voltage"
-          data={`${state.c1Voltage} W`}
+          data={`${state.i1.voltage || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
         <BKPanel
           title="Inv 1: Current"
-          data={`${state.c1Current} W`}
+          data={`${state.i1.current || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
         <BKPanel
           title="Inv 1: Power"
-          data={`${state.c1Power} W`}
+          data={`${state.i1.power || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
 
         <BKPanel
           title="Inv 2: Voltage"
-          data={`${state.c2Voltage} W`}
+          data={`${state.i2.voltage || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
         <BKPanel
           title="Inv 2: Current"
-          data={`${state.c2Current} W`}
+          data={`${state.i2.current || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
         <BKPanel
           title="Inv 2: Power"
-          data={`${state.c2Power} W`}
+          data={`${state.i2.power || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
 
         <BKPanel
           title="Inv 3: Voltage"
-          data={`${state.c3Voltage} W`}
+          data={`${state.i3.voltage || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
         <BKPanel
           title="Inv 3: Current"
-          data={`${state.c3Current} W`}
+          data={`${state.i3.current || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
         <BKPanel
           title="Inv 3: Power"
-          data={`${state.c3Power} W`}
+          data={`${state.i3.power || 0} W`}
           cols={3}
+          inProgress={state.inProgress}
           footer={`Last updated: ${state.relativeTimestamp}`}
         />
       </Grid>
