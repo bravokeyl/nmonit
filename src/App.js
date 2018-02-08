@@ -49,13 +49,13 @@ class NuevoMonit extends Component {
       if (localStorage.nuser) {
         nuser = JSON.parse(localStorage.nuser);
         bkLog('initialPVSystem ', nuser);
+        self.setState({
+          isLoggedin: true,
+          selectedPVSystem: nuser,
+        });
       } else {
-        bkLog('No user saved, but still logged in... :D');
+        bkLog('No user saved to localStorage, but still logged in... :D');
       }
-      self.setState({
-        isLoggedin: true,
-        selectedPVSystem: nuser,
-      });
     }
     bkLog('APP component will mount, isUserLoggedIn:', isLoggedIn);
   }
