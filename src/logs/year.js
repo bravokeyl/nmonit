@@ -111,20 +111,30 @@ class NuevoYear extends Component {
       dialogOpen: false,
       selectedYear: moment().format('YYYY'),
     };
-    this.changeYearEnergy = this.changeYearEnergy.bind(this);
-    this.transformData = this.transformData.bind(this);
-    this.handleSelectYear = this.handleSelectYear.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
     bkLog('NuevoYear component did mount', this.props.apiPath);
     const { year } = this.state;
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
+    this.getYearData(year, apiPath);
+  }
+  componentWillReceiveProps(np) {
+    bkLog('NuevoYear receiving new props:', np, this.props);
+    try {
+      if (np.selectedPVSystem && np.selectedPVSystem.key) {
+        const { year } = this.state;
+        const apiPath = np.selectedPVSystem.key;
+        this.getYearData(year, apiPath);
+      }
+    } catch (error) {
+      bkLog('NuevoYear Props Error:', error);
+    }
+  }
+  getYearData = (year, apiPath) => {
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
     const yearURL = `${baseApiURL}m?ddm=${year}`;
     const self = this;
-
     offlineFetch(yearURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -142,7 +152,6 @@ class NuevoYear extends Component {
         return response;
       });
   }
-
   transformData = (d) => {
     let cdarr = [];
     const chartData = [
@@ -195,7 +204,7 @@ class NuevoYear extends Component {
   changeYearEnergy = (year) => {
     const yearApiHeaders = APIHEADERS;
     yearApiHeaders.offline.expires = 1000 * 60 * 60;
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}m?ddm=${year}`;
     const self = this;
@@ -235,7 +244,7 @@ class NuevoYear extends Component {
   handleSelectYear = () => (event) => {
     this.changeYearEnergy(event.target.value);
   };
-  handleClick(data, e) {
+  handleClick = (data, e) => {
     bkLog(data, e.target);
     if (data) {
       const cm = moment();

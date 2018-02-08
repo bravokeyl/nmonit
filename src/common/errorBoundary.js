@@ -14,6 +14,7 @@ class ErrorBoundary extends Component {
       error,
       errorInfo,
     });
+    window.Raven.captureException(error, { extra: errorInfo });
   }
   render() {
     if (this.state.errorInfo) {

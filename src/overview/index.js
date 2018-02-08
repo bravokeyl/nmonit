@@ -226,23 +226,38 @@ class NuevoOverview extends Component {
       month: moment().format('YYYY/MM'),
       value: 0,
     };
-    this.transformData = this.transformData.bind(this);
-    this.handleSelectMonth = this.handleSelectMonth.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
   componentDidMount() {
     const { date, month } = this.state;
     bkLog('Overview did mount.');
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
-    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     APIHEADERS.headers.Authorization = this.state.idToken;
+    this.getHourData(date, apiPath);
+    this.getDayData(month, apiPath);
+    this.getWeekData(apiPath);
+    this.getMonthData(apiPath);
+  }
+  componentWillReceiveProps(np) {
+    bkLog('Overview container receiving props', np, this.props);
+    try {
+      if (np.selectedPVSystem && np.selectedPVSystem.key) {
+        const { date, month } = this.state;
+        const apiPath = np.selectedPVSystem.key;
+        APIHEADERS.headers.Authorization = this.state.idToken;
+        this.getHourData(date, apiPath);
+        this.getDayData(month, apiPath);
+        this.getWeekData(apiPath);
+        this.getMonthData(apiPath);
+      }
+    } catch (error) {
+      bkLog('Overview Props Error:', error);
+    }
+  }
+  /* HourWise Data */
+  getHourData = (date, apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}h?dhr=${date}`;
-    const dayURL = `${baseApiURL}d?ddm=${month}`;
-    const weekURL = `${baseApiURL}we`;
-    const monthURL = `${baseApiURL}m`;
     const self = this;
-
     offlineFetch(url, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -277,7 +292,12 @@ class NuevoOverview extends Component {
         }));
         return response;
       });
-
+  }
+  /* Daywise Data */
+  getDayData = (month, apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    const dayURL = `${baseApiURL}d?ddm=${month}`;
+    const self = this;
     offlineFetch(dayURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -323,7 +343,12 @@ class NuevoOverview extends Component {
       }, (error) => {
         bkLog('Day Fetch Error', error);
       });
-
+  }
+  /* Week Data */
+  getWeekData = (apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
+    const weekURL = `${baseApiURL}we`;
+    const self = this;
     offlineFetch(weekURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
@@ -365,12 +390,18 @@ class NuevoOverview extends Component {
       .catch((err) => {
         bkLog('Week Fetch Error:', err);
       });
-    APIHEADERS.offline.expires = 60 * 60 * 1000;
+  }
+  /* Month Data */
+  getMonthData = (apiPath) => {
+    const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
 
+    APIHEADERS.offline.expires = 60 * 60 * 1000;
+    const monthURL = `${baseApiURL}m`;
+    const self = this;
     offlineFetch(monthURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
-        let de = response;
+        let de = response.energy;
         bkLog('MONTHURL', response);
         if (!Array.isArray(de)) {
           de = [de];
@@ -408,6 +439,7 @@ class NuevoOverview extends Component {
         bkLog('Month Fetch Error:', err);
       });
   }
+
   handleChange = (event, value) => {
     this.setState({
       value,
@@ -441,23 +473,16 @@ class NuevoOverview extends Component {
     }
     return d;
   }
-
-  handleSelectMonth = () => (event) => {
-    this.changeMonthEnergy(event.target.value);
-  };
-
   render() {
-    const { classes } = this.props;
-    const { nuser } = window.localStorage;
-    const pvsystem = (nuser) ? JSON.parse(nuser).plant : null;
+    const { classes, selectedPVSystem } = this.props;
 
     return (
       <div className={classes.root}>
-        <Typography type="title" style={{ margin: 16 }}>
-          PVSystem: {pvsystem}
+        <Typography variant="title" style={{ margin: 16 }}>
+          PVSystem: {selectedPVSystem.name}
         </Typography>
         <Grid container spacing={0}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} md={6}>
             <Tabs
               value={this.state.value}
               onChange={this.handleChange}
@@ -478,7 +503,7 @@ class NuevoOverview extends Component {
               <NuevoOverCon data={this.state.load} />
             </SwipeableViews>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} md={6}>
             <Grid container spacing={0}>
               <ReactHighcharts config={pieDrill} ref={(chrt) => { this.piechart = chrt; }} />
             </Grid>
@@ -491,6 +516,10 @@ class NuevoOverview extends Component {
 
 NuevoOverview.propTypes = {
   classes: PropTypes.object.isRequired,
+  selectedPVSystem: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default withStyles(styles)(NuevoOverview);

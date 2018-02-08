@@ -32,9 +32,11 @@ const theme = createMuiTheme({
 class NuevoMonit extends Component {
   constructor(props) {
     super(props);
+    const initialPVSystem = { key: 'ne', name: 'Demo System', location: 'Nuevosol Energy, Hyderabad' };
     this.state = {
       isLoggedin: false,
       apiPath: 'demo',
+      selectedPVSystem: initialPVSystem,
     };
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -43,9 +45,17 @@ class NuevoMonit extends Component {
     const self = this;
     const isLoggedIn = getCurrentUser();
     if (isLoggedIn) {
-      self.setState({
-        isLoggedin: true,
-      });
+      let nuser = {};
+      if (localStorage.nuser) {
+        nuser = JSON.parse(localStorage.nuser);
+        bkLog('initialPVSystem ', nuser);
+        self.setState({
+          isLoggedin: true,
+          selectedPVSystem: nuser,
+        });
+      } else {
+        bkLog('No user saved to localStorage, but still logged in... :D');
+      }
     }
     bkLog('APP component will mount, isUserLoggedIn:', isLoggedIn);
   }
@@ -55,8 +65,19 @@ class NuevoMonit extends Component {
   logIn = (r, f) => {
     bkLog('Login authHandler');
     if (f) {
+      let nuser = {};
+      const d = { key: 'v1', name: 'Shyamala Hospital', location: 'Wyra Road, Khammam' };
+      let initialPVSystem = d;
+      if (localStorage.nuser) {
+        nuser = JSON.parse(localStorage.nuser);
+        initialPVSystem = { ...d, ...nuser };
+        bkLog('initialPVSystem ', initialPVSystem);
+      } else {
+        bkLog('No user saved, but still logged in... :D');
+      }
       this.setState({
         isLoggedin: true,
+        selectedPVSystem: initialPVSystem,
       });
     }
   }
@@ -74,8 +95,21 @@ class NuevoMonit extends Component {
       // window.location.reload();
     }
   }
+  changeUser = (r = null) => {
+    if (r && r.key) {
+      bkLog('Changing user with state:', r);
+      this.setState({
+        apiPath: r.key,
+        selectedPVSystem: r,
+      });
+    }
+  }
   render() {
-    const newProps = { ...this.props, apiPath: this.state.apiPath };
+    const newProps = {
+      ...this.props,
+      apiPath: this.state.apiPath,
+      selectedPVSystem: this.state.selectedPVSystem,
+    };
     return (
       <div className="nmonit">
         <Router>
@@ -93,7 +127,11 @@ class NuevoMonit extends Component {
               :
               (
                 <div className="nmonit-container">
-                  <NuevoAppBar logOut={() => this.logOut()} />
+                  <NuevoAppBar
+                    logOut={() => this.logOut()}
+                    changeUser={r => this.changeUser(r)}
+                    selectedPVSystem={this.state.selectedPVSystem}
+                  />
                   <Grid container spacing={0}>
                     <Grid item xs={12}>
                       <ErrorBoundary>

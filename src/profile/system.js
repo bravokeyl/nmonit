@@ -33,15 +33,14 @@ class NuevoSystem extends Component {
     };
   }
   render() {
-    const { classes } = this.props;
-    const system = JSON.parse(localStorage.getItem('nuser')).plant;
+    const { classes, selectedPVSystem } = this.props;
     return (
       <div className={classes.root}>
         <Grid container spacing={0}>
           <Grid item xs={12} sm={12}>
             <List>
               <ListItem>
-                PV system name: {system}
+                PV system name: {selectedPVSystem.name}
               </ListItem>
               <ListItem>
                 Time zone : UTC+5:30
@@ -53,7 +52,7 @@ class NuevoSystem extends Component {
                 Currency: INR
               </ListItem>
             </List>
-            <Typography type="subheading">Address:</Typography>
+            <Typography variant="subheading">Address:</Typography>
           </Grid>
           <Grid item sm={12}>
             <Button onClick={clearAPICache}>
@@ -69,6 +68,10 @@ class NuevoSystem extends Component {
 
 NuevoSystem.propTypes = {
   classes: PropTypes.object.isRequired,
+  selectedPVSystem: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default withStyles(styles)(NuevoSystem);

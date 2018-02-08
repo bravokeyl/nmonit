@@ -16,7 +16,7 @@ import { getCurrentUserName } from '../aws/cognito';
 import offlineFetch from '../common/fetch-cache';
 import { bkLog } from '../common/utils';
 
-import avatar from './avatar200.png';
+import avatar from '../common/avatar200.png';
 import NuevoContacts from './contacts';
 import NuevoSystem from './system';
 import NuevoSystemImage from './image';
@@ -67,7 +67,8 @@ const styles = theme => ({
   },
   avatar: {
     width: 140,
-    height: 140,
+    height: 'auto',
+    maxWidth: '100%',
     borderRadius: '50%',
   },
   uid: {
@@ -106,7 +107,7 @@ class NuevoProfile extends Component {
     this.state = {
       value: 0,
       user: {
-        name: 'Unknown',
+        displayName: 'Unknown',
         uname: 'Unknown',
         uid: '000',
         designation: 'Unknown',
@@ -114,9 +115,6 @@ class NuevoProfile extends Component {
         avatar,
       },
     };
-    this.handleSignOut = this.handleSignOut.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangeIndex = this.handleChangeIndex.bind(this);
   }
 
   componentDidMount() {
@@ -156,7 +154,7 @@ class NuevoProfile extends Component {
   handleChangeIndex = index => this.setState({ value: index });
 
   render() {
-    const { classes } = this.props;
+    const { classes, selectedPVSystem } = this.props;
     const { value } = this.state;
     return (
       <div className={classes.root}>
@@ -166,8 +164,9 @@ class NuevoProfile extends Component {
               <div className={classes.avatarWrap}>
                 <img src={this.state.user.avatar} className={classes.avatar} alt="Profile Avatar" title={this.state.user.name} />
               </div>
-              <Typography type="title" gutterBottom align="center">
-                {this.state.user.name} <small className={classes.uid}>#{this.state.user.uid}</small>
+              <Typography variant="title" gutterBottom align="center">
+                {this.state.user.displayName}
+                <small className={classes.uid}> #{this.state.user.uid}</small>
               </Typography>
               <Typography gutterBottom align="center">
                 {this.state.user.designation}
@@ -201,7 +200,7 @@ class NuevoProfile extends Component {
                 index={value}
                 onChangeIndex={this.handleChangeIndex}
               >
-                <NuevoSystem />
+                <NuevoSystem selectedPVSystem={selectedPVSystem} />
                 <NuevoSystemImage />
                 <NuevoContacts />
                 <NuevoNotifications />
@@ -217,6 +216,10 @@ class NuevoProfile extends Component {
 NuevoProfile.propTypes = {
   classes: PropTypes.object.isRequired,
   authHandler: PropTypes.func.isRequired,
+  selectedPVSystem: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default withStyles(styles)(NuevoProfile);

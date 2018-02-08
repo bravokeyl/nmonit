@@ -114,16 +114,12 @@ class NuevoMonth extends Component {
       selectedMonth: moment().format('MMMM'),
       selectedYear: moment().format('YYYY'),
     };
-    this.changeMonthEnergy = this.changeMonthEnergy.bind(this);
-    this.transformData = this.transformData.bind(this);
-    this.handleSelectMonth = this.handleSelectMonth.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
     bkLog('NuevoMonth component did mount', this.props.apiPath);
     const { month } = this.state;
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     APIHEADERS.headers.Authorization = this.state.idToken;
     const dayURL = `${baseApiURL}d?ddm=${month}`;
@@ -147,6 +143,7 @@ class NuevoMonth extends Component {
       });
   }
   componentWillReceiveProps(n) {
+    bkLog('NuevoMonth receiving new props:', n, this.props);
     if (n.month) {
       const nd = moment(n.month, 'YYYY/MM').format('YYYY/MM');
       bkLog('PROPS Month', n.month, nd);
@@ -202,7 +199,7 @@ class NuevoMonth extends Component {
       month = `${this.state.selectedYear}/${month}`;
       ddm = moment(monthYear, 'YYYY/MMMM').format('YYYY/MM');
     }
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}d?ddm=${ddm}`;
     const self = this;
@@ -238,7 +235,7 @@ class NuevoMonth extends Component {
     this.changeMonthEnergy(event.target.value, true);
   };
 
-  handleClick(data, e) {
+  handleClick = (data, e) => {
     if (data) {
       bkLog('Month active label', data);
       this.props.indexV(e, 0, moment(data.activeLabel, 'MMM Do YYYY'));
@@ -337,7 +334,7 @@ class NuevoMonth extends Component {
                 },
               ]}
             />
-            <Dialog onRequestClose={this.handleRequestClose} open={this.state.dialogOpen}>
+            <Dialog onClose={this.handleRequestClose} open={this.state.dialogOpen}>
               <DialogTitle>No data available</DialogTitle>
               <DialogContent>
               If you think this is an issue, please contact NuevoMonit support engineer.

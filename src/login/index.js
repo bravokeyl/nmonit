@@ -8,8 +8,10 @@ import { withStyles } from 'material-ui/styles';
 
 import { authenticateUser } from '../aws/cognito';
 import { bkLog } from '../common/utils';
+import NuevoQuotes from './loader-quotes';
 
 import bg from './bg.jpg';
+import NuevoLoader from './fav';
 import MLogo from '../appbar/logoc.png';
 
 const styles = theme => ({
@@ -45,6 +47,15 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit,
   },
+  loaderCon: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100vw',
+    minHeight: '100vh',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: 'linear-gradient(to right, #fd651a 0%,#fb6529 24%,#f3635c 76%,#f1636c 100%)',
+  },
 });
 
 class NuevoLogin extends Component {
@@ -54,12 +65,20 @@ class NuevoLogin extends Component {
       email: '',
       password: '',
       loading: false,
+      currentQuotesIndex: 0,
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount() {
     bkLog('Login component Did mount');
+  }
+  componentWillUnmount() {
+    clearInterval(this.quotesInterval);
+  }
+  getNextQuote = (quotes) => {
+    if (this.state.currentQuotesIndex === quotes.length - 1) {
+      return 0;
+    }
+    return this.state.currentQuotesIndex + 1;
   }
   handleChange = name => (event) => {
     this.setState({
@@ -68,6 +87,7 @@ class NuevoLogin extends Component {
   };
   handleSubmit = () => {
     this.setState({ loading: true });
+    this.startQuotes();
     authenticateUser(this.state.email, this.state.password, (err, result) => {
       if (err) {
         // eslint-disable-next-line
@@ -78,59 +98,74 @@ class NuevoLogin extends Component {
       this.props.authHandler(result, this.props.history);
     });
   }
-
+  startQuotes = () => {
+    const quotes = NuevoQuotes;
+    const speedInMilliseconds = 3 * 1000;
+    this.quotesInterval = setInterval(() => {
+      this.setState({
+        currentQuotesIndex: this.getNextQuote(quotes),
+      });
+    }, speedInMilliseconds);
+  }
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.root}>
-        <Grid container spacing={0}>
-          <Grid item xs={12} sm={12}>
-            <div className={classes.flex}>
-              <img src={MLogo} alt="" style={{ maxWidth: 240 }} />
-              {
-                (
-                  <form className={classes.container} noValidate >
-                    <TextField
-                      required
-                      id="email"
-                      label="Email"
-                      className={classes.textField}
-                      value={this.state.email}
-                      onChange={this.handleChange('email')}
-                      margin="normal"
-                      autoComplete="username email"
-                    />
-                    <br />
-                    <TextField
-                      required
-                      id="password"
-                      label="Password"
-                      autoComplete="current-password"
-                      className={classes.textField}
-                      margin="normal"
-                      type="password"
-                      value={this.state.password}
-                      onChange={this.handleChange('password')}
-                    />
-                    <br />
-                    <Button
-                      type="submit"
-                      raised
-                      className={classes.button}
-                      disabled={this.state.loading}
-                      color="primary"
-                      onClick={this.handleSubmit}
-                      tabIndex="0"
-                    >
-                      Login
-                    </Button>
-                  </form>
-                )
-              }
-            </div>
+      !this.state.loading ?
+        <div className={classes.root}>
+          <Grid container spacing={0}>
+            <Grid item xs={12} sm={12}>
+              <div className={classes.flex}>
+                <img src={MLogo} alt="" style={{ maxWidth: 240 }} />
+                {
+                  (
+                    <form className={classes.container} noValidate >
+                      <TextField
+                        required
+                        id="email"
+                        label="Email"
+                        className={classes.textField}
+                        value={this.state.email}
+                        onChange={this.handleChange('email')}
+                        margin="normal"
+                        autoComplete="username email"
+                      />
+                      <br />
+                      <TextField
+                        required
+                        id="password"
+                        label="Password"
+                        autoComplete="current-password"
+                        className={classes.textField}
+                        margin="normal"
+                        type="password"
+                        value={this.state.password}
+                        onChange={this.handleChange('password')}
+                      />
+                      <br />
+                      <Button
+                        type="submit"
+                        variant="raised"
+                        className={classes.button}
+                        disabled={this.state.loading}
+                        color="primary"
+                        onClick={this.handleSubmit}
+                        tabIndex="0"
+                      >
+                        Login
+                      </Button>
+                    </form>
+                  )
+                }
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div> :
+        <div className={classes.loaderCon}>
+          <NuevoLoader />
+          <h2 style={{ color: '#fff' }}>
+            {NuevoQuotes[this.state.currentQuotesIndex]}
+          </h2>
+        </div>
     );
   }
 }

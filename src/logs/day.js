@@ -222,15 +222,6 @@ class NuevoDay extends Component {
       highPowerLine: highLineconfig,
       solarPowerTotal: 0,
     };
-
-    this.changeEnergy = this.changeEnergy.bind(this);
-    this.handlePower = this.handlePower.bind(this);
-    this.transformData = this.transformData.bind(this);
-    this.tranformPower = this.tranformPower.bind(this);
-    this.changeChartType = this.changeChartType.bind(this);
-    this.changeChartGroup = this.changeChartGroup.bind(this);
-    this.updatePowerCharts = this.updatePowerCharts.bind(this);
-
     ReactHighcharts.Highcharts.setOptions({
       global: {
         useUTC: false,
@@ -240,7 +231,7 @@ class NuevoDay extends Component {
 
   componentDidMount() {
     bkLog('NuevoDay component did mount', this.props.apiPath);
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const { date } = this.state;
     APIHEADERS.headers.Authorization = this.state.idToken;
@@ -272,6 +263,7 @@ class NuevoDay extends Component {
   }
 
   componentWillReceiveProps(n) {
+    bkLog('NuevoDay receiving new props:', n, this.props);
     if (n.date) {
       const nd = moment(n.date, 'YYYY/MM/DD');
       bkLog('Day PROPS', nd.format('YYYY/MM/DD'));
@@ -280,7 +272,7 @@ class NuevoDay extends Component {
     }
   }
 
-  changeChartType = (type) => {
+  changeChartType = type => () => {
     const chart = this.chart.getChart();
     chart.update({
       chart: {
@@ -289,7 +281,7 @@ class NuevoDay extends Component {
     });
   }
 
-  changeChartGroup = (group) => {
+  changeChartGroup = group => () => {
     const chart = this.chart.getChart();
     switch (group) {
       case 'grid':
@@ -435,7 +427,7 @@ class NuevoDay extends Component {
       dateApiHeaders.offline.expires = 1000 * 60 * 5;
     }
     const dhr = moment(date).format('YYYY/MM/DD');
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}h?dhr=${dhr}`;
     const self = this;
@@ -469,7 +461,7 @@ class NuevoDay extends Component {
   handlePower = (date) => {
     const cdate = moment(date).format('YYYY/MM/DD');
     bkLog('Change Power:', cdate);
-    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).p;
+    const apiPath = JSON.parse(window.localStorage.getItem('nuser')).key;
     const baseApiURL = `https://api.blufieldsenergy.com/${apiPath}/`;
     const url = `${baseApiURL}power?date=${cdate}`;
     const self = this;
@@ -486,25 +478,27 @@ class NuevoDay extends Component {
   }
   updatePowerCharts = (pow) => {
     const self = this;
-    const chart = self.chart.getChart();
-    chart.series[0].update({
-      data: _.sortBy(pow.i1, [o => o[0]]),
-    }, true);
-    chart.series[1].update({
-      data: _.sortBy(pow.i2, [o => o[0]]),
-    }, true);
-    chart.series[2].update({
-      data: _.sortBy(pow.i3, [o => o[0]]),
-    }, true);
-    chart.series[3].update({
-      data: _.sortBy(pow.R, [o => o[0]]),
-    }, true);
-    chart.series[4].update({
-      data: _.sortBy(pow.Y, [o => o[0]]),
-    }, true);
-    chart.series[5].update({
-      data: _.sortBy(pow.B, [o => o[0]]),
-    }, true);
+    if (self.chart) {
+      const chart = self.chart.getChart();
+      chart.series[0].update({
+        data: _.sortBy(pow.i1, [o => o[0]]),
+      }, true);
+      chart.series[1].update({
+        data: _.sortBy(pow.i2, [o => o[0]]),
+      }, true);
+      chart.series[2].update({
+        data: _.sortBy(pow.i3, [o => o[0]]),
+      }, true);
+      chart.series[3].update({
+        data: _.sortBy(pow.R, [o => o[0]]),
+      }, true);
+      chart.series[4].update({
+        data: _.sortBy(pow.Y, [o => o[0]]),
+      }, true);
+      chart.series[5].update({
+        data: _.sortBy(pow.B, [o => o[0]]),
+      }, true);
+    }
   }
 
   render() {
@@ -520,27 +514,34 @@ class NuevoDay extends Component {
                     Day Energy ( Hour wise ) - {moment(this.state.date).format('Do MMM YYYY')}
                     : {this.state.solarPowerTotal}
                   </Typography>
-                  <Button dense onClick={() => { this.changeChartType('spline'); }}>
+                  <Button size="small" onClick={this.changeChartType('spline')}>
                   Spline
                   </Button>
-                  <Button dense onClick={() => { this.changeChartType('bar'); }}>
+                  <Button size="small" onClick={this.changeChartType('bar')}>
                   Bar
                   </Button>
-                  <Button dense onClick={() => { this.changeChartGroup('solar'); }}>
+                  <Button size="small" onClick={this.changeChartGroup('solar')}>
                   Solar
                   </Button>
-                  <Button dense onClick={() => { this.changeChartGroup('grid'); }}>
+                  <Button size="small" onClick={this.changeChartGroup('grid')}>
                   Grid
                   </Button>
-                  <Button dense onClick={() => { this.changeChartGroup('both'); }}>
+                  <Button size="small" onClick={this.changeChartGroup('both')}>
                   Both
                   </Button>
                   <SingleDatePicker
                     date={this.state.startDate}
                     displayFormat="DD/MM/YYYY"
                     onDateChange={(date) => {
-                    bkLog('Date Changed'); this.changeEnergy(date);
-                    this.handlePower(date);
+                    const prevDate = this.state.date;
+                    const nextDate = moment(date).format('YYYY/MM/DD');
+                    bkLog('Date Selected', nextDate, prevDate);
+                    if (prevDate !== nextDate) {
+                      this.changeEnergy(date);
+                      this.handlePower(date);
+                    } else {
+                      bkLog('Date not changed, so no calls to data');
+                    }
                     }}
                     focused={this.state.focused}
                     numberOfMonths={1}
