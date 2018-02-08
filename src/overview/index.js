@@ -401,7 +401,7 @@ class NuevoOverview extends Component {
     offlineFetch(monthURL, APIHEADERS)
       .then(response => response.json())
       .then((response) => {
-        let de = response;
+        let de = response.energy;
         bkLog('MONTHURL', response);
         if (!Array.isArray(de)) {
           de = [de];
